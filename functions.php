@@ -96,7 +96,7 @@ endif;
 if ( ! function_exists( 'progo_posted_on' ) ):
 /**
  * Prints HTML with meta information for the current post—date/time and author.
- * @since ProGo Direct Response 1.0
+ * @since ProGo Ecommerce 1.0
  */
 function progo_posted_on() {
 	printf( __( '<span class="%1$s">Posted on</span> %2$s <span class="meta-sep">by</span> %3$s', 'progo' ),
@@ -117,7 +117,7 @@ endif;
 if ( ! function_exists( 'progo_posted_in' ) ):
 /**
  * Prints HTML with meta information for the current post (category, tags and permalink).
- * @since ProGo Direct Response 1.0
+ * @since ProGo Ecommerce 1.0
  */
 function progo_posted_in() {
 	// Retrieves tag list of current post, separated by commas.
@@ -172,16 +172,18 @@ if ( ! function_exists( 'progo_admin_menu_cleanup' ) ):
 function progo_admin_menu_cleanup() {
 	global $menu;
 	global $submenu;
+	// move POSTS to farther down the line...
+	$menu[7] = $menu[5];
 	
 	add_menu_page( 'Welcome', 'ProGo Themes', 'edit_theme_options', 'progo_welcome', 'progo_welcome', get_bloginfo( 'template_url' ) .'/images/logo_menu.png', 5 );
 	add_submenu_page( 'progo_welcome', 'Welcome', 'Welcome', 'edit_theme_options', 'progo_welcome', 'progo_welcome' );
 	add_submenu_page( 'progo_welcome', 'Site Settings', 'Site Settings', 'edit_theme_options', 'progo_site_settings', 'progo_site_settings_page' );
 	add_submenu_page( 'progo_welcome', 'Store Settings', 'Store Settings', 'edit_theme_options', 'wpsc-settings', 'options-general.php' );
-	add_submenu_page( 'progo_welcome', __( 'Store Sales', 'wpsc' ), __( 'Store Sales', 'wpsc' ), 'administrator', 'wpsc-sales-logs', 'wpsc_display_sales_logs' );
-	add_submenu_page( 'progo_welcome', __( 'Store Upgrades', 'wpsc' ), __( 'Store Upgrades', 'wpsc' ), 'administrator', 'wpsc-upgrades', 'wpsc_display_upgrades_page' );
+	//add_submenu_page( 'progo_welcome', __( 'Store Sales', 'wpsc' ), __( 'Store Sales', 'wpsc' ), 'administrator', 'wpsc-sales-logs', 'wpsc_display_sales_logs' );
+	//add_submenu_page( 'progo_welcome', __( 'Store Upgrades', 'wpsc' ), __( 'Store Upgrades', 'wpsc' ), 'administrator', 'wpsc-upgrades', 'wpsc_display_upgrades_page' );
 	add_submenu_page( 'progo_welcome', 'Menus', 'Menus', 'edit_theme_options', 'nav-menus.php' );
 	add_submenu_page( 'progo_welcome', 'Widgets', 'Widgets', 'edit_theme_options', 'widgets.php' );
-	
+	/*
 	// and remove STORE SALES and STORE UPGRADES from DASHBOARD menu?
 	if ( isset( $submenu['index.php'] ) ) {
 		foreach ( $submenu['index.php'] as $ind => $sub ) {
@@ -191,7 +193,7 @@ function progo_admin_menu_cleanup() {
 			}
 		}
 	}
-	
+	*/
 	// add an extra dividing line...
 	$menu[6] = $menu[4];
 	/*
@@ -207,7 +209,7 @@ function progo_admin_menu_cleanup() {
 endif;
 if ( ! function_exists( 'progo_welcome' ) ):
 /**
- * ProGo Themes' Direct Response WELCOME page function
+ * ProGo Themes' Ecommerce WELCOME page function
  * from add_menu_page( 'Welcome', 'ProGo Themes', 'edit_theme_options', 'progo_welcome'...
  * in progo_admin_menu_cleanup()
  * @since Ecommerce 1.0
@@ -356,9 +358,6 @@ endif;
 if ( ! function_exists( 'progo_admin_init' ) ):
 /**
  * hooked to 'admin_init' by add_action in progo_setup()
- * adds functionality for progo_admin_action to progo_reset_wpsc or new_direct_page
- * removes meta boxes on EDIT PAGEs, and adds progo_direct_box for Direct Response pages
- * creates CRM table if it does not exist yet
  * sets admin action hooks
  * registers Site Settings
  * @since Ecommerce 1.0
@@ -371,6 +370,9 @@ function progo_admin_init() {
 				break;
 			case 'reset_logo':
 				progo_reset_logo();
+				break;
+			case 'make_featured':
+				progo_featured_cat();
 				break;
 			case 'colorBlackGrey':
 				progo_colorscheme_switch( 'BlackGrey' );
@@ -400,6 +402,9 @@ function progo_admin_init() {
 	add_settings_field( 'progo_copyright', 'Copyright Notice', 'progo_field_copyright', 'progo_site_settings', 'progo_info' );
 	add_settings_field( 'progo_secure', 'Security Logos', 'progo_field_cred', 'progo_site_settings', 'progo_info' );
 	add_settings_field( 'progo_companyinfo', 'Company Info', 'progo_field_compinf', 'progo_site_settings', 'progo_info' );
+
+	add_settings_section( 'progo_homepage', 'Homepage', 'progo_section_text', 'progo_site_settings' );
+	add_settings_field( 'progo_frontpage', 'Homepage Displays', 'progo_field_frontpage', 'progo_site_settings', 'progo_homepage' );
 	
 	// since there does not seem to be an actual THEME_ACTIVATION hook, we'll fake it here
 	if ( get_option( 'progo_ecommerce_installed' ) != true ) {
@@ -479,6 +484,17 @@ function progo_admin_init() {
 			));
 			
 			if ( $new_pages[$slug]['id'] != false ) {
+				// set "Home" & "Blog" page IDs
+				switch ( $slug ) {
+					case 'home':
+						update_option( 'page_on_front', $new_pages[$slug]['id'] );
+						update_option( 'progo_homepage_id', $new_pages[$slug]['id'] );
+						break;
+					case 'blog':
+						update_option( 'page_for_posts', $new_pages[$slug]['id'] );
+						break;
+				}
+				
 				$menu_args = array(
 					'menu-item-object-id' => $new_pages[$slug]['id'],
 					'menu-item-object' => 'page',
@@ -556,8 +572,8 @@ function progo_dashboard_widget_function() {
 	echo '<ol>';
 	$lnk = '<a href="admin.php?page=progo_site_settings" title="Site Settings">';
 	echo '<li>Update your custom '. $lnk .'Site Settings</a> under <strong>ProGo Themes</strong> in the left menu. Customize...';
-	echo "<ul><li>Your Site's Name : ". $lnk . get_option( 'blogname' ) ."</a></li><li>Color Scheme : ". $lnk . esc_html( $options['colorscheme'] ) ."</a></li></ul></li>";
-	echo "<li>Your <em>Direct Response</em> ProGo Theme works hand-in-hand with the <strong>WP e-Commerce</strong> Plugin. ";
+	echo '<ul><li>Your Site\'s Name : <a href="admin.php?page=progo_site_settings#progo_info">'. get_option( 'blogname' ) .'</a></li><li>Color Scheme : <a href="admin.php?page=progo_site_settings#progo_theme">'. esc_html( $options['colorscheme'] ) .'</a></li></ul></li>';
+	echo "<li>Your <em>Ecommerce</em> ProGo Theme works hand-in-hand with the <strong>WP e-Commerce</strong> Plugin. ";
 	// check for wp-e-commerce installed..
 	$plugs = get_plugins();
 	$goon = isset( $plugs['wp-e-commerce/wp-shopping-cart.php'] );
@@ -606,6 +622,44 @@ function progo_dashboard_widget_function() {
 		}
 	}
 	echo '</li>';
+	// check for Featured cat ?
+	if ( $goon ) {
+		echo '<li>';
+		$fcat = get_option( 'progo_ecommerce_fcat' );
+		if ( $fcat !== false ) {
+			echo 'Your <a href="edit.php?wpsc_product_category=featured&post_type=wpsc-product">Featured Products</a> Category is all set!';
+		} else {
+			$pcats = get_terms( 'wpsc_product_category', array( 'hide_empty' => 0 ) );
+			foreach ( $pcats as $c ) {
+				if ( $c->slug == 'featured' ) {
+					$fcat = $c->term_id;
+				}
+			}
+			
+			if ( $fcat !== false ) {
+				echo 'Your <a href="edit.php?wpsc_product_category=featured&post_type=wpsc-product">Featured Products</a> Category is all set!';
+			} else {
+				echo 'Your Home Page can display "Featured" Products. <a href="'.wp_nonce_url("admin.php?progo_admin_action=make_featured", 'progo_make_featured').'">Click Here to Create a "Featured Products" Category</a>.';
+			}
+		/*
+		$num = $num->publish;
+		if ( $num > 0 ) {
+			$lnk = '<a href="edit.php?post_type=wpsc-product">';
+			echo 'You have '. $lnk . absint( $num ) .' Product'. ( $num > 1 ? 's' : '' ) .'</a> set up in WP e-Commerce. ';
+			echo '<ul><li>'. $lnk .'Edit Product'. ( $num > 1 ? 's' : '' ) .'</a></li>';
+			echo '<li><a href="post-new.php?post_type=wpsc-product">Add Another Product</a></li></ul>';
+		} else {
+			$goon = false;
+			echo '<a href="post-new.php?post_type=wpsc-product">Create your first Product.</a>';
+		}
+		*/
+		}
+	} else {
+		echo '<li'. $greyout .'>"Featured" Products Category?';
+	}
+	echo '</li>';
+	
+	
 	// check # of Products (at least 1?)
 	if ( $goon ) {
 		echo '<li>';
@@ -664,7 +718,7 @@ function progo_metabox_cleanup() {
 endif;
 add_action( 'do_meta_boxes', 'progo_metabox_cleanup' );
 
-/********* core ProGo Themes' Direct Response functions *********/
+/********* core ProGo Themes' Ecommerce functions *********/
 
 if ( ! function_exists( 'progo_colorschemes' ) ):
 /**
@@ -737,6 +791,44 @@ function progo_reset_logo(){
 	exit();
 }
 endif;
+if ( ! function_exists( 'progo_featured_cat' ) ):
+/**
+ * helper function to create the Featured Products category
+ * @since Ecommerce 1.0
+ */
+function progo_featured_cat() {
+	check_admin_referer( 'progo_make_featured' );
+	
+	$aok = true;
+	$fcat = get_option( 'progo_ecommerce_fcat' );
+	if ( $fcat !== false ) {
+		$aok = false;
+	} else {
+		// create a new category
+		$new_term = wp_insert_term(
+			'Featured Products',
+			'wpsc_product_category',
+			array(
+				'slug' => 'featured',
+				'parent' => 0
+			)
+		);
+		
+		if( is_array($new_term) == false ) {
+			$aok = false;
+		}
+	}
+	
+	if( $aok ) {
+		update_option( 'progo_ecommerce_fcat', $new_term['term_id'] );
+	} else {
+		wp_die('Something went wrong in creating the Featured Products category');
+	}
+	
+	wp_redirect( get_option('siteurl') .'/wp-admin/admin.php?page=progo_welcome' );
+	exit();
+}
+endif;
 if ( ! function_exists( 'progo_arraytotop' ) ):
 /**
  * helper function to bring a given element to the start of an array
@@ -796,8 +888,11 @@ function progo_options_defaults() {
 			"support" => "123-555-7890",
 			"copyright" => "© Copyright 2011, All Rights Reserved",
 			"credentials" => "",
-			"companyinfo" => "We sincerely thank you for your patronage.\nThe Our Company Staff\n\nOur Company, Inc.\n1234 Address St\nSuite 43\nSan Diego, CA 92107\n619-555-5555"
+			"companyinfo" => "We sincerely thank you for your patronage.\nThe Our Company Staff\n\nOur Company, Inc.\n1234 Address St\nSuite 43\nSan Diego, CA 92107\n619-555-5555",
+			"frontpage" => ""
 		);
+		$def["frontpage"] = get_option('show_on_front');		
+		
 		update_option( 'progo_options', $def );
 	}
 	
@@ -836,6 +931,26 @@ function progo_options_validate( $input ) {
 	if ( !in_array( $input['colorscheme'], $colors ) ) {
 		$input['colorscheme'] = 'BlackGrey';
 	}
+	
+	$choices = array(
+		'posts',
+		'featured',
+		'page'
+	);
+	if ( !in_array( $input['frontpage'], $choices ) ) {
+		$input['frontpage'] = get_option('show_on_front');
+	}
+	switch ( $input['frontpage'] ) {
+		case 'posts':
+			update_option( 'show_on_front', 'posts' );
+			break;
+		case 'featured':
+		case 'page':
+			update_option( 'show_on_front', 'page' );
+			update_option( 'page_on_front', get_option('progo_homepage_id') );
+			break;
+	}
+	
 	// opt[showdesc] can only be 1 or 0
 	if ( (int) $input['showdesc'] != 1 ) {
 		$input['showdesc'] = 0;
@@ -1098,7 +1213,7 @@ function progo_field_apikey() {
 			echo ' <img src="'. get_bloginfo('template_url') .'/images/x.jpg" alt="X" class="kcheck" title="'. $apiauth .'" />';
 			break;
 	}
-	echo '<br /><span class="description">You API Key was sent via email when you purchased the Direct Response theme from ProGo Themes.</span>';
+	echo '<br /><span class="description">You API Key was sent via email when you purchased the Ecommerce theme from ProGo Themes.</span>';
 }
 
 if ( ! function_exists( 'progo_field_blogname' ) ):
@@ -1183,16 +1298,60 @@ function progo_field_compinf() {
 <span class="description">This text appears at the end of Transaction Results pages and email receipts.</span>
 <?php }
 endif;
+if ( ! function_exists( 'progo_field_frontpage' ) ):
+/**
+ * outputs HTML for "Homepage" field on Site Settings page
+ * @since Ecommerce 1.0
+ */
+function progo_field_frontpage() {
+	// Latest Blog Posts, (Featured Products), Static Content
+	$choices = array(
+		'posts' => 'Latest Blog Posts',
+		'featured' => 'Featured Products',
+		'page' => 'Static Content'
+	);
+	$msg = '';
+	
+	$fcat = get_option( 'progo_ecommerce_fcat' );
+	if ( $fcat == false ) {
+		unset($choices['featured']);
+		$msg = '<br />Your Home Page can display "Featured" Products';
+		
+		if ( function_exists('wpsc_admin_pages')) {
+			$msg .= '. <a href="'.wp_nonce_url("admin.php?progo_admin_action=make_featured", 'progo_make_featured').'">Click Here to Create a "Featured Products" Category</a>.';
+		} else {
+			$msg .= ', but WP E-Commerce Plugin appears to be inactive. ';
+			$lnk = ( function_exists( 'wp_nonce_url' ) ) ? wp_nonce_url('plugins.php?action=activate&amp;plugin=wp-e-commerce/wp-shopping-cart.php&amp;plugin_status=all&amp;paged=1', 'activate-plugin_wp-e-commerce/wp-shopping-cart.php') : 'plugins.php';
+			$msg .= '<a href="'. esc_url($lnk) .'">Click Here to Activate</a>';
+		}
+	}
+	
+	$msg .= '<pre>'. print_r(get_option('show_on_front'),true)  .'</pre>'. print_r(get_option('page_on_front'),true) .'</pre>'. print_r(get_option('page_for_posts'),true) .'</pre>';
+	
+	$options = get_option( 'progo_options' );
+	// check just in case show_on_front changed since this was last updated...
+	$options['frontpage'] = get_option('show_on_front');
+	
+	?><select id="progo_frontpage" name="progo_options[frontpage]"><?php
+    foreach ( $choices as $k => $c ) {
+		echo '<option value="'. $k .'"';
+		if( $k == $options['frontpage'] ) {
+			echo ' selected="selected"';
+		}
+		echo '>'. esc_attr($c) .'</option>';
+	}
+    ?></select><span class="description"><?php echo $msg; ?></span>
+<?php }
+endif;
 if ( ! function_exists( 'progo_section_text' ) ):
 /**
  * (dummy) function called by 
- * add_settings_section( 'progo_theme', 'Theme Customization', 'progo_section_text', 'progo_site_settings' );
- * and
- * add_settings_section( 'progo_info', 'Site Info', 'progo_section_text', 'progo_site_settings' );
+ * add_settings_section( [id] , [title], 'progo_section_text', 'progo_site_settings' );
+ * echos anchor link for that section
  * @since Ecommerce 1.0
  */
-function progo_section_text() {
-	// echo '<p>intro text...</p>';	
+function progo_section_text( $args ) {
+	echo '<a name="'. $args['id'] .'"></a>';
 }
 endif;
 /**
@@ -1348,7 +1507,7 @@ function progo_admin_bar_render() {
 	global $wp_admin_bar;
 	// since we are hiding COMMENTING and POSTS right now...
 	
-	// add links to ProGo Direct Response pages
+	// add links to ProGo Ecommerce pages
 	$wp_admin_bar->add_menu( array( 'parent' => 'appearance', 'id' => 'progo_settings', 'title' => __('Site Settings'), 'href' => admin_url('admin.php?page=progo_site_settings') ) );
 	$wp_admin_bar->add_menu( array( 'parent' => 'appearance', 'id' => 'store_settings', 'title' => __('Store Settings'), 'href' => admin_url('admin.php?page=wpsc-settings') ) );
 	
