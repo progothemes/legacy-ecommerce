@@ -1,0 +1,14 @@
+#header-logo {
+	background-image: url(../images/logo_admin.png);
+	width: 60px;
+}
+#progo_welcome li ul {
+	margin-top: 6px;
+	list-style: inside;
+}
+table.form-table label { font-size: 13px; }
+
+/* api key check? */
+img.kcheck { position: relative; top:3px; }
+
+tr.status-notdirect { display: none; }
