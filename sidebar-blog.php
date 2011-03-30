@@ -1,6 +1,6 @@
 <?php
 /**
- * The Sidebar containing the primary and secondary widget areas.
+ * Sidebar for Blog areas.
  *
  * @package ProGo
  * @subpackage Ecommerce
@@ -15,9 +15,14 @@
  * then the sidebar simply doesn't exist, so we'll hard-code in
  * some default sidebar stuff just in case.
  */
-if ( ! dynamic_sidebar( 'main' ) ) :
-// do SHOPPING CART widget ?
+if ( ! dynamic_sidebar( 'blog' ) ) :
 ?>
- <?php endif; // end primary widget area ?>
+<div class="block archvies">
+    <h3 class="title"><span class="spacer"><?php _e( 'Archives', 'progo' ); ?></span></h3>
+    <div class="inside">
+        <?php wp_get_archives( 'type=monthly' ); ?>
+    </div>
+</div>
+<?php endif; // end primary widget area ?>
 </div>
 </div>

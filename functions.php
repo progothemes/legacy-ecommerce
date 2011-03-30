@@ -54,6 +54,7 @@ function progo_setup() {
 	add_action( 'admin_menu', 'progo_admin_menu_cleanup' );
 	add_action( 'login_head', 'progo_custom_login_logo' );
 	add_action( 'login_headerurl', 'progo_custom_login_url' );
+	add_action('wp_print_scripts', 'progo_add_scripts');
 	add_action('wp_print_styles', 'progo_add_styles');
 	add_action( 'admin_notices', 'progo_admin_notices' );
 	add_action( 'wp_before_admin_bar_render', 'progo_admin_bar_render' );
@@ -552,8 +553,26 @@ function progo_ecommerce_widgets() {
 		'before_title' => '<h3 class="title"><span class="spacer">',
 		'after_title' => '</span></h3><div class="inside">'
 	));
+	register_sidebar(array(
+		'name' => 'Header',
+		'id' => 'header',
+		'description' => 'We can put a widget or two in the top right of the header',
+		'before_widget' => '<div class="hblock %1$s %2$s">',
+		'after_widget' => '</div></div>',
+		'before_title' => '<h3 class="title"><span class="spacer">',
+		'after_title' => '</span></h3><div class="inside">'
+	));
+	register_sidebar(array(
+		'name' => 'Footer',
+		'id' => 'footer',
+		'description' => 'The Footer area has room for widgets as well',
+		'before_widget' => '<div class="fblock %1$s %2$s">',
+		'after_widget' => '</div></div>',
+		'before_title' => '<h3 class="title"><span class="spacer">',
+		'after_title' => '</span></h3><div class="inside">'
+	));
 	
-	$progo_widgets = array( 'Share', 'Social', 'Support' );
+	$progo_widgets = array( 'FBLikeBox', 'Tweets', 'Share', 'Social', 'Support' );
 	foreach ( $progo_widgets as $w ) {
 		require_once( 'widgets/widget-'. strtolower($w) .'.php' );
 		register_widget( 'ProGo_Widget_'. $w );
@@ -719,6 +738,21 @@ endif;
 add_action( 'do_meta_boxes', 'progo_metabox_cleanup' );
 
 /********* core ProGo Themes' Ecommerce functions *********/
+
+if ( ! function_exists( 'progo_add_scripts' ) ):
+/**
+ * hooked to 'wp_print_scripts' by add_action in progo_setup()
+ * adds front-end js
+ * @since BookIt 1.0
+ */
+function progo_add_scripts() {
+	if ( !is_admin() ) {
+		wp_register_script( 'progo', get_bloginfo('template_url') .'/js/progo-frontend.js', array('jquery'), '1.0' );
+		wp_enqueue_script( 'progo' );
+		do_action('progo_frontend_scripts');
+	}
+}
+endif;
 
 if ( ! function_exists( 'progo_colorschemes' ) ):
 /**
@@ -1326,11 +1360,11 @@ function progo_field_frontpage() {
 		}
 	}
 	
-	$msg .= '<pre>'. print_r(get_option('show_on_front'),true)  .'</pre>'. print_r(get_option('page_on_front'),true) .'</pre>'. print_r(get_option('page_for_posts'),true) .'</pre>';
+//	$msg .= '<pre>'. print_r(get_option('show_on_front'),true)  .'</pre>'. print_r(get_option('page_on_front'),true) .'</pre>'. print_r(get_option('page_for_posts'),true) .'</pre>';
 	
 	$options = get_option( 'progo_options' );
-	// check just in case show_on_front changed since this was last updated...
-	$options['frontpage'] = get_option('show_on_front');
+	// check just in case show_on_front changed since this was last updated?
+	// $options['frontpage'] = get_option('show_on_front');
 	
 	?><select id="progo_frontpage" name="progo_options[frontpage]"><?php
     foreach ( $choices as $k => $c ) {

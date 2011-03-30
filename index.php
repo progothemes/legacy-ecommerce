@@ -25,7 +25,6 @@ get_header(); ?>
 			 get_template_part( 'loop', 'index' );
 			?>
 			</div><!-- #main -->
+<?php get_sidebar('blog'); ?>
 		</div><!-- #container -->
-
-<?php get_sidebar(); ?>
 <?php get_footer(); ?>

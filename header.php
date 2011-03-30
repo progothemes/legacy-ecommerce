@@ -50,5 +50,5 @@
             <div id="slogan"><?php bloginfo( 'description' ); ?></div>
             <?php } ?>
             </div>
-            <div class="grid_6"></div>
+            <?php get_sidebar('header'); ?>
         </div>
