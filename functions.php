@@ -493,6 +493,7 @@ function progo_admin_init() {
 						break;
 					case 'blog':
 						update_option( 'page_for_posts', $new_pages[$slug]['id'] );
+						update_option( 'progo_blog_id', $new_pages[$slug]['id'] );
 						break;
 				}
 				
@@ -979,9 +980,13 @@ function progo_options_validate( $input ) {
 			update_option( 'show_on_front', 'posts' );
 			break;
 		case 'featured':
+			update_option( 'show_on_front', 'page' );
+			update_option( 'page_on_front', get_option('progo_homepage_id') );
+			update_post_meta( get_option('progo_homepage_id'), '_wp_page_template', 'page-featured.php' );
 		case 'page':
 			update_option( 'show_on_front', 'page' );
 			update_option( 'page_on_front', get_option('progo_homepage_id') );
+			delete_post_meta( get_option('progo_homepage_id'), '_wp_page_template' );
 			break;
 	}
 	

@@ -15,13 +15,13 @@ body, input, textarea, .pingback a.url { font-family: Arial, Helvetica, sans-ser
 
 /* =Layout */
 #page { float: left; background: url(../images/shadow.png) repeat-y 0 0; padding: 0 6px;}
-#container { float: left; margin: 0; background: url(../images/LightGrey/main.png) repeat-x 0 0; position: relative;}
+#container { float: left; margin: 0; position: relative;}
 #main { float:left; }
 
 /* =Global Elements */
 
 /* Main global 'theme' and typographic styles */
-body { background: #eee url(../images/bg.png) repeat-x 0 0;}
+body { background: #fff url(../images/bg.png) repeat-x 0 0;}
 body, input, textarea { color: #666; font-size: 12px; line-height: 18px;}
 hr { background-color: #e7e7e7; border: 0; clear: both; height: 1px; margin-bottom: 18px;}
 
@@ -57,14 +57,23 @@ a:hover { color: #ff4b33; text-decoration: underline }
 .screen-reader-text { position: absolute; left: -9000px; }
 
 /* hdr */
-#hdr { float: left; height: 87px; position: relative; background:url(../images/LightGrey/hdr.png) repeat-x 0 0; }
+#hdr { float: left; height: 133px; position: relative; background:url(../images/LightGrey/hdr.png) repeat-x 0 0; }
 #logo { float: left; margin: 22px 15px 0; font: bold 39px/46px Arial, Helvetica, sans-serif; position: relative; color: #000; }
 table#logo { margin-top: 12px; height:75px; border-collapse:collapse }
 table#logo img { float: left; }
 div#logo .g { display: block; width: 100%; height: 37px; position: absolute; top: 9px; left: 0; background: url(../images/titlegradient.png) repeat-x 0 0; }
 #slogan { float: left; margin: 45px 0 0; font-size: 14px; color: #999; }
-
+ul#nav { display:block; width: 100%; height: 35px; margin: 0; padding: 0; list-style: none; position: absolute; bottom: 0; left: 0; background: url(../images/nav.png) repeat-x 0 0 }
+ul#nav li { float: left; width: 132px; padding-right: 1px; background: url(../images/navli.png) no-repeat 100% 0; }
+ul#nav li a { float: left; width: 132px; text-align: center; height: 27px; color: #fff; font-size: 14px; padding: 8px 0 0 }
+ul#nav li.current-menu-item a { background: url(../images/navon.png) no-repeat 0 0; font-weight: bold; }
+ul#nav li a:hover { font-weight: bold; text-decoration:none; }
+#hdr .hblock.support { float: right; margin-top: 40px }
+#hdr .hblock.support h3 { float: left; font-size: 17px; font-weight: normal; margin: 0 10px 0 0; color: #666 }
+#hdr .hblock.support .inside { float:left; font-size: 17px; color: #333; }
 /* content */
+#pagetop { float: left; width: 960px; height: 100px; background: url(../images/BlackGrey/pagetop.jpg) no-repeat 0 0; }
+#pagetop h1.page-title { float: left; width: 900px; margin: 30px 0 0 30px; font: 40px/120% Arial, Helvetica, sans-serif; color: #fff }
 #main, #main input, #main textarea { color: #333; font-size: 14px; line-height: 20px;}
 #main input.upd { border: none; background: none; padding: 0; cursor:pointer }
 #main p, #main ul, #main ol, #main dd, #main pre, #main hr { margin-bottom: 18px;}
@@ -75,8 +84,6 @@ div#logo .g { display: block; width: 100%; height: 37px; position: absolute; top
 #main h2 { font-size: 24px }
 #main h3 { font-size: 16px }
 #main h1, #main h2, #main h3, #main h4, #main h5, #main h6 { line-height: 1.5em; margin: 0 0 3px; }
-#main #prod h1, #main h1.page-title { float: left; width: 100%; margin: 25px 0 17px 15px; font: bold 34px/120% Arial, Helvetica, sans-serif; color: #3c3c3c }
-#main h1.page-title { margin-bottom: 0; }
 
 .entry-meta { color: #888; font-size: 12px;}
 .entry-meta abbr, .entry-utility abbr { border: none;}
@@ -119,7 +126,7 @@ body.page .edit-link { clear: both; display: block;}
 
 #secondary { float: left; width: 100%; margin-top: 35px; }
 .block { float: left; width: 97%; border: 1px solid #ccc; margin: 0 0 16px }
-.block h3.title { float: left; width: 100%; padding: 9px 0; margin: 0; font: 19px/23px Arial, Helvetica, sans-serif; color: #3c3c3c; background: url(../images/h3b.png) repeat-x 0 100%; }
+.block h3.title { float: left; width: 100%; padding: 8px 0; margin: 0; font: 19px/23px Arial, Helvetica, sans-serif; color: #3c3c3c; background: url(../images/h3b.gif) repeat-x 0 100%; }
 .block h3.title .spacer { float: left; margin: 0 25px; }
 .block .inside { float: left; width: 85%; padding: 20px 0 21px 25px; font-size:14px; line-height:21px }
 .block.secure .inside .support { font-size: 16px; color: #000; position: relative; top: 5px }

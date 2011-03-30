@@ -1,11 +1,8 @@
 <?php
 /**
- * The template for displaying all pages.
+ * Template Name: Featured Products
  *
- * This is the template that displays all pages by default.
- * Please note that this is the WordPress construct of pages
- * and that other 'pages' on your WordPress site will use a
- * different template.
+ * Featured Products page template
  *
  * @package ProGo
  * @subpackage Ecommerce
@@ -21,11 +18,7 @@ get_header();
 <?php do_action('progo_pagetop'); ?>
 </div>
 <div id="main" role="main" class="grid_8">
-<div id="post-<?php the_ID(); ?>" <?php post_class(); ?>>
-<div class="entry">
-<?php the_content(); ?>
-</div><!-- .entry -->
-</div><!-- #post-## -->
+<?php echo wpsc_display_products_page( array( 'category_url_name'=>'featured' ) ); ?>
 </div><!-- #main -->
 <?php endwhile; ?>
 <?php get_sidebar(); ?>

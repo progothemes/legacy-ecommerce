@@ -34,6 +34,7 @@ class ProGo_Widget_FBLikeBox extends WP_Widget {
 	 */
 	function widget( $args, $instance ) {
 		extract($args);
+		$title = apply_filters( 'widget_title', empty($instance['title']) ? __('Twitter') : $instance['title'], $instance, $this->id_base);
 		$url = strip_tags($instance['url']);
 		$width = absint($instance['width']);
 		$color = strip_tags($instance['color']);
@@ -71,7 +72,9 @@ class ProGo_Widget_FBLikeBox extends WP_Widget {
 	function update( $new_instance, $old_instance ) {
 		$instance = $old_instance;
 		
-		$instance['url'] =strip_tags($new_instance['url']);
+		$new_instance = wp_parse_args( (array) $new_instance, array( 'title' => 'Facebook', 'url' => '', 'width' => 292, 'color' => 'light', 'faces' => 'yes', 'stream' => 'no', 'header' => 'no') );
+		$instance['title'] = strip_tags($new_instance['title']);
+		$instance['url'] = strip_tags($new_instance['url']);
 		$instance['width'] = (int) $new_instance['width'];
 		
 		$color = strip_tags($new_instance['color']);
@@ -91,11 +94,13 @@ class ProGo_Widget_FBLikeBox extends WP_Widget {
 	 * @since 1.0
 	 */
 	function form( $instance ) {
-		$instance = wp_parse_args( (array) $instance, array( 'url' => '', 'width' => 292, 'color' => 'light', 'faces' => 'yes', 'stream' => '', 'header' => '') );
+		$instance = wp_parse_args( (array) $instance, array( 'title' => '', 'url' => '', 'width' => 292, 'color' => 'light', 'faces' => 'yes', 'stream' => '', 'header' => '') );
+		$title = strip_tags($instance['title']);
 		$url = strip_tags($instance['url']);
 		$width = absint($instance['width']);
 		$color = strip_tags($instance['color']);
 ?>
+		<p><label for="<?php echo $this->get_field_id('title'); ?>"><?php _e('Title:'); ?></label> <input class="widefat" id="<?php echo $this->get_field_id('title'); ?>" name="<?php echo $this->get_field_name('title'); ?>" type="text" value="<?php echo esc_attr($title); ?>" /></p>
 		<p><label for="<?php echo $this->get_field_id('url'); ?>"><?php _e('Page URL:'); ?></label> <input class="widefat" id="<?php echo $this->get_field_id('url'); ?>" name="<?php echo $this->get_field_name('url'); ?>" type="text" value="<?php echo esc_url($url); ?>" /></p>
 		<p><label for="<?php echo $this->get_field_id('width'); ?>"><?php _e('Width:'); ?></label> <input class="widefat" id="<?php echo $this->get_field_id('width'); ?>" name="<?php echo $this->get_field_name('width'); ?>" type="text" value="<?php echo esc_attr($width); ?>" /></p>
         <p><label for="<?php echo $this->get_field_id('color'); ?>"><?php _e('Color Scheme:'); ?></label>

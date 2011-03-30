@@ -50,5 +50,6 @@
             <div id="slogan"><?php bloginfo( 'description' ); ?></div>
             <?php } ?>
             </div>
-            <?php get_sidebar('header'); ?>
+            <?php get_sidebar('header');
+			wp_nav_menu( array( 'container' => 'false', 'theme_location' => 'mainmenu', 'menu_id' => 'nav' ) ); ?>
         </div>
