@@ -180,31 +180,13 @@ function progo_admin_menu_cleanup() {
 	add_submenu_page( 'progo_welcome', 'Welcome', 'Welcome', 'edit_theme_options', 'progo_welcome', 'progo_welcome' );
 	add_submenu_page( 'progo_welcome', 'Site Settings', 'Site Settings', 'edit_theme_options', 'progo_site_settings', 'progo_site_settings_page' );
 	add_submenu_page( 'progo_welcome', 'Store Settings', 'Store Settings', 'edit_theme_options', 'wpsc-settings', 'options-general.php' );
-	//add_submenu_page( 'progo_welcome', __( 'Store Sales', 'wpsc' ), __( 'Store Sales', 'wpsc' ), 'administrator', 'wpsc-sales-logs', 'wpsc_display_sales_logs' );
-	//add_submenu_page( 'progo_welcome', __( 'Store Upgrades', 'wpsc' ), __( 'Store Upgrades', 'wpsc' ), 'administrator', 'wpsc-upgrades', 'wpsc_display_upgrades_page' );
+	add_submenu_page( 'progo_welcome', 'Homepage Slides', 'Homepage Slides', 'edit_theme_options', 'progo_home_slides', 'progo_home_slides_page' );
 	add_submenu_page( 'progo_welcome', 'Menus', 'Menus', 'edit_theme_options', 'nav-menus.php' );
 	add_submenu_page( 'progo_welcome', 'Widgets', 'Widgets', 'edit_theme_options', 'widgets.php' );
-	/*
-	// and remove STORE SALES and STORE UPGRADES from DASHBOARD menu?
-	if ( isset( $submenu['index.php'] ) ) {
-		foreach ( $submenu['index.php'] as $ind => $sub ) {
-			// sub[0] could change language so check the callback fn instead
-			if ( in_array( $sub[2], array( 'wpsc-sales-logs', 'wpsc-ugrades' ) ) ) {
-				unset($submenu['index.php'][$ind]);
-			}
-		}
-	}
-	*/
+	
 	// add an extra dividing line...
 	$menu[6] = $menu[4];
-	/*
-	// and lets move MEDIA to after PRODUCTS
-	$menu[50] = $menu[10];
-	unset($menu[10]);
-	// and lets move PRODUCTS to before PAGES
-	$menu[10] = $menu[26];
-	unset($menu[26]);
-	*/
+	
 	//wp_die('<pre>'. print_r($menu,true) .'</pre>');
 }
 endif;
@@ -323,6 +305,51 @@ function progo_site_settings_page() {
 <?php
 }
 endif;
+if ( ! function_exists( 'progo_home_slides_page' ) ):
+/**
+ * outputs HTML for ProGo Themes "Site Settings" page
+ * @uses settings_fields() for hidden form items for 'progo_slides'
+ * @uses do_settings_sections() for 'progo_home_slides'
+ * @since Ecommerce 1.0
+ */
+function progo_home_slides_page() {
+?>
+	<div class="wrap">
+		<div class="icon32" id="icon-options-general"></div>
+		<h2>Homepage Slides</h2>
+		<form action="options.php" method="post" enctype="multipart/form-data"><?php
+		settings_fields( 'progo_slides' );
+		do_settings_sections( 'progo_home_slides' );
+		?><p class="submit"><input type="submit" name="updateoption" value="Update &raquo;" /></p>
+		</form>
+	</div>
+<?php
+}
+endif;
+if ( ! function_exists( 'progo_field_slides' ) ):
+/**
+ * outputs HTML for "Homepage Slides"
+ * @since Ecommerce 1.0
+ */
+function progo_field_slides() {
+	//$options = get_option( 'progo_options' );
+	?><div id="poststuf" class="metabox-holder">
+    <div id="post-body">
+<div id="normal-sortables" class="meta-box-sortables ui-sortable">
+<div class="postbox"><div class="handlediv" title="Click to toggle"><br /></div>
+<h3 class="hndle"><span>Slide 1</span></h3>
+<div class="inside"><p>slide 1 here</p></div>
+</div>
+<div class="postbox"><div class="handlediv" title="Click to toggle"><br /></div>
+<h3 class="hndle"><span>Slide 2</span></h3>
+<div class="inside"><p>slide 2 here</p></div>
+</div>
+</div>
+</div>
+</div>
+<p class="submit"><input type="submit" name="addmore" value="Add Another Slide &raquo;" onclick="return false;" /></p>
+<?php }
+endif;
 if ( ! function_exists( 'progo_admin_page_styles' ) ):
 /**
  * hooked to 'admin_print_styles' by add_action in progo_setup()
@@ -351,8 +378,11 @@ if ( ! function_exists( 'progo_admin_page_scripts' ) ):
  */
 function progo_admin_page_scripts() {
 	global $pagenow;
-	if ( $pagenow == 'admin.php' && isset( $_GET['page'] ) && in_array( $_GET['page'], array( 'progo_welcome' ) ) ) {
-		wp_enqueue_script( 'thickbox' );
+	if ( $pagenow == 'admin.php' && isset( $_GET['page'] ) && in_array( $_GET['page'], array( 'progo_home_slides' ) ) ) {
+		wp_enqueue_script( 'jquery-ui-sortable' );
+		wp_enqueue_script( 'jquery-ui-draggable' );
+		wp_enqueue_script( 'postbox' );
+		wp_enqueue_script( 'post' );
 	}
 }
 endif;
@@ -406,6 +436,12 @@ function progo_admin_init() {
 
 	add_settings_section( 'progo_homepage', 'Homepage', 'progo_section_text', 'progo_site_settings' );
 	add_settings_field( 'progo_frontpage', 'Homepage Displays', 'progo_field_frontpage', 'progo_site_settings', 'progo_homepage' );
+	
+	// Site Settings page
+	register_setting( 'progo_slides', 'progo_slides', 'progo_slides_validate' );
+
+	add_settings_section( 'progo_slide', 'Homepage Slides', 'progo_section_text', 'progo_home_slides' );
+	add_settings_field( 'progo_make_slides', 'Homepage Slides', 'progo_field_slides', 'progo_home_slides', 'progo_slide' );
 	
 	// since there does not seem to be an actual THEME_ACTIVATION hook, we'll fake it here
 	if ( get_option( 'progo_ecommerce_installed' ) != true ) {
@@ -751,6 +787,8 @@ function progo_add_scripts() {
 		wp_register_script( 'progo', get_bloginfo('template_url') .'/js/progo-frontend.js', array('jquery'), '1.0' );
 		wp_enqueue_script( 'progo' );
 		do_action('progo_frontend_scripts');
+	} else {
+		//
 	}
 }
 endif;
