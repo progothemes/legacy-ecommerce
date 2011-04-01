@@ -637,7 +637,7 @@ function progo_dashboard_widget_function() {
 		echo "<br />Congratulations! WP e-Commerce appears to be installed.";
 	} else {
 		$lnk = ( function_exists( 'wp_nonce_url' ) ) ? wp_nonce_url( 'update.php?action=install-plugin&amp;plugin=wp-e-commerce', 'install-plugin_wp-e-commerce' ) : 'plugin-install.php';
-		echo '<br /><strong><a href="'. esc_url( $lnk ) .'" onclick="alert(\'since the STABLE release is v3.7.8, and we are working with v3.8, we need to wait on this one-click...\'); return false;">Click Here to install the WP e-Commerce Plugin.</a></strong>';
+		echo '<br /><strong><a href="'. esc_url( $lnk ) .'">Click Here to install the WP e-Commerce Plugin.</a></strong>';
 		$goon = false;
 	}
 	echo '</li>';
