@@ -12,3 +12,8 @@ table.form-table label { font-size: 13px; }
 img.kcheck { position: relative; top:3px; }
 
 tr.status-notdirect { display: none; }
+
+/* for admin pages */
+.metabox-holder .postbox .inside h3 { background: none; cursor: text; padding: 0; }
+.metabox-holder .postbox .inside.noh3 h3 { display: none; }
+.progo-form .form-table th { width: 160px; }
