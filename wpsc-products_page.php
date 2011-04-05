@@ -65,19 +65,16 @@ global $wp_query;
 		<?php while (wpsc_have_products()) :  wpsc_the_product(); ?>
 					
 			<div class="default_product_display product_view_<?php echo wpsc_the_product_id(); ?> <?php echo wpsc_category_class(); ?> group">   
-				<h2 class="prodtitle entry-title">
-							<?php if(get_option('hide_name_link') == 1) : ?>
-								<?php echo wpsc_the_product_title(); ?>
-							<?php else: ?> 
-								<a class="wpsc_product_title" href="<?php echo wpsc_the_product_permalink(); ?>"><?php echo wpsc_the_product_title(); ?></a>
-							<?php endif; ?>
-						</h2>   
+                <h3 class="prodtitle entry-title"><?php if(get_option('hide_name_link') == 1) {
+					echo wpsc_the_product_title();
+				} else { ?><a class="wpsc_product_title" href="<?php echo wpsc_the_product_permalink(); ?>"><?php echo wpsc_the_product_title(); ?></a><?php
+				} ?></h3>
 				<?php if(wpsc_show_thumbnails()) :?>
 					<div class="imagecol" id="imagecol_<?php echo wpsc_the_product_id(); ?>">
 						<?php if(wpsc_the_product_thumbnail()) :
 						?>
 							<a rel="<?php echo wpsc_the_product_title(); ?>" class="<?php echo wpsc_the_product_image_link_classes(); ?>" href="<?php echo wpsc_the_product_image(); ?>">
-								<img class="product_image" id="product_image_<?php echo wpsc_the_product_id(); ?>" alt="<?php echo wpsc_the_product_title(); ?>" title="<?php echo wpsc_the_product_title(); ?>" src="<?php echo wpsc_the_product_thumbnail(); ?>"/>
+								<img class="product_image" id="product_image_<?php echo wpsc_the_product_id(); ?>" alt="<?php echo wpsc_the_product_title(); ?>" title="<?php echo wpsc_the_product_title(); ?>" src="<?php echo wpsc_the_product_image(); ?>"/>
 
 							</a>
 						<?php else: ?>
