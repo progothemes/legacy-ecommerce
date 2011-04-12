@@ -309,7 +309,7 @@ try{convertEntities(wpsc_adminL10n);}catch(e){};
          	<div id="progo_welcome" class="postbox">
             	<h3 class="hndle"><span>Welcome</span></h3>
                 <div class="inside">
-                    <p><img src="<?php bloginfo( 'template_url' ); ?>/images/logo_progo.png" style="float:right; margin: 0 0 21px 21px" alt="ProGo Themes" />ProGo Themes are Easy and Quick to Set Up using our Step-by-Step Process.<br /><br /><a href="http://www.progo.com/ProGo_QuickStartGuide.pdf" target="_blank">Download the ProGo Themes Quick Start Guide (PDF)</a></p>
+                    <p><img src="<?php bloginfo( 'template_url' ); ?>/images/logo_progo.png" style="float:right; margin: 0 0 21px 21px" alt="ProGo Themes" />ProGo Themes are Easy and Quick to Set Up using our Step-by-Step Process.<br /><br /><a href="http://www.progo.com/resources/QuickStartGuide-Ecommerce.pdf" target="_blank">Download the ProGo Ecommerce Theme Quick Start Guide (PDF)</a></p>
                 </div>
             </div>
         	<div id="progo_plugs" class="postbox">
@@ -693,12 +693,12 @@ function progo_admin_init() {
 	add_action( 'admin_print_scripts', 'progo_admin_page_scripts' );
 	
 	// Installation (api key) settings
-	register_setting( 'progo_api_options', 'progo_api_options', 'progo_validate_api' );
+	register_setting( 'progo_api_options', 'progo_api_options', 'progo_validate_options' );
 	add_settings_section( 'progo_api', 'ProGo Themes API Key', 'progo_section_text', 'progo_api_settings' );
 	add_settings_field( 'progo_api_key', 'API Key', 'progo_field_apikey', 'progo_api_settings', 'progo_api' );
 	
 	// Appearance settings
-	register_setting( 'progo_options', 'progo_options', 'progo_options_validate' );
+	register_setting( 'progo_options', 'progo_options', 'progo_validate_options' );
 	
 	add_settings_section( 'progo_theme', 'Theme Customization', 'progo_section_text', 'progo_theme' );
 	add_settings_field( 'progo_colorscheme', 'Color Scheme', 'progo_field_color', 'progo_theme', 'progo_theme' );
@@ -1081,10 +1081,8 @@ function progo_options_defaults() {
 			"copyright" => "© Copyright 2011, All Rights Reserved",
 			"credentials" => "",
 			"companyinfo" => "We sincerely thank you for your patronage.\nThe Our Company Staff\n\nOur Company, Inc.\n1234 Address St\nSuite 43\nSan Diego, CA 92107\n619-555-5555",
-			"frontpage" => ""
+			"frontpage" => get_option( 'show_on_front' )
 		);
-		$def["frontpage"] = get_option('show_on_front');
-		
 		update_option( 'progo_options', $def );
 	}
 	$tmp = get_option( 'progo_slides' );
@@ -1102,8 +1100,6 @@ function progo_options_defaults() {
 	// set large image size
 	update_option( 'large_size_w', 650 );
 	update_option( 'large_size_h', 413 );
-	
-	progo_reset_wpsc();
 }
 if ( ! function_exists( 'progo_validate_homeslides' ) ):
 /**
@@ -1140,40 +1136,25 @@ function progo_validate_homeslides( $input ) {
 	return $input;
 }
 endif;
-if ( ! function_exists( 'progo_validate_api' ) ):
+if ( ! function_exists( 'progo_validate_options' ) ):
 /**
  * ProGo Site Settings Options validation function
- * from register_setting( 'progo_options', 'progo_options', 'progo_options_validate' );
+ * from register_setting( 'progo_options', 'progo_options', 'progo_validate_options' );
  * in progo_admin_init()
  * also handles uploading of custom Site Logo
  * @param $input options to validate
  * @return $input after validation has taken place
  * @since Ecommerce 1.0
  */
-function progo_validate_api( $input ) {
-	$newkey = $_POST['progo_ecommerce_apikey'];
-	$input = wp_kses( $input, array() );
-	// store API KEY in its own option
-	if ( $input != get_option( 'progo_ecommerce_apikey' ) ) {
-		update_option( 'progo_ecommerce_apikey', substr( $input, 0, 39 ) );
-	}
-	update_option('progo_settings_just_saved',1);
-	return $input;
-}
-endif;
-if ( ! function_exists( 'progo_options_validate' ) ):
-/**
- * ProGo Site Settings Options validation function
- * from register_setting( 'progo_options', 'progo_options', 'progo_options_validate' );
- * in progo_admin_init()
- * also handles uploading of custom Site Logo
- * @param $input options to validate
- * @return $input after validation has taken place
- * @since Ecommerce 1.0
- */
-function progo_options_validate( $input ) {
+function progo_validate_options( $input ) {
 	if( isset($input['apikey']) ) {
-		//
+		$input['apikey'] = wp_kses( $input['apikey'], array() );
+		// store API KEY in its own option
+		if ( $input['apikey'] != get_option( 'progo_ecommerce_apikey' ) ) {
+			update_option( 'progo_ecommerce_apikey', substr( $input['apikey'], 0, 39 ) );
+		}
+		update_option('progo_settings_just_saved',1);
+		return $input;
 	} else {
 		// do validation here...
 	$arr = array( 'blogname', 'blogdescription', 'colorscheme', 'support', 'copyright', 'companyinfo' );
@@ -1456,9 +1437,8 @@ endif;
  * @since Ecommerce 1.0
  */
 function progo_field_apikey() {
-	$opt = get_option( 'progo_ecommerce_apikey' );
-	echo '<pre style="display:none">'. print_r($opt,true) .'</pre>';
-	echo '<input id="progo_ecommerce_apikey" name="progo_ecommerce_apikey" class="regular-text" type="text" value="'. esc_html( $opt ) .'" maxlength="39" />';
+	$opt = get_option( 'progo_ecommerce_apikey', true );
+	echo '<input id="apikey" name="progo_api_options[apikey]" class="regular-text" type="text" value="'. esc_html( $opt ) .'" maxlength="39" />';
 	$apiauth = get_option( 'progo_ecommerce_apiauth', true );
 	switch($apiauth) {
 		case 100:
@@ -1687,7 +1667,7 @@ function progo_update_check($data) {
 	
 	$request = array(
 		'slug' => "ecommerce",
-		'version' => $data->checked[direct],
+		'version' => $data->checked[ecommerce],
 		'siteurl' => get_bloginfo('url')
 	);
 	
