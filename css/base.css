@@ -72,8 +72,8 @@ ul#nav li a:hover { font-weight: bold; text-decoration:none; }
 #hdr .hblock.support h3 { float: left; font-size: 17px; font-weight: normal; margin: 0 10px 0 0; color: #666 }
 #hdr .hblock.support .inside { float:left; font-size: 17px; color: #333; }
 /* content */
-#pagetop { float: left; width: 960px; background: url(../images/BlackGrey/pagetop.jpg) no-repeat 0 0; position: relative }
-#pagetop .page-title { float: left; width: 900px; margin: 30px 0 22px 30px; font: 40px/120% Arial, Helvetica, sans-serif; color: #fff }
+#pagetop { float: left; width: 960px; background: url(../images/BlackGrey/pagetop.jpg) no-repeat 0 0; position: relative; color: #fff }
+#pagetop .page-title { float: left; width: 900px; margin: 30px 0 22px 30px; font: 40px/120% Arial, Helvetica, sans-serif; }
 /* homepage slides */
 #pagetop .slide { display: none; float: left; width: 960px }
 #pagetop .slide.on { display: block; }

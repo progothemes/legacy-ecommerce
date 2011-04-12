@@ -287,7 +287,7 @@ try{convertEntities(wpsc_adminL10n);}catch(e){};
 			echo "<p>WP e-Commerce Plugin is activated!</p>";
 			
 			//check wpsc settings dimensions for thumbnail (product_image) & product image (single_view_image)
-			if ( get_option( 'product_image_width' ) == 70 && get_option( 'product_image_height' ) == 70 && get_option( 'single_view_image_width' ) == 300 && get_option( 'single_view_image_height' ) == 300 ) {
+			if ( get_option( 'product_image_width' ) == 70 && get_option( 'product_image_height' ) == 70 && get_option( 'single_view_image_width' ) == 290 && get_option( 'single_view_image_height' ) == 290 ) {
 				echo "<p>WP e-Commerce settings match ProGo Themes' Recommended Settings!</p>";
 			} else {
 				echo "<p><strong>A few WP e-Commerce Store Settings, like Product Thumbnail Sizes, differ from ProGo Themes' Recommended Settings</strong><br /><br />";
@@ -992,8 +992,8 @@ function progo_reset_wpsc($fromlink = false){
 	//set thumbnail & main image size to desired dimensions
 	update_option( 'product_image_width', 70 );
 	update_option( 'product_image_height', 70 );
-	update_option( 'single_view_image_width', 300 );
-	update_option( 'single_view_image_height', 300 );
+	update_option( 'single_view_image_width', 290 );
+	update_option( 'single_view_image_height', 290 );
 	
 	update_option( 'wpsc_email_receipt', "Any items to be shipped will be processed as soon as possible, any items that can be downloaded can be downloaded using the links on this page. All prices include tax and postage and packaging where applicable.\n\n%product_list%%total_price%%find_us%" );
 	
@@ -1181,13 +1181,9 @@ function progo_validate_options( $input ) {
 			update_option( 'show_on_front', 'posts' );
 			break;
 		case 'featured':
-			update_option( 'show_on_front', 'page' );
-			update_option( 'page_on_front', get_option('progo_homepage_id') );
-			update_post_meta( get_option('progo_homepage_id'), '_wp_page_template', 'page-featured.php' );
 		case 'page':
 			update_option( 'show_on_front', 'page' );
 			update_option( 'page_on_front', get_option('progo_homepage_id') );
-			delete_post_meta( get_option('progo_homepage_id'), '_wp_page_template' );
 			break;
 	}
 	
@@ -1545,6 +1541,11 @@ function progo_field_frontpage() {
 		'featured' => 'Featured Products',
 		'page' => 'Static Content'
 	);
+	$msgs = array(
+		'posts' => '<a href="edit.php">Edit Posts Here</a>',
+		'featured' => '<a href="edit.php?post_type=wpsc-product">Designate Featured Products Here</a>',
+		'page' => '<a href="post.php?post='. get_option('progo_homepage_id') .'&action=edit">Edit Homepage Content Here</a>'
+	);
 	$msg = '';
 	if ( !function_exists('wpsc_admin_pages')) {
 		unset($choices['featured']);
@@ -1559,7 +1560,7 @@ function progo_field_frontpage() {
 	// check just in case show_on_front changed since this was last updated?
 	// $options['frontpage'] = get_option('show_on_front');
 	
-	?><select id="progo_frontpage" name="progo_options[frontpage]"><?php
+	?><p><select id="progo_frontpage" name="progo_options[frontpage]" onchange="progo_frontpage_msg();"><?php
     foreach ( $choices as $k => $c ) {
 		echo '<option value="'. $k .'"';
 		if( $k == $options['frontpage'] ) {
@@ -1567,7 +1568,21 @@ function progo_field_frontpage() {
 		}
 		echo '>'. esc_attr($c) .'</option>';
 	}
-    ?></select><span class="description"><?php echo $msg; ?></span>
+    ?></select><span class="description"><?php echo ( $msg != '' ? $msg : $msgs[$options['frontpage']] ); ?></span></p>
+<script type="text/javascript">
+function progo_frontpage_msg() {
+	var msg = '';
+	var sel = jQuery('#progo_frontpage');
+	switch( sel.val() ) { <?php
+	foreach ( $msgs as $k => $v ) {
+		echo "case '$k':\n";
+			echo "msg = '$v';\n";
+			echo "break;";
+	} ?>
+	}
+	sel.next().html(msg);
+}
+</script>
 <?php }
 endif;
 if ( ! function_exists( 'progo_field_homeseconds' ) ):
@@ -1579,8 +1594,7 @@ function progo_field_homeseconds() {
 	$options = get_option( 'progo_options' );
 	// check just in case show_on_front changed since this was last updated?
 	// $options['frontpage'] = get_option('show_on_front');
-	
-	?><input id="progo_homeseconds" name="progo_options[homeseconds]" type="text" size="2" value="<?php echo esc_attr($options['homeseconds']); ?>"><span class="description"> sec. per slide. Enter "0" to disable auto-rotation.</span>
+	?><p><input id="progo_homeseconds" name="progo_options[homeseconds]" type="text" size="2" value="<?php echo absint($options['homeseconds']); ?>"><span class="description"> sec. per slide. Enter "0" to disable auto-rotation.</span></p>
 <?php }
 endif;
 if ( ! function_exists( 'progo_section_text' ) ):
@@ -1746,7 +1760,14 @@ endif;
 function progo_admin_bar_render() {
 	global $wp_admin_bar;
 	
-	$wp_admin_bar->add_menu( array( 'parent' => 'appearance', 'id' => 'progo_appearance', 'title' => __('Appearance'), 'href' => admin_url('admin.php?page=progo_appearance') ) );
+	$wp_admin_bar->remove_menu('widgets');
+	$wp_admin_bar->add_menu( array( 'id' => 'appearance', 'title' => __('Appearance'), 'href' => admin_url('admin.php?page=progo_appearance') ) );
+	// move Appearance > Widgets & Menus submenus to below our new ones
+	$wp_admin_bar->remove_menu('widgets');
+	$wp_admin_bar->remove_menu('menus');
+	$wp_admin_bar->add_menu( array( 'parent' => 'appearance', 'id' => 'homeslides', 'title' => __('Homepage Slides'), 'href' => admin_url('admin.php?page=progo_home_slides') ) );
+	$wp_admin_bar->add_menu( array( 'parent' => 'appearance', 'id' => 'menus', 'title' => __('Menus'), 'href' => admin_url('nav-menus.php') ) );
+	$wp_admin_bar->add_menu( array( 'parent' => 'appearance', 'id' => 'widgets', 'title' => __('Widgets'), 'href' => admin_url('widgets.php') ) );
 	
 	$avail = progo_colorschemes();
 	if ( count($avail) > 0 ) {
@@ -1755,12 +1776,6 @@ function progo_admin_bar_render() {
 	foreach($avail as $color) {
 		$wp_admin_bar->add_menu( array( 'parent' => 'progo_colorscheme', 'id' => 'progo_colorscheme'.esc_attr($color), 'title' => esc_attr($color), 'href' => admin_url('admin.php?progo_admin_action=color'. esc_attr($color) ) ) );
 	}
-	// move Appearance > Widgets & Menus submenus to below our new ones
-	$wp_admin_bar->remove_menu('widgets');
-	$wp_admin_bar->remove_menu('menus');
-	$wp_admin_bar->add_menu( array( 'parent' => 'appearance', 'id' => 'homeslides', 'title' => __('Homepage Slides'), 'href' => admin_url('admin.php?page=progo_home_slides') ) );
-	$wp_admin_bar->add_menu( array( 'parent' => 'appearance', 'id' => 'menus', 'title' => __('Menus'), 'href' => admin_url('nav-menus.php') ) );
-	$wp_admin_bar->add_menu( array( 'parent' => 'appearance', 'id' => 'widgets', 'title' => __('Widgets'), 'href' => admin_url('widgets.php') ) );
 }
 
 if(!function_exists('progo_mail_content_type')):

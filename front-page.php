@@ -51,36 +51,62 @@ if ( $oneon == true && $count > 1 ) {
 do_action('progo_pagetop'); ?>
 </div>
 <div id="main" role="main" class="grid_8">
-<?php //echo wpsc_display_featured_products_page();
-$sticky_array = get_option( 'sticky_products' );
-if ( !empty( $sticky_array ) ) {
-	$old_query = $wp_query;
-	$wp_query = new WP_Query( array(
-				'post__in' => $sticky_array,
-				'post_type' => 'wpsc-product',
-				'numberposts' => -1,
-				'order' => 'ASC'
-			) );
-			
-
-		$GLOBALS['nzshpcrt_activateshpcrt'] = true;
-		$image_width = get_option( 'product_image_width' );
-		$image_height = get_option( 'product_image_height' );
-		$featured_product_theme_path = wpsc_get_template_file_path( 'wpsc-products_page.php' );
-ob_start();
-	include_once($featured_product_theme_path);
-	$is_single = false;
-	$output .= ob_get_contents();
-	ob_end_clean();
-	
-		//Begin outputting featured product.  We can worry about templating later, or folks can just CSS it up.
-		echo $output;
-		//End output
+<?php
+$options = get_option( 'progo_options' );
+switch ( $options['frontpage'] ) {
+	case 'featured':
+		echo '<!-- progohomecheck featured -->';
+		$sticky_array = get_option( 'sticky_products' );
+		if ( !empty( $sticky_array ) ) {
+			$old_query = $wp_query;
+			$wp_query = new WP_Query( array(
+						'post__in' => $sticky_array,
+						'post_type' => 'wpsc-product',
+						'numberposts' => -1,
+						'order' => 'ASC'
+					) );
+					
 		
-		$wp_query = $old_query;
+				$GLOBALS['nzshpcrt_activateshpcrt'] = true;
+				$image_width = get_option( 'product_image_width' );
+				$image_height = get_option( 'product_image_height' );
+				$featured_product_theme_path = wpsc_get_template_file_path( 'wpsc-products_page.php' );
+		ob_start();
+			include_once($featured_product_theme_path);
+			$is_single = false;
+			$output .= ob_get_contents();
+			ob_end_clean();
+			
+				//Begin outputting featured product.  We can worry about templating later, or folks can just CSS it up.
+				echo $output;
+				//End output
+				
+				$wp_query = $old_query;
+		}
+		break;
+	case 'posts':
+		echo '<!-- progohomecheck posts -->';
+		get_template_part( 'loop', 'index' );
+		break;
+	case 'page':
+		echo '<!-- progohomecheck page -->';
+		if ( have_posts() ) while ( have_posts() ) : the_post(); ?>
+<div id="post-<?php the_ID(); ?>" <?php post_class(); ?>>
+<div class="entry">
+<?php the_content(); ?>
+</div><!-- .entry -->
+</div><!-- #post-## -->
+<?php
+		endwhile;
+		break;
 }
 ?>
 </div><!-- #main -->
-<?php get_sidebar(); ?>
+<?php 
+if($options['frontpage'] == 'posts') {
+	get_sidebar('blog');
+} else {
+	get_sidebar();
+} ?>
 </div><!-- #container -->
 <?php get_footer(); ?>

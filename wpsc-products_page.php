@@ -66,7 +66,7 @@ global $wp_query;
 					
 			<div class="default_product_display product_view_<?php echo wpsc_the_product_id(); ?> <?php echo wpsc_category_class(); ?> group">
 				<?php if(wpsc_show_thumbnails()) :?>
-					<div class="grid_4 alpha" id="imagecol_<?php echo wpsc_the_product_id(); ?>">
+					<div class="grid_4 alpha imagecol" id="imagecol_<?php echo wpsc_the_product_id(); ?>">
 						<?php if(wpsc_the_product_thumbnail()) :
 						?>
 							<a rel="<?php echo wpsc_the_product_title(); ?>" class="<?php echo wpsc_the_product_image_link_classes(); ?>" href="<?php echo wpsc_the_product_image(); ?>">
