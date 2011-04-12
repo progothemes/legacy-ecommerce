@@ -693,7 +693,7 @@ function progo_admin_init() {
 	add_action( 'admin_print_scripts', 'progo_admin_page_scripts' );
 	
 	// Installation (api key) settings
-	register_setting( 'progo_api_options', 'progo_api_options', 'progo_options_validate' );
+	register_setting( 'progo_api_options', 'progo_api_options', 'progo_validate_api' );
 	add_settings_section( 'progo_api', 'ProGo Themes API Key', 'progo_section_text', 'progo_api_settings' );
 	add_settings_field( 'progo_api_key', 'API Key', 'progo_field_apikey', 'progo_api_settings', 'progo_api' );
 	
@@ -830,7 +830,7 @@ function progo_admin_init() {
 		progo_options_defaults();
 		
 		// and send to WELCOME page
-		wp_redirect( get_option( 'siteurl' ) . '/wp-admin/admin.php?page=progo_site_settings' );
+		wp_redirect( get_option( 'siteurl' ) . '/wp-admin/admin.php?page=progo_admin' );
 	}
 }
 endif;
@@ -1017,7 +1017,7 @@ function progo_reset_logo(){
 	update_option( 'progo_options', $options );
 	update_option( 'progo_settings_just_saved', 1 );
 	
-	wp_redirect( get_option('siteurl') .'/wp-admin/admin.php?page=progo_site_settings' );
+	wp_redirect( get_option('siteurl') .'/wp-admin/admin.php?page=progo_admin' );
 	exit();
 }
 endif;
@@ -1140,6 +1140,27 @@ function progo_validate_homeslides( $input ) {
 	return $input;
 }
 endif;
+if ( ! function_exists( 'progo_validate_api' ) ):
+/**
+ * ProGo Site Settings Options validation function
+ * from register_setting( 'progo_options', 'progo_options', 'progo_options_validate' );
+ * in progo_admin_init()
+ * also handles uploading of custom Site Logo
+ * @param $input options to validate
+ * @return $input after validation has taken place
+ * @since Ecommerce 1.0
+ */
+function progo_validate_api( $input ) {
+	$newkey = $_POST['progo_ecommerce_apikey'];
+	$input = wp_kses( $input, array() );
+	// store API KEY in its own option
+	if ( $input != get_option( 'progo_ecommerce_apikey' ) ) {
+		update_option( 'progo_ecommerce_apikey', substr( $input, 0, 39 ) );
+	}
+	update_option('progo_settings_just_saved',1);
+	return $input;
+}
+endif;
 if ( ! function_exists( 'progo_options_validate' ) ):
 /**
  * ProGo Site Settings Options validation function
@@ -1152,13 +1173,7 @@ if ( ! function_exists( 'progo_options_validate' ) ):
  */
 function progo_options_validate( $input ) {
 	if( isset($input['apikey']) ) {
-		$input['apikey'] = wp_kses( $input['apikey'], array() );
-		// store API KEY in its own option
-		if ( $input['apikey'] != get_option( 'progo_ecommerce_apikey' ) ) {
-			update_option( 'progo_ecommerce_apikey', substr( $input['apikey'], 0, 39 ) );
-		}
-		update_option('progo_settings_just_saved',1);
-		return $input;
+		//
 	} else {
 		// do validation here...
 	$arr = array( 'blogname', 'blogdescription', 'colorscheme', 'support', 'copyright', 'companyinfo' );
@@ -1441,8 +1456,9 @@ endif;
  * @since Ecommerce 1.0
  */
 function progo_field_apikey() {
-	$opt = get_option( 'progo_ecommerce_apikey', true );
-	echo '<input id="apikey" name="progo_options[apikey]" class="regular-text" type="text" value="'. esc_html( $opt ) .'" maxlength="39" />';
+	$opt = get_option( 'progo_ecommerce_apikey' );
+	echo '<pre style="display:none">'. print_r($opt,true) .'</pre>';
+	echo '<input id="progo_ecommerce_apikey" name="progo_ecommerce_apikey" class="regular-text" type="text" value="'. esc_html( $opt ) .'" maxlength="39" />';
 	$apiauth = get_option( 'progo_ecommerce_apiauth', true );
 	switch($apiauth) {
 		case 100:
@@ -1614,13 +1630,13 @@ function progo_admin_notices() {
 		<p><?php
         switch($apiauth) {
 			case 'new':	// key has not been entered yet
-				echo '<a href="admin.php?page=progo_site_settings" title="Site Settings">Please enter your ProGo Themes API Key to Activate your theme.</a>';
+				echo '<a href="admin.php?page=progo_admin" title="Site Settings">Please enter your ProGo Themes API Key to Activate your theme.</a>';
 				break;
 			case '999': // invalid key?
-				echo 'Your ProGo Themes API Key appears to be invalid. <a href="admin.php?page=progo_site_settings" title="Site Settings">Please double check it.</a>';
+				echo 'Your ProGo Themes API Key appears to be invalid. <a href="admin.php?page=progo_admin" title="Site Settings">Please double check it.</a>';
 				break;
 			case '300': // wrong site URL?
-				echo '<a href="admin.php?page=progo_site_settings" title="Site Settings">The ProGo Themes API Key you entered</a> is already bound to another URL.';
+				echo '<a href="admin.php?page=progo_admin" title="Site Settings">The ProGo Themes API Key you entered</a> is already bound to another URL.';
 				break;
 		}
 		?></p>
@@ -1720,7 +1736,7 @@ function progo_to_twentyten() {
 	$msg = 'This ProGo Themes site is currently not Activated.';
 	
 	if(current_user_can('edit_pages')) {
-		$msg .= '<br /><br /><a href="'. trailingslashit(get_bloginfo('url')) .'wp-admin/admin.php?page=progo_site_settings">Click here to update your API Key</a>';
+		$msg .= '<br /><br /><a href="'. trailingslashit(get_bloginfo('url')) .'wp-admin/admin.php?page=progo_admin">Click here to update your API Key</a>';
 	}
 	wp_die($msg);
 }
