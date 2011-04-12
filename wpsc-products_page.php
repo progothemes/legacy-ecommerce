@@ -64,13 +64,9 @@ global $wp_query;
 		<?php /** start the product loop here */?>
 		<?php while (wpsc_have_products()) :  wpsc_the_product(); ?>
 					
-			<div class="default_product_display product_view_<?php echo wpsc_the_product_id(); ?> <?php echo wpsc_category_class(); ?> group">   
-                <h3 class="prodtitle entry-title"><?php if(get_option('hide_name_link') == 1) {
-					echo wpsc_the_product_title();
-				} else { ?><a class="wpsc_product_title" href="<?php echo wpsc_the_product_permalink(); ?>"><?php echo wpsc_the_product_title(); ?></a><?php
-				} ?></h3>
+			<div class="default_product_display product_view_<?php echo wpsc_the_product_id(); ?> <?php echo wpsc_category_class(); ?> group">
 				<?php if(wpsc_show_thumbnails()) :?>
-					<div class="imagecol" id="imagecol_<?php echo wpsc_the_product_id(); ?>">
+					<div class="grid_4 alpha" id="imagecol_<?php echo wpsc_the_product_id(); ?>">
 						<?php if(wpsc_the_product_thumbnail()) :
 						?>
 							<a rel="<?php echo wpsc_the_product_title(); ?>" class="<?php echo wpsc_the_product_image_link_classes(); ?>" href="<?php echo wpsc_the_product_image(); ?>">
@@ -89,7 +85,11 @@ global $wp_query;
 						?>	
 					</div><!--close imagecol-->
 				<?php endif; ?>
-					<div class="productcol">
+					<div class="productcol grid_4 omega">
+                <h3 class="prodtitle entry-title"><?php if(get_option('hide_name_link') == 1) {
+					echo wpsc_the_product_title();
+				} else { ?><a class="wpsc_product_title" href="<?php echo wpsc_the_product_permalink(); ?>"><?php echo wpsc_the_product_title(); ?></a><?php
+				} ?></h3>
 					
 						
 						

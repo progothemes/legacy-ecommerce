@@ -86,16 +86,7 @@ Author URI: http://instinct.co.nz
 	padding:5px 4px;
 }
 
-.default_product_display {
-	margin-bottom:20px;
-	padding:10px;
-	position:relative;
-}
-
-.default_product_display .imagecol {
-	margin:0px 5px 0px 0px;
-	float:left;
-
+.default_product_display, .default_product_display .productcol {
 	position:relative;
 }
 
@@ -106,11 +97,6 @@ Author URI: http://instinct.co.nz
 .default_product_display .imagecol img.no-image, #content .default_product_display .imagecol img.no-image {
 	background-color:#EFEFEF;
 	display:block;
-}
-
-.default_product_display .productcol {
-	float:right;
-	position:relative;
 }
 
 .default_product_display h2.prodtitle, #content .default_product_display h2.prodtitle {

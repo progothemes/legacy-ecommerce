@@ -1,4 +1,4 @@
-// js for front end of ProGo Themes BookIt sites
+// js for front end of ProGo Themes Ecommerce sites
 
 function proGoTwitterCallback(twitters) {
   for (var i=0; i<twitters.length; i++){

@@ -88,9 +88,9 @@ function progo_sitelogo() {
 	$dir = trailingslashit($upload_dir['baseurl']);
 	$imagepath = $dir . $progo_logo;
 	if($progo_logo) {
-		echo '<table id="logo"><tr><td><img src="'. esc_attr( $imagepath ) .'" alt="'. esc_attr( get_bloginfo( 'name' ) ) .'" /></td></tr></table>';
+		echo '<table id="logo"><tr><td><a href="'. get_bloginfo('url') .'"><img src="'. esc_attr( $imagepath ) .'" alt="'. esc_attr( get_bloginfo( 'name' ) ) .'" /></a></td></tr></table>';
 	} else {
-		echo '<div id="logo">'. esc_html( get_bloginfo( 'name' ) ) .'<span class="g"></span></div>';
+		echo '<a href="'. get_bloginfo('url') .'" id="logo">'. esc_html( get_bloginfo( 'name' ) ) .'<span class="g"></span></a>';
 	}
 }
 endif;
@@ -405,10 +405,11 @@ try{convertEntities(wpsc_adminL10n);}catch(e){};
         </div>
          <div class="postbox-container" style="width:24%">
         	<div id="progo_hometop" class="postbox">
-            	<h3 class="hndle"><span>Home Page</span></h3>
+            	<h3 class="hndle"><span>Homepage</span></h3>
                 <div class="inside noh3">
 				<?php	do_settings_sections( 'progo_hometop' ); ?>
                 <p class="submit"><input type="submit" name="updateoption" value="Update &raquo;" /></p>
+                <p>The Featured / Promotional area at the top of your Homepage can display multiple Slides of content.<br /><br /><a href="admin.php?page=progo_home_slides" class="button">Manage Homepage Slides Here &raquo;</a></p>
                 </div>
             </div>
          	<div id="progo_menus" class="postbox">
@@ -512,29 +513,85 @@ function progo_home_slides_page() {
 <?php
 }
 endif;
+if ( ! function_exists( 'progo_homeslide_start' ) ):
+/**
+ * helper function
+ * @since Ecommerce 1.0
+ */
+function progo_homeslide_action($num, $sel, $slidedata = false) {
+	$slideproduct = $slideimg = 0;
+	$slidetext = '';
+	if(is_array($slidedata)) {
+		if(isset($slidedata['product'])) $slideproduct = absint($slidedata['product']);
+		if(isset($slidedata['text'])) $slidetext = $slidedata['text'];
+		if(isset($slidedata['image'])) $slideimg = absint($slidedata['image']);
+	}
+?><div class="postbox">
+<div class="handlediv" title="Click to toggle"><br /></div><h3 class="hndle"><span>Slide <?php echo $num; ?></span></h3>
+<div class="inside">
+<p><a href="#" onclick="return progo_slideremove(jQuery(this));" style="float:right">Delete This Slide</a>Slide shows :<br /><select class="homeslideshows" name="progo_slides[<?php echo $num; ?>][show]" onchange="progo_slidefor(jQuery(this));"><option value="">- please select -</option>
+<?php
+$slidetypes = array(
+	"product" => "Product",
+	"text" => "Text Area"/*,
+	"image" => "Image Banner"*/
+);
+foreach ( $slidetypes as $k => $v ) {
+	$s = $sel == $k ? " selected='selected'" : "";
+	echo "<option value='$k'$s>$v</option>";
+}
+?></select></p>
+<p class="product" style="<?php if($sel!='product') echo 'display:none'; ?>">Select a Product for this Slide<br />
+<select name="progo_slides[<?php echo $num; ?>][product]">
+<?php
+$prods = get_posts(array('numberposts' => -1, 'post_type' => 'wpsc-product'));
+foreach ( $prods as $p ) {
+	$s = $slideproduct == $p->ID ? ' selected="selected"' : '';
+	echo '<option value="'. $p->ID .'"'. $s .'>'. esc_attr($p->post_title) .'</option>';
+}
+?>
+</select></p>
+<p class="text" style="<?php if($sel!='text') echo 'display:none'; ?>">Text to Display<br />
+<textarea name="progo_slides[<?php echo $num; ?>][text]" rows="3" style="width: 100%"><?php echo esc_attr($slidetext); ?></textarea></p>
+<p class="image" style="<?php if($sel!='image') echo 'display:none'; ?>">Choose an Image to display on this Slide. Images should be 960px width.<br />
+<input type="hidden" name="progo_slides[<?php echo $num; ?>][image]" /></p>
+</div>
+</div>
+<?php
+}
+endif;
 if ( ! function_exists( 'progo_field_slides' ) ):
 /**
  * outputs HTML for "Homepage Slides"
  * @since Ecommerce 1.0
  */
 function progo_field_slides() {
-	//$options = get_option( 'progo_options' );
-	?><div id="poststuf" class="metabox-holder">
-    <div id="post-body">
-<div id="normal-sortables" class="meta-box-sortables ui-sortable">
-<div class="postbox"><div class="handlediv" title="Click to toggle"><br /></div>
-<h3 class="hndle"><span>Slide 1</span></h3>
-<div class="inside"><p>slide 1 here</p></div>
-</div>
-<div class="postbox"><div class="handlediv" title="Click to toggle"><br /></div>
-<h3 class="hndle"><span>Slide 2</span></h3>
-<div class="inside"><p>slide 2 here</p></div>
-</div>
-</div>
-</div>
-</div>
-<p class="submit"><input type="submit" name="addmore" value="Add Another Slide &raquo;" onclick="return false;" /></p>
+	$slides = get_option( 'progo_slides' );
+	$count = isset($slides['count']) ? absint($slides['count']) : 0;
+	echo '<pre style="display:none">'. print_r($slides,true) .'</pre>';
+	?>
+<div id="poststuff" class="metabox-holder"><div id="normal-sortables" class="meta-box-sortables ui-sortable">
+<?php
+	if ( $count > 0 ) {
+		unset($slides['count']);
+		foreach($slides as $n => $s ) {
+			progo_homeslide_action($n+1, $s['show'], $s);
+		}
+	}
+?>
+</div></div>
+<p class="submit"><input type="submit" name="addmore" value="Add Another Slide &raquo;" onclick="return progo_anotherslide();" /><input type="hidden" name="progo_slides[count]" id="numslides" value="<?php echo $count; ?>" /></p>
 <?php }
+endif;
+add_action('wp_ajax_progo_homeslide_ajax', 'progo_ajax_callback');
+if(!function_exists('progo_ajax_callback')):
+function progo_ajax_callback() {
+	$slidenum = absint($_POST['slidenum']);
+	$slideaction = $_POST['slideaction'];
+	progo_homeslide_action($slidenum, $slideaction);
+
+	die(); // this is required to return a proper result
+}
 endif;
 if ( ! function_exists( 'progo_admin_page_styles' ) ):
 /**
@@ -576,30 +633,36 @@ if ( ! function_exists( 'progo_admin_page_scripts' ) ):
  */
 function progo_admin_page_scripts() {
 	global $pagenow;
-	if ( $pagenow == 'admin.php' && isset( $_GET['page'] ) && in_array( $_GET['page'], array( 'progo_admin', 'progo_shipping', 'progo_gateway' ) ) ) { ?>
-    <script type="text/javascript">//<![CDATA[
+	if ( $pagenow == 'admin.php' && isset( $_GET['page'] ) ) {
+		if ( in_array( $_GET['page'], array( 'progo_admin', 'progo_shipping', 'progo_gateway' ) ) ) { ?>
+<script type="text/javascript">//<![CDATA[
 addLoadEvent = function(func){if(typeof jQuery!="undefined")jQuery(document).ready(func);else if(typeof wpOnload!='function'){wpOnload=func;}else{var oldonload=wpOnload;wpOnload=function(){oldonload();func();}}};
 var userSettings = {
-		'url': '<?php echo trailingslashit(get_bloginfo('url')); ?>',
-		'uid': '1',
-		'time':'1301702115'
-	},
-	ajaxurl = '<?php echo trailingslashit(get_bloginfo('url')); ?>wp-admin/admin-ajax.php',
-	pagenow = 'settings_page_wpsc-settings',
-	typenow = '',
-	adminpage = 'settings_page_wpsc-settings',
-	thousandsSeparator = ',',
-	decimalPoint = '.',
-	isRtl = 0;
+	'url': '<?php echo trailingslashit(get_bloginfo('url')); ?>',
+	'uid': '<?php $us = wp_get_current_user(); echo $us->ID; ?>',
+	'time':'<?php echo time(); ?>'
+},
+ajaxurl = '<?php echo trailingslashit(get_bloginfo('url')); ?>wp-admin/admin-ajax.php',
+pagenow = 'settings_page_<?php echo $_GET['page']; ?>',
+typenow = '',
+adminpage = 'settings_page_<?php echo $_GET['page']; ?>',
+thousandsSeparator = ',',
+decimalPoint = '.',
+isRtl = 0;
 //]]>
 </script>
-    <?php
-		wp_enqueue_script( 'thickbox' );
-		$version_identifier = WPSC_VERSION . "." . WPSC_MINOR_VERSION;
-		wp_enqueue_script( 'livequery', WPSC_URL . '/wpsc-admin/js/jquery.livequery.js', array( 'jquery' ), '1.0.3' );
-		wp_enqueue_script( 'wp-e-commerce-admin-parameters', $siteurl . '/wp-admin/admin.php?wpsc_admin_dynamic_js=true', false, $version_identifier );
-		wp_enqueue_script( 'wp-e-commerce-admin', WPSC_URL . '/wpsc-admin/js/admin.js', array( 'jquery', 'jquery-ui-core', 'jquery-ui-sortable' ), $version_identifier, false );
-		wp_enqueue_script( 'wp-e-commerce-legacy-ajax', WPSC_URL . '/wpsc-admin/js/ajax.js', false, $version_identifier );
+<?php
+            wp_enqueue_script( 'thickbox' );
+            $version_identifier = WPSC_VERSION . "." . WPSC_MINOR_VERSION;
+            wp_enqueue_script( 'livequery', WPSC_URL . '/wpsc-admin/js/jquery.livequery.js', array( 'jquery' ), '1.0.3' );
+            wp_enqueue_script( 'wp-e-commerce-admin-parameters', $siteurl . '/wp-admin/admin.php?wpsc_admin_dynamic_js=true', false, $version_identifier );
+            wp_enqueue_script( 'wp-e-commerce-admin', WPSC_URL . '/wpsc-admin/js/admin.js', array( 'jquery', 'jquery-ui-core', 'jquery-ui-sortable' ), $version_identifier, false );
+            wp_enqueue_script( 'wp-e-commerce-legacy-ajax', WPSC_URL . '/wpsc-admin/js/ajax.js', false, $version_identifier );
+        } elseif ( $_GET['page'] == 'progo_home_slides' ) {
+			# here be drag'ns
+            wp_enqueue_script('post');
+            wp_enqueue_script('progo-homeslides-admin', get_bloginfo( 'template_url' ) .'/js/homeslides-admin.js', array ( 'jquery', 'post' ), false, true );
+        }
 	}
 }
 endif;
@@ -619,9 +682,6 @@ function progo_admin_init() {
 			case 'reset_logo':
 				progo_reset_logo();
 				break;
-			case 'make_featured':
-				progo_featured_cat();
-				break;
 			case 'colorBlackGrey':
 				progo_colorscheme_switch( 'BlackGrey' );
 				break;
@@ -632,12 +692,12 @@ function progo_admin_init() {
 	add_action( 'admin_print_styles', 'progo_admin_page_styles' );
 	add_action( 'admin_print_scripts', 'progo_admin_page_scripts' );
 	
-	// Site Settings page
+	// Installation (api key) settings
 	register_setting( 'progo_api_options', 'progo_api_options', 'progo_options_validate' );
-	
 	add_settings_section( 'progo_api', 'ProGo Themes API Key', 'progo_section_text', 'progo_api_settings' );
 	add_settings_field( 'progo_api_key', 'API Key', 'progo_field_apikey', 'progo_api_settings', 'progo_api' );
 	
+	// Appearance settings
 	register_setting( 'progo_options', 'progo_options', 'progo_options_validate' );
 	
 	add_settings_section( 'progo_theme', 'Theme Customization', 'progo_section_text', 'progo_theme' );
@@ -654,11 +714,11 @@ function progo_admin_init() {
 	add_settings_field( 'progo_companyinfo', 'Company Info', 'progo_field_compinf', 'progo_info', 'progo_info' );
 
 	add_settings_section( 'progo_homepage', 'Homepage', 'progo_section_text', 'progo_hometop' );
-	add_settings_field( 'progo_frontpage', 'Homepage Displays', 'progo_field_frontpage', 'progo_hometop', 'progo_homepage' );
+	add_settings_field( 'progo_frontpage', 'Display', 'progo_field_frontpage', 'progo_hometop', 'progo_homepage' );
+	add_settings_field( 'progo_homeseconds', 'Slide Rotation Speed', 'progo_field_homeseconds', 'progo_hometop', 'progo_homepage' );
 	
-	// Site Settings page
-	register_setting( 'progo_slides', 'progo_slides', 'progo_slides_validate' );
-
+	// Homepage Slides settings
+	register_setting( 'progo_slides', 'progo_slides', 'progo_validate_homeslides' );
 	add_settings_section( 'progo_slide', 'Homepage Slides', 'progo_section_text', 'progo_home_slides' );
 	add_settings_field( 'progo_make_slides', 'Homepage Slides', 'progo_field_slides', 'progo_home_slides', 'progo_slide' );
 	
@@ -691,7 +751,7 @@ function progo_admin_init() {
 		$new_pages = array(
 			'home' => array(
 				'title' => __( 'Home', 'progo' ),
-				'content' => "This is your Home page",
+				'content' => "This is your Homepage",
 				'id' => '',
 				'menu' => 'mainmenu'
 			),
@@ -961,44 +1021,6 @@ function progo_reset_logo(){
 	exit();
 }
 endif;
-if ( ! function_exists( 'progo_featured_cat' ) ):
-/**
- * helper function to create the Featured Products category
- * @since Ecommerce 1.0
- */
-function progo_featured_cat() {
-	check_admin_referer( 'progo_make_featured' );
-	
-	$aok = true;
-	$fcat = get_option( 'progo_ecommerce_fcat' );
-	if ( $fcat !== false ) {
-		$aok = false;
-	} else {
-		// create a new category
-		$new_term = wp_insert_term(
-			'Featured Products',
-			'wpsc_product_category',
-			array(
-				'slug' => 'featured',
-				'parent' => 0
-			)
-		);
-		
-		if( is_array($new_term) == false ) {
-			$aok = false;
-		}
-	}
-	
-	if( $aok ) {
-		update_option( 'progo_ecommerce_fcat', $new_term['term_id'] );
-	} else {
-		wp_die('Something went wrong in creating the Featured Products category');
-	}
-	
-	wp_redirect( get_option('siteurl') .'/wp-admin/admin.php?page=progo_welcome' );
-	exit();
-}
-endif;
 if ( ! function_exists( 'progo_arraytotop' ) ):
 /**
  * helper function to bring a given element to the start of an array
@@ -1061,9 +1083,14 @@ function progo_options_defaults() {
 			"companyinfo" => "We sincerely thank you for your patronage.\nThe Our Company Staff\n\nOur Company, Inc.\n1234 Address St\nSuite 43\nSan Diego, CA 92107\n619-555-5555",
 			"frontpage" => ""
 		);
-		$def["frontpage"] = get_option('show_on_front');		
+		$def["frontpage"] = get_option('show_on_front');
 		
 		update_option( 'progo_options', $def );
+	}
+	$tmp = get_option( 'progo_slides' );
+    if ( !is_array( $tmp ) ) {
+		$def = array('count'=>0);	
+		update_option( 'progo_slides', $def );
 	}
 	
 	update_option( 'progo_ecommerce_installed', true );
@@ -1078,7 +1105,41 @@ function progo_options_defaults() {
 	
 	progo_reset_wpsc();
 }
-
+if ( ! function_exists( 'progo_validate_homeslides' ) ):
+/**
+ * ProGo Homeslides Options settings validation function
+ * @param $input options to validate
+ * @return $input after validation has taken place
+ * @since Ecommerce 1.0
+ */
+function progo_validate_homeslides( $input ) {
+	$counto = absint( $input['count'] );
+	unset( $input['count'] );
+	$newslides = array();
+	$count = 0;
+	foreach ( $input as $slide ) {
+		$newslide = array();
+		$newslide['show'] = $slide['show'];
+		$newslide['product'] = isset($slide['product']) ? absint($slide['product']) : 0;
+		$newslide['text'] = isset($slide['text']) ? wp_kses($slide['text'], array()) : '';
+		$newslide['image'] = isset($slide['image']) ? absint($slide['image']) : 0;
+		$newslides[] = $newslide;
+		$count++;
+	}
+	// check for new slide addition ...
+	for ( $i = $count; $i < $counto; $i++ ) {
+		$newslides[] = array(
+			'show' => '',
+			'product' => 0,
+			'text' => '',
+			'image' => 0
+		);
+	}
+	$newslides['count'] = $counto;
+	$input = $newslides;
+	return $input;
+}
+endif;
 if ( ! function_exists( 'progo_options_validate' ) ):
 /**
  * ProGo Site Settings Options validation function
@@ -1478,7 +1539,7 @@ function progo_field_compinf() {
 endif;
 if ( ! function_exists( 'progo_field_frontpage' ) ):
 /**
- * outputs HTML for "Homepage" field on Site Settings page
+ * outputs HTML for Homepage "Displays" field on Site Settings page
  * @since Ecommerce 1.0
  */
 function progo_field_frontpage() {
@@ -1489,19 +1550,11 @@ function progo_field_frontpage() {
 		'page' => 'Static Content'
 	);
 	$msg = '';
-	
-	$fcat = get_option( 'progo_ecommerce_fcat' );
-	if ( $fcat == false ) {
+	if ( !function_exists('wpsc_admin_pages')) {
 		unset($choices['featured']);
-		$msg = '<br />Your Home Page can display "Featured" Products';
-		
-		if ( function_exists('wpsc_admin_pages')) {
-			$msg .= '. <a href="'.wp_nonce_url("admin.php?progo_admin_action=make_featured", 'progo_make_featured').'">Click Here to Create a "Featured Products" Category</a>.';
-		} else {
-			$msg .= ', but WP E-Commerce Plugin appears to be inactive. ';
-			$lnk = ( function_exists( 'wp_nonce_url' ) ) ? wp_nonce_url('plugins.php?action=activate&amp;plugin=wp-e-commerce/wp-shopping-cart.php&amp;plugin_status=all&amp;paged=1', 'activate-plugin_wp-e-commerce/wp-shopping-cart.php') : 'plugins.php';
-			$msg .= '<a href="'. esc_url($lnk) .'">Click Here to Activate</a>';
-		}
+		$msg .= 'Your Homepage can display "Featured" Products, but WP E-Commerce Plugin appears to be inactive. ';
+		$lnk = ( function_exists( 'wp_nonce_url' ) ) ? wp_nonce_url('plugins.php?action=activate&amp;plugin=wp-e-commerce/wp-shopping-cart.php&amp;plugin_status=all&amp;paged=1', 'activate-plugin_wp-e-commerce/wp-shopping-cart.php') : 'plugins.php';
+		$msg .= '<a href="'. esc_url($lnk) .'">Click Here to Activate</a>';
 	}
 	
 //	$msg .= '<pre>'. print_r(get_option('show_on_front'),true)  .'</pre>'. print_r(get_option('page_on_front'),true) .'</pre>'. print_r(get_option('page_for_posts'),true) .'</pre>';
@@ -1519,6 +1572,19 @@ function progo_field_frontpage() {
 		echo '>'. esc_attr($c) .'</option>';
 	}
     ?></select><span class="description"><?php echo $msg; ?></span>
+<?php }
+endif;
+if ( ! function_exists( 'progo_field_homeseconds' ) ):
+/**
+ * outputs HTML for Homepage "Cycle Seconds" field on Site Settings page
+ * @since Ecommerce 1.0
+ */
+function progo_field_homeseconds() {
+	$options = get_option( 'progo_options' );
+	// check just in case show_on_front changed since this was last updated?
+	// $options['frontpage'] = get_option('show_on_front');
+	
+	?><input id="progo_homeseconds" name="progo_options[homeseconds]" type="text" size="2" value="<?php echo esc_attr($options['homeseconds']); ?>"><span class="description"> sec. per slide. Enter "0" to disable auto-rotation.</span>
 <?php }
 endif;
 if ( ! function_exists( 'progo_section_text' ) ):
@@ -1683,19 +1749,22 @@ endif;
  */
 function progo_admin_bar_render() {
 	global $wp_admin_bar;
-	// since we are hiding COMMENTING and POSTS right now...
 	
-	// add links to ProGo Ecommerce pages
-	$wp_admin_bar->add_menu( array( 'parent' => 'appearance', 'id' => 'progo_settings', 'title' => __('Site Settings'), 'href' => admin_url('admin.php?page=progo_site_settings') ) );
-	$wp_admin_bar->add_menu( array( 'parent' => 'appearance', 'id' => 'store_settings', 'title' => __('Store Settings'), 'href' => admin_url('admin.php?page=wpsc-settings') ) );
+	$wp_admin_bar->add_menu( array( 'parent' => 'appearance', 'id' => 'progo_appearance', 'title' => __('Appearance'), 'href' => admin_url('admin.php?page=progo_appearance') ) );
 	
 	$avail = progo_colorschemes();
 	if ( count($avail) > 0 ) {
-		$wp_admin_bar->add_menu( array( 'parent' => 'appearance', 'id' => 'progo_colorscheme', 'title' => 'Color Scheme', 'href' => admin_url('admin.php?page=progo_site_settings') ) );
+		$wp_admin_bar->add_menu( array( 'parent' => 'appearance', 'id' => 'progo_colorscheme', 'title' => 'Color Scheme', 'href' => admin_url('admin.php?page=progo_appearance') ) );
 	}
 	foreach($avail as $color) {
 		$wp_admin_bar->add_menu( array( 'parent' => 'progo_colorscheme', 'id' => 'progo_colorscheme'.esc_attr($color), 'title' => esc_attr($color), 'href' => admin_url('admin.php?progo_admin_action=color'. esc_attr($color) ) ) );
 	}
+	// move Appearance > Widgets & Menus submenus to below our new ones
+	$wp_admin_bar->remove_menu('widgets');
+	$wp_admin_bar->remove_menu('menus');
+	$wp_admin_bar->add_menu( array( 'parent' => 'appearance', 'id' => 'homeslides', 'title' => __('Homepage Slides'), 'href' => admin_url('admin.php?page=progo_home_slides') ) );
+	$wp_admin_bar->add_menu( array( 'parent' => 'appearance', 'id' => 'menus', 'title' => __('Menus'), 'href' => admin_url('nav-menus.php') ) );
+	$wp_admin_bar->add_menu( array( 'parent' => 'appearance', 'id' => 'widgets', 'title' => __('Widgets'), 'href' => admin_url('widgets.php') ) );
 }
 
 if(!function_exists('progo_mail_content_type')):
