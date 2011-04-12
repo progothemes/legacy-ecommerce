@@ -11,7 +11,7 @@
  *
  * Some overwriteable functions ( wrapped by "if(!function_exists(..." ) are:
  * progo_sitelogo, progo_posted_on, progo_posted_in, progo_productimage, progo_prepare_transaction_results,
- * progo_admin_menu_cleanup, progo_welcome, progo_custom_login_logo, progo_custom_login_url, progo_metabox_cleanup, progo_colorschemes ...
+ * progo_admin_menu_cleanup, progo_custom_login_logo, progo_custom_login_url, progo_metabox_cleanup, progo_colorschemes ...
  *
  * Most Action / Filters hooks are set in the progo_setup function, below. overwriting that could cause quite a few things to go wrong.
  */
@@ -998,7 +998,7 @@ function progo_reset_wpsc($fromlink = false){
 	update_option( 'wpsc_email_receipt', "Any items to be shipped will be processed as soon as possible, any items that can be downloaded can be downloaded using the links on this page. All prices include tax and postage and packaging where applicable.\n\n%product_list%%total_price%%find_us%" );
 	
 	if ( $fromlink == true ) {
-		wp_redirect( get_option('siteurl') .'/wp-admin/admin.php?page=progo_welcome' );
+		wp_redirect( get_option('siteurl') .'/wp-admin/admin.php?page=progo_admin' );
 		exit();
 	}
 }
