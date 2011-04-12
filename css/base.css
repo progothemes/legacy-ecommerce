@@ -16,7 +16,7 @@ body, input, textarea, .pingback a.url { font-family: Arial, Helvetica, sans-ser
 /* =Layout */
 #page { float: left; background: url(../images/shadow.png) repeat-y 0 0; padding: 0 6px;}
 #container { float: left; margin: 0; position: relative;}
-#main { float:left; }
+#main { float:left; padding-top: 20px }
 
 /* =Global Elements */
 
@@ -75,9 +75,9 @@ ul#nav li a:hover { font-weight: bold; text-decoration:none; }
 #pagetop { float: left; width: 960px; background: url(../images/BlackGrey/pagetop.jpg) no-repeat 0 0; position: relative }
 #pagetop .page-title { float: left; width: 900px; margin: 30px 0 22px 30px; font: 40px/120% Arial, Helvetica, sans-serif; color: #fff }
 /* homepage slides */
-#pagetop .slide { display: none; }
+#pagetop .slide { display: none; float: left; width: 960px }
 #pagetop .slide.on { display: block; }
-#pagetop .slide a.product_image { float: left; }
+#pagetop .slide a.product_image { float: left; width: 290px; height: 290px; padding: 7px 21px 8px 19px; margin: 13px 0 12px; background:url(../images/prodimg.png) no-repeat 0 0; }
 
 .ar { float: right; display: block; width: 112px; height: 24px; position: absolute; bottom: 0; right: 10px; background: url(../images/ar.png) no-repeat 0 0; }
 .ar a { float: left; width: 56px; height: 24px; background: url(../images/fx.gif) repeat 0 0; }

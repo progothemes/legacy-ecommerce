@@ -35,7 +35,7 @@ for ( $i = 0; $i < $count; $i++ ) {
 			$oldpost = $post;
 			echo "<div class='slide$on product'>";
 			$post = get_post($slides[$i]['product']);
-			echo '<a href="'. wpsc_the_product_permalink() .'" class="product_image"><img alt="'. wpsc_the_product_title() .'" src="'. wpsc_the_product_image() .'"/></a>';
+			echo '<a href="'. wpsc_the_product_permalink() .'" class="product_image"><img alt="'. wpsc_the_product_title() .'" src="'. wpsc_the_product_image() .'" width="290" height="290" /></a>';
 			echo '<div class="productcol grid_7"><div class="prodtitle">'. wpsc_the_product_title() .'</div>';
 			echo wpautop($post->post_content ."\n<a href='". wpsc_the_product_permalink() ."' class='details'>View Details</a>",1);
 			echo '<div class="price">'. wpsc_the_product_price() .'</div>';
