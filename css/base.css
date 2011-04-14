@@ -82,7 +82,7 @@ ul#nav li a:hover { font-weight: bold; text-decoration:none; }
 .ar { float: right; display: block; width: 112px; height: 24px; position: absolute; bottom: 0; right: 10px; background: url(../images/ar.png) no-repeat 0 0; }
 .ar a { float: left; width: 56px; height: 24px; background: url(../images/fx.gif) repeat 0 0; }
 
-#main, #main input, #main textarea { color: #333; font-size: 14px; line-height: 20px;}
+#main, #main input, #main textarea { color: #333; font-size: 13px; line-height: 120%;}
 #main input.upd { border: none; background: none; padding: 0; cursor:pointer }
 #main p, #main ul, #main ol, #main dd, #main pre, #main hr { margin-bottom: 18px;}
 #main ul ul, #main ol ol, #main ul ol, #main ol ul { margin-bottom: 0;}
@@ -90,9 +90,9 @@ ul#nav li a:hover { font-weight: bold; text-decoration:none; }
 #main code { font-size: 13px;}
 #main dt, #main th { color: #000;}
 #main h2 { font-size: 30px }
-#main h3 { font-size: 22px }
+#main h3 { font-size: 22px; font-weight: normal; }
 #main h4 { font-size: 16px }
-#main h1, #main h2, #main h3, #main h4, #main h5, #main h6 { line-height: 1.5em; margin: 0 0 3px; }
+#main h1, #main h2, #main h3, #main h4, #main h5, #main h6 { line-height: 120%; margin: 0 0 3px; }
 
 .entry-meta { color: #888; font-size: 12px;}
 .entry-meta abbr, .entry-utility abbr { border: none;}

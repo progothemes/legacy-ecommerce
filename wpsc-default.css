@@ -81,10 +81,8 @@ Author URI: http://instinct.co.nz
 #default_products_page_container .wpsc_page_numbers_top span.current, #default_products_page_container .wpsc_page_numbers_top span.current, #default_products_page_container .wpsc_page_numbers_bottom span.current, #default_products_page_container .wpsc_page_numbers_bottom span.current {
 	padding:5px 4px;
 }
-
-.default_product_display, .default_product_display .productcol {
-	position:relative;
-}
+.default_product_display { position: relative; float: left; margin: 0 0 20px; }
+.default_product_display .productcol { position:relative; }
 
 .default_product_display .imagecol img.product_image {
 	background-color:#efefef;	
@@ -100,24 +98,13 @@ Author URI: http://instinct.co.nz
 	line-height:1;
 	clear:none;
 }
-
+.prodtitle a { color: #333; }
 .default_product_display span.sale {
 	position:absolute;
 	top:-10px;
 	left:-10px;
 	text-indent:-9999px;
 	display:block;
-}
-
-.default_product_display .wpsc_description, #content .default_product_display .wpsc_description {
-	font-size:13px;	
-	line-height:1.4em;
-}
-
-.default_product_display .additional_description, #content .default_product_display .additional_description {
-	font-size:13px;	
-	line-height:1.4em;
-	margin:0;
 }
 
 .default_product_display .additional_description_container {
@@ -177,13 +164,6 @@ Author URI: http://instinct.co.nz
 	margin:0;
 	padding:2px;
 }
-
-.default_product_display .wpsc_variation_forms label {
-	font-family: Georgia, "Bitstream Charter", serif;
-	font-size:14px;
-	color:#000
-}
-
 .default_product_display .wpsc_variation_forms select {
 	margin:0;
 	min-width:100px;
@@ -194,29 +174,6 @@ Author URI: http://instinct.co.nz
 	margin-bottom:10px;
 	padding-bottom:10px;
 	margin-left:10px;
-}
-
-.default_product_display .wpsc_quantity_update input, #content .default_product_display .wpsc_quantity_update input {
-	margin:0;
-	line-height:1.2em;
-	font-size:12px;
-}
-
-
-.default_product_display .wpsc_quantity_update label, #content .default_product_display .wpsc_quantity_update label {
-	font-family: Georgia, "Bitstream Charter", serif;
-	margin:0;
-	line-height:1.2em;
-	font-size:12px;
-	color:#F60;
-}
-
-.default_product_display .wpsc_product_price {
-	margin-bottom:10px;
-	font-size:16px;
-	padding:5px;
-	display:inline-block;
-	*zoom:1;
 }
 
 .default_product_display .in_stock,
@@ -238,11 +195,9 @@ Author URI: http://instinct.co.nz
 }
 
 
-.default_product_display .wpsc_product_price p, #content .default_product_display .wpsc_product_price p {
-	margin:0;
-}
+.wpsc_product_price { line-height: 18px; margin-bottom: 20px }
 
-.default_product_display .wpsc_product_price span.oldprice {
+.wpsc_product_price span.oldprice {
 	text-decoration:line-through;
 	color:#666;
 }
@@ -256,10 +211,7 @@ Author URI: http://instinct.co.nz
 	margin:0;
 }
 
-.default_product_display div.wpsc_loading_animation {
-	visibility:hidden;	
-	margin-top:5px;
-}
+.default_product_display div.wpsc_loading_animation { visibility:hidden; float: right; margin-top:5px; }
 
 .default_product_display div.wpsc_loading_animation img, #content .default_product_display div.wpsc_loading_animation img {
 	border:none;
@@ -289,13 +241,6 @@ Author URI: http://instinct.co.nz
 .wpcart_gallery .attachment-gold-thumbnails, .imagecol .product_image{
 	cursor: -webkit-zoom-in;
 	cursor: -moz-zoom-in;
-}
-
-.default_product_display .wpsc_buy_button_container,
-#content .default_product_display .wpsc_buy_button_container,
-.single_product_display form.product_form .wpsc_buy_button_container,
-#content .single_product_display form.product_form .wpsc_buy_button_container{
-	text-align: right;
 }
 
 /*-----LIST VIEW PRODUCT DISPLAY-----*/
@@ -336,9 +281,7 @@ table.list_productdisplay .quantity_container {
 	display:inline;	
 }
 
-#content, #content input.wpsc_buy_button{
-	font-size: 12px;
-}
+#main input.wpsc_buy_button { float: left; font-size: 16px; border: none; width: 132px; height: 29px; cursor:pointer; background: url(images/BlackGrey/btn_buy.png) no-repeat 0 0; color: #fff; text-transform: lowercase }
 
 table.list_productdisplay .wpsc_buy_button_container {
 	display:inline;
@@ -400,16 +343,6 @@ table.list_productdisplay p.soldout {
 }
 
 /*-----SINGLE PRODUCTS PAGE-----*/
-#single_product_page_container {
-	width:650px;	
-	position:relative;	
-}
-
-.single_product_display {
-	margin-bottom:20px;
-	padding:10px;
-	position:relative;	
-}
 
 .single_product_display .imagecol img.product_image {
 	background-color:#efefef;
@@ -421,11 +354,12 @@ table.list_productdisplay p.soldout {
 	display:block;
 }
 
-.productcol {
-	float:left;
-/* 	width:70%; */
-	position:relative;
-}
+.productcol { float:left; position:relative; }
+.slide .productcol { font-size: 15px; line-height: 22px }
+.slide .productcol div { font-size: 40px; line-height: 120%; display: block; margin: 28px 0 3px }
+.slide .productcol a.details { color: #fff; font-weight: bold; text-decoration: none; }
+.slide .productcol div.price { font-size: 30px }
+.moredetails { float: left; width: 586px; margin: 28px 0 0 8px; }
 
 .single_product_display .product_description, .single_product_display .single_additional_description {
 	font-size:14px;
@@ -465,8 +399,8 @@ table.list_productdisplay p.soldout {
 }
 
 .default_product_display .wpsc_variation_forms {
-	padding:2px 0px 2px 0px;	
-	margin-bottom:10px;
+	padding:0;	
+	margin-bottom:20px;
 }
 
 .single_product_display .wpsc_variation_forms table, #content .single_product_display .wpsc_variation_forms table, .single_product_display .wpsc_variation_forms table tr, #content .single_product_display .wpsc_variation_forms table tr, .single_product_display .wpsc_variation_forms table td, #content .single_product_display .wpsc_variation_forms table td {
@@ -506,23 +440,14 @@ table.list_productdisplay p.soldout {
 	line-height:1.2em;
 	font-size:12px;
 }
-
-
-.single_product_display .wpsc_quantity_update label, #content .single_product_display .wpsc_quantity_update label {
-	font-family: Georgia, "Bitstream Charter", serif;
-	margin:0;
-	line-height:1.2em;
-	font-size:12px;
-	color:#F60;
-}
-
+/*
 .single_product_display .wpsc_product_price {
 	display: inline-block;
 	font-size: 16px;
 	margin-bottom: 10px;
 	padding: 5px;
 }
-
+*/
 .single_product_display .wpsc_product_price p, #content .single_product_display .wpsc_product_price p {
 	margin:0;
 }
@@ -1209,7 +1134,4 @@ background-color: #f5f5f5;
     margin-bottom: 10px;
 }
 
-.wpsc_description a{
-	text-decoration: none;
-	font-size: 14px;
-}
+.wpsc_description a{ text-decoration: underline; color: #666; }

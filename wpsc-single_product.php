@@ -27,7 +27,7 @@
 		 */
 
 		while ( wpsc_have_products() ) : wpsc_the_product(); ?>
-					<div class="imagecol">
+					<div class="imagecol grid_4 alpha">
 						<?php if ( wpsc_the_product_thumbnail() ) : ?>
 								<a rel="<?php echo wpsc_the_product_title(); ?>" class="<?php echo wpsc_the_product_image_link_classes(); ?>" href="<?php echo wpsc_the_product_image(); ?>">
 									<img class="product_image" id="product_image_<?php echo wpsc_the_product_id(); ?>" alt="<?php echo wpsc_the_product_title(); ?>" title="<?php echo wpsc_the_product_title(); ?>" src="<?php echo wpsc_the_product_thumbnail(get_option('product_image_width'),get_option('product_image_height'),'','single'); ?>"/>
@@ -43,30 +43,13 @@
 						<?php endif; ?>
 					</div><!--close imagecol-->
 
-					<div class="productcol">			
+					<div class="productcol grid_4 omega">
+                <h3 class="prodtitle entry-title"><?php echo wpsc_the_product_title(); ?></h3>
 						<?php do_action('wpsc_product_before_description', wpsc_the_product_id(), $wp_query->post); ?>
-						<div class="product_description">
-							<?php echo wpsc_the_product_description(); ?>
+						<div class="wpsc_description">
+							<?php progo_summary( false ); ?>
 						</div><!--close product_description -->
-						<?php do_action( 'wpsc_product_addons', wpsc_the_product_id() ); ?>		
-						<?php if ( wpsc_the_product_additional_description() ) : ?>
-							<div class="single_additional_description">
-								<p><?php echo wpsc_the_product_additional_description(); ?></p>
-							</div><!--close single_additional_description-->
-						<?php endif; ?>		
-						<?php do_action( 'wpsc_product_addon_after_descr', wpsc_the_product_id() ); ?>
-						<?php
-						/**
-						 * Custom meta HTML and loop
-						 */
-						?>
-                        <?php if (wpsc_have_custom_meta()) : ?>
-						<div class="custom_meta">
-							<?php while ( wpsc_have_custom_meta() ) : wpsc_the_custom_meta(); ?>
-								<strong><?php echo wpsc_custom_meta_name(); ?>: </strong><?php echo wpsc_custom_meta_value(); ?><br />
-							<?php endwhile; ?>
-						</div><!--close custom_meta-->
-                        <?php endif; ?>
+						<?php do_action( 'wpsc_product_addons', wpsc_the_product_id() ); ?>
 						<?php
 						/**
 						 * Form data
@@ -74,6 +57,34 @@
 						?>
 						
 						<form class="product_form" enctype="multipart/form-data" action="<?php echo wpsc_this_page_url(); ?>" method="post" name="1" id="product_<?php echo wpsc_the_product_id(); ?>">
+							<div class="wpsc_product_price">
+								<?php if(wpsc_show_stock_availability()): ?>
+									<?php if(wpsc_product_has_stock()) : ?>
+										<div id="stock_display_<?php echo wpsc_the_product_id(); ?>" class="in_stock"><?php _e('Product in stock', 'wpsc'); ?></div>
+									<?php else: ?>
+										<div id="stock_display_<?php echo wpsc_the_product_id(); ?>" class="out_of_stock"><?php _e('Product not in stock', 'wpsc'); ?></div>
+									<?php endif; ?>
+								<?php endif; ?>	
+								<?php if(wpsc_product_is_donation()) : ?>
+									<label for="donation_price_<?php echo wpsc_the_product_id(); ?>"><?php _e('Donation', 'wpsc'); ?>: </label>
+									<input type="text" id="donation_price_<?php echo wpsc_the_product_id(); ?>" name="donation_price" value="<?php echo wpsc_calculate_price(wpsc_the_product_id()); ?>" size="6" />
+								<?php else : ?>
+									<?php if(wpsc_product_on_special()) : ?>
+										<div class="pricedisplay <?php echo wpsc_the_product_id(); ?>"><?php _e('Old Price', 'wpsc'); ?>: <span class="oldprice" id="old_product_price_<?php echo wpsc_the_product_id(); ?>"><?php echo wpsc_product_normal_price(); ?></span></div>
+									<?php endif; ?>
+									<div class="pricedisplay <?php echo wpsc_the_product_id(); ?>"><?php _e('Price', 'wpsc'); ?>: <span id='product_price_<?php echo wpsc_the_product_id(); ?>' class="currentprice pricedisplay"><?php echo wpsc_the_product_price(); ?></span></div>
+									<?php /* if(wpsc_product_on_special()) : // nope ?>
+										<div class="pricedisplay product_<?php echo wpsc_the_product_id(); ?>"><?php _e('You save', 'wpsc'); ?>: <span class="yousave" id="yousave_<?php echo wpsc_the_product_id(); ?>"><?php echo wpsc_currency_display(wpsc_you_save('type=amount'), array('html' => false)); ?>! (<?php echo wpsc_you_save(); ?>%)</span></div>
+									<?php endif; */ ?>
+									 <!-- multi currency code -->
+                                    <?php if(wpsc_product_has_multicurrency()) : ?>
+	                                    <?php echo wpsc_display_product_multicurrency(); ?>
+                                    <?php endif; ?>
+									<?php if(wpsc_show_pnp()) : ?>
+										<div class="pricedisplay"><?php _e('Shipping', 'wpsc'); ?>:<span class="pp_price"><?php echo wpsc_product_postage_and_packaging(); ?></span></div>
+									<?php endif; ?>							
+								<?php endif; ?>
+							</div><!--close wpsc_product_price-->
 							<?php if ( wpsc_product_has_personal_text() ) : ?>
 								<fieldset class="custom_text">
 									<legend><?php _e( 'Personalize Your Product', 'wpsc' ); ?></legend>
@@ -92,7 +103,7 @@
 							<?php endif; ?>	
 						<?php /** the variation group HTML and loop */?>
                         <?php if (wpsc_have_variation_groups()) { ?>
-                        <fieldset><legend><?php _e('Product Options', 'wpsc'); ?></legend>
+                        <fieldset><!--legend><?php _e('Product Options', 'wpsc'); ?></legend-->
 						<div class="wpsc_variation_forms">
                         	<table>
 							<?php while (wpsc_have_variation_groups()) : wpsc_the_variation_group(); ?>
@@ -116,7 +127,7 @@
 							 */
 							?>
 							<?php if(wpsc_has_multi_adding()): ?>
-                            	<fieldset><legend><?php _e('Quantity', 'wpsc'); ?></legend>
+                            	<fieldset><!--legend><?php _e('Quantity', 'wpsc'); ?></legend-->
 								<div class="wpsc_quantity_update">
 								<input type="text" id="wpsc_quantity_update_<?php echo wpsc_the_product_id(); ?>" name="wpsc_quantity_update" size="2" value="1" />
 								<input type="hidden" name="key" value="<?php echo wpsc_the_cart_item_key(); ?>"/>
@@ -124,34 +135,6 @@
                                 </div><!--close wpsc_quantity_update-->
                                 </fieldset>
 							<?php endif ;?>
-							<div class="wpsc_product_price">
-								<?php if(wpsc_show_stock_availability()): ?>
-									<?php if(wpsc_product_has_stock()) : ?>
-										<div id="stock_display_<?php echo wpsc_the_product_id(); ?>" class="in_stock"><?php _e('Product in stock', 'wpsc'); ?></div>
-									<?php else: ?>
-										<div id="stock_display_<?php echo wpsc_the_product_id(); ?>" class="out_of_stock"><?php _e('Product not in stock', 'wpsc'); ?></div>
-									<?php endif; ?>
-								<?php endif; ?>	
-								<?php if(wpsc_product_is_donation()) : ?>
-									<label for="donation_price_<?php echo wpsc_the_product_id(); ?>"><?php _e('Donation', 'wpsc'); ?>: </label>
-									<input type="text" id="donation_price_<?php echo wpsc_the_product_id(); ?>" name="donation_price" value="<?php echo wpsc_calculate_price(wpsc_the_product_id()); ?>" size="6" />
-								<?php else : ?>
-									<?php if(wpsc_product_on_special()) : ?>
-										<p class="pricedisplay <?php echo wpsc_the_product_id(); ?>"><?php _e('Old Price', 'wpsc'); ?>: <span class="oldprice" id="old_product_price_<?php echo wpsc_the_product_id(); ?>"><?php echo wpsc_product_normal_price(); ?></span></p>
-									<?php endif; ?>
-									<p class="pricedisplay <?php echo wpsc_the_product_id(); ?>"><?php _e('Price', 'wpsc'); ?>: <span id='product_price_<?php echo wpsc_the_product_id(); ?>' class="currentprice pricedisplay"><?php echo wpsc_the_product_price(); ?></span></p>
-									<?php if(wpsc_product_on_special()) : ?>
-										<p class="pricedisplay product_<?php echo wpsc_the_product_id(); ?>"><?php _e('You save', 'wpsc'); ?>: <span class="yousave" id="yousave_<?php echo wpsc_the_product_id(); ?>"><?php echo wpsc_currency_display(wpsc_you_save('type=amount'), array('html' => false)); ?>! (<?php echo wpsc_you_save(); ?>%)</span></p>
-									<?php endif; ?>
-									 <!-- multi currency code -->
-                                    <?php if(wpsc_product_has_multicurrency()) : ?>
-	                                    <?php echo wpsc_display_product_multicurrency(); ?>
-                                    <?php endif; ?>
-									<?php if(wpsc_show_pnp()) : ?>
-										<p class="pricedisplay"><?php _e('Shipping', 'wpsc'); ?>:<span class="pp_price"><?php echo wpsc_product_postage_and_packaging(); ?></span></p>
-									<?php endif; ?>							
-								<?php endif; ?>
-							</div><!--close wpsc_product_price-->
 							<!--sharethis-->
 							<?php if ( get_option( 'wpsc_share_this' ) == 1 ): ?>
 							<div class="st_sharethis" displayText="ShareThis"></div>
@@ -208,6 +191,29 @@
 						<input type="hidden" value="<?php echo wpsc_the_product_id(); ?>" name="prodid"/>
 						<input type="hidden" value="<?php echo wpsc_the_product_id(); ?>" name="item"/>
 					</form>
+                    	<div class="moredetails"><h4>More Details</h4>
+						<div class="product_description">
+							<?php echo wpsc_the_product_description(); ?>
+						</div><!--close product_description -->	
+						<?php if ( wpsc_the_product_additional_description() ) : ?>
+							<div class="single_additional_description">
+								<p><?php echo wpsc_the_product_additional_description(); ?></p>
+							</div><!--close single_additional_description-->
+						<?php endif; ?>		
+						<?php do_action( 'wpsc_product_addon_after_descr', wpsc_the_product_id() ); ?>
+						<?php
+						/**
+						 * Custom meta HTML and loop
+						 */
+						?>
+                        <?php if (wpsc_have_custom_meta()) : ?>
+						<div class="custom_meta">
+							<?php while ( wpsc_have_custom_meta() ) : wpsc_the_custom_meta(); ?>
+								<strong><?php echo wpsc_custom_meta_name(); ?>: </strong><?php echo wpsc_custom_meta_value(); ?><br />
+							<?php endwhile; ?>
+						</div><!--close custom_meta-->
+                        <?php endif; ?>
+                        </div>
 		</div><!--close single_product_display-->
 		
 		<?php echo wpsc_product_comments(); ?>

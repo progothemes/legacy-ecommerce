@@ -164,6 +164,26 @@ function progo_prepare_transaction_results() {
 	$purchase_log['find_us'] = '<table><tr class="firstrow"><td>Our Company Info</td></tr><tr><td>'. esc_html( $options['companyinfo'] ) .'</td></tr></table>';
 }
 endif;
+if ( ! function_exists( 'progo_summary' ) ):
+/**
+ * chops off (product) text either @ <!-- more --> or last space before 152 characters
+ * @since Ecommerce 1.0
+ */
+function progo_summary( $morelink, $limit = 150 ) {
+	global $post;
+	$content = $post->post_content;
+	$lbrat = strpos( $content, "\n" );
+	if( $lbrat > 0 && $lbrat < $limit ) {
+		$content = substr( $content, 0, $lbrat );
+	} else {
+		$content = substr( $content, 0, strrpos( substr( $content, 0, $limit ), ' ' ) ) ."...";
+	}
+	if( $morelink != false ) {
+		$content .= "\n<a href='". wpsc_the_product_permalink() ."' class='details'>$morelink</a>";
+	}
+	echo wpautop($content);
+}
+endif;
 /********* Back-End Functions *********/
 if ( ! function_exists( 'progo_admin_menu_cleanup' ) ):
 /**

@@ -99,7 +99,7 @@ global $wp_query;
 						
 						
 						<div class="wpsc_description">
-							<?php echo wpsc_the_product_description(); ?>
+							<?php progo_summary( 'More Details' ); ?>
                         </div><!--close wpsc_description-->
 				
 						<?php if(wpsc_the_product_additional_description()) : ?>
@@ -119,9 +119,42 @@ global $wp_query;
 						<?php $action = htmlentities(wpsc_this_page_url(), ENT_QUOTES, 'UTF-8' ); ?>					
 						<?php endif; ?>					
 						<form class="product_form"  enctype="multipart/form-data" action="<?php echo $action; ?>" method="post" name="product_<?php echo wpsc_the_product_id(); ?>" id="product_<?php echo wpsc_the_product_id(); ?>" >
+
+							<div class="wpsc_product_price">
+								<?php if( wpsc_show_stock_availability() ): ?>
+									<?php if(wpsc_product_has_stock()) : ?>
+										<div id="stock_display_<?php echo wpsc_the_product_id(); ?>" class="in_stock"><?php _e('Product in stock', 'wpsc'); ?></div>
+									<?php else: ?>
+										<div id="stock_display_<?php echo wpsc_the_product_id(); ?>" class="out_of_stock"><?php _e('Product not in stock', 'wpsc'); ?></div>
+									<?php endif; ?>
+								<?php endif; ?>
+								<?php if(wpsc_product_is_donation()) : ?>
+									<label for="donation_price_<?php echo wpsc_the_product_id(); ?>"><?php _e('Donation', 'wpsc'); ?>: </label>
+									<input type="text" id="donation_price_<?php echo wpsc_the_product_id(); ?>" name="donation_price" value="<?php echo wpsc_calculate_price(wpsc_the_product_id()); ?>" size="6" />
+
+								<?php else : ?>
+									<?php if(wpsc_product_on_special()) : ?>
+										<div class="pricedisplay product_<?php echo wpsc_the_product_id(); ?>"><span class="oldprice" id="old_product_price_<?php echo wpsc_the_product_id(); ?>"><?php _e('Price', 'wpsc'); ?>: <?php echo wpsc_product_normal_price(); ?></span></div>
+									<?php endif; ?>
+									<div class="pricedisplay product_<?php echo wpsc_the_product_id(); ?>"><?php _e('Price', 'wpsc'); ?>: <span id='product_price_<?php echo wpsc_the_product_id(); ?>' class="currentprice pricedisplay"><?php echo wpsc_the_product_price(); ?></span></div>
+									<?php /*if(wpsc_product_on_special()) : ?>
+										<div class="pricedisplay product_<?php echo wpsc_the_product_id(); ?>"><?php _e('You save', 'wpsc'); ?>: <span class="yousave" id="yousave_<?php echo wpsc_the_product_id(); ?>"><?php echo wpsc_currency_display(wpsc_you_save('type=amount'), array('html' => false)); ?>! (<?php echo wpsc_you_save(); ?>%)</span></div>
+									<?php endif; // who cares */ ?>
+									
+									<!-- multi currency code -->
+									<?php if(wpsc_product_has_multicurrency()) : ?>
+	                                	<?php echo wpsc_display_product_multicurrency(); ?>
+                                    <?php endif; ?>
+									
+									<?php if(wpsc_show_pnp()) : ?>
+										<div class="pricedisplay"><?php _e('Shipping', 'wpsc'); ?>:<span class="pp_price"><?php echo wpsc_product_postage_and_packaging(); ?></span></div>
+									<?php endif; ?>							
+								<?php endif; ?>
+							</div><!--close wpsc_product_price-->
+							
 						<?php /** the variation group HTML and loop */?>
                         <?php if (wpsc_have_variation_groups()) { ?>
-                        <fieldset><legend><?php _e('Product Options', 'wpsc'); ?></legend>
+                        <fieldset><!--legend><?php _e('Product Options', 'wpsc'); ?></legend-->
 						<div class="wpsc_variation_forms">
                         	<table>
 							<?php while (wpsc_have_variation_groups()) : wpsc_the_variation_group(); ?>
@@ -150,39 +183,7 @@ global $wp_query;
                                 </div><!--close wpsc_quantity_update-->
                                 </fieldset>
 							<?php endif ;?>
-
-							<div class="wpsc_product_price">
-								<?php if( wpsc_show_stock_availability() ): ?>
-									<?php if(wpsc_product_has_stock()) : ?>
-										<div id="stock_display_<?php echo wpsc_the_product_id(); ?>" class="in_stock"><?php _e('Product in stock', 'wpsc'); ?></div>
-									<?php else: ?>
-										<div id="stock_display_<?php echo wpsc_the_product_id(); ?>" class="out_of_stock"><?php _e('Product not in stock', 'wpsc'); ?></div>
-									<?php endif; ?>
-								<?php endif; ?>
-								<?php if(wpsc_product_is_donation()) : ?>
-									<label for="donation_price_<?php echo wpsc_the_product_id(); ?>"><?php _e('Donation', 'wpsc'); ?>: </label>
-									<input type="text" id="donation_price_<?php echo wpsc_the_product_id(); ?>" name="donation_price" value="<?php echo wpsc_calculate_price(wpsc_the_product_id()); ?>" size="6" />
-
-								<?php else : ?>
-									<?php if(wpsc_product_on_special()) : ?>
-										<p class="pricedisplay product_<?php echo wpsc_the_product_id(); ?>"><?php _e('Old Price', 'wpsc'); ?>: <span class="oldprice" id="old_product_price_<?php echo wpsc_the_product_id(); ?>"><?php echo wpsc_product_normal_price(); ?></span></p>
-									<?php endif; ?>
-									<p class="pricedisplay product_<?php echo wpsc_the_product_id(); ?>"><?php _e('Price', 'wpsc'); ?>: <span id='product_price_<?php echo wpsc_the_product_id(); ?>' class="currentprice pricedisplay"><?php echo wpsc_the_product_price(); ?></span></p>
-									<?php if(wpsc_product_on_special()) : ?>
-										<p class="pricedisplay product_<?php echo wpsc_the_product_id(); ?>"><?php _e('You save', 'wpsc'); ?>: <span class="yousave" id="yousave_<?php echo wpsc_the_product_id(); ?>"><?php echo wpsc_currency_display(wpsc_you_save('type=amount'), array('html' => false)); ?>! (<?php echo wpsc_you_save(); ?>%)</span></p>
-									<?php endif; ?>
-									
-									<!-- multi currency code -->
-									<?php if(wpsc_product_has_multicurrency()) : ?>
-	                                	<?php echo wpsc_display_product_multicurrency(); ?>
-                                    <?php endif; ?>
-									
-									<?php if(wpsc_show_pnp()) : ?>
-										<p class="pricedisplay"><?php _e('Shipping', 'wpsc'); ?>:<span class="pp_price"><?php echo wpsc_product_postage_and_packaging(); ?></span></p>
-									<?php endif; ?>							
-								<?php endif; ?>
-							</div><!--close wpsc_product_price-->
-							
+                            
 							<input type="hidden" value="add_to_cart" name="wpsc_ajax_action"/>
 							<input type="hidden" value="<?php echo wpsc_the_product_id(); ?>" name="product_id"/>
 					
@@ -203,9 +204,6 @@ global $wp_query;
 									</div><!--close wpsc_buy_button_container-->
 								<?php endif ; ?>
 							<?php endif ; ?>
-							<div class="entry-utility wpsc_product_utility">
-								<?php edit_post_link( __( 'Edit', 'wpsc' ), '<span class="edit-link">', '</span>' ); ?>
-							</div>
 						</form><!--close product_form-->
 						
 						<?php if((get_option('hide_addtocart_button') == 0) && (get_option('addtocart_or_buynow')=='1')) : ?>
