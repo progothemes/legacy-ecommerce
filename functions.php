@@ -60,6 +60,7 @@ function progo_setup() {
 	add_action( 'wp_before_admin_bar_render', 'progo_admin_bar_render' );
 	
 	// add custom filters
+	add_filter( 'body_class', 'progo_bodyclasses' );
 	add_filter( 'site_transient_update_themes', 'progo_update_check' );
 	add_filter( 'wpsc_pre_transaction_results', 'progo_prepare_transaction_results' );
 	add_filter( 'wp_mail_content_type', 'progo_mail_content_type' );
@@ -768,16 +769,18 @@ function progo_admin_init() {
 		}
 			
 		// create a few new pages, and populate some menus
+		$lipsum = "Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam...Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna\n\nLorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam...Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam";
+		
 		$new_pages = array(
 			'home' => array(
 				'title' => __( 'Home', 'progo' ),
-				'content' => "This is your Homepage",
+				'content' => "<h3>This is your Homepage</h3>$lipsum",
 				'id' => '',
 				'menu' => 'mainmenu'
 			),
 			'about' => array(
 				'title' => __( 'About', 'progo' ),
-				'content' => "This Page could have info about your site/store",
+				'content' => "<h3>This Page could have info about your site/store</h3>$lipsum",
 				'id' => '',
 				'menu' => 'mainmenu'
 			),
@@ -789,19 +792,19 @@ function progo_admin_init() {
 			),
 			'terms' => array(
 				'title' => __( 'Terms & Conditions', 'progo' ),
-				'content' => "List your Terms and Conditions here",
+				'content' => "<h3>List your Terms and Conditions here</h3>$lipsum",
 				'id' => '',
 				'menu' => 'footer'
 			),
 			'privacy' => array(
 				'title' => __( 'Privacy Policy', 'progo' ),
-				'content' => "Put your Privacy Policy here",
+				'content' => "<h3>Put your Privacy Policy here</h3>$lipsum",
 				'id' => '',
 				'menu' => 'footer'
 			),
 			'customer-service' => array(
 				'title' => __( 'Customer Service', 'progo' ),
-				'content' => "This Page could have Customer Service info on it",
+				'content' => "<h3>This Page could have Customer Service info on it</h3>$lipsum",
 				'id' => '',
 				'menu' => 'footer'
 			)
@@ -1626,6 +1629,25 @@ if ( ! function_exists( 'progo_section_text' ) ):
  */
 function progo_section_text( $args ) {
 	echo '<a name="'. $args['id'] .'"></a>';
+}
+endif;
+if ( ! function_exists( 'progo_bodyclasses' ) ):
+/**
+ * adds some additional classes to the <body> based on what page we're on
+ * @param array of classes to add to the <body> tag
+ * @since Ecommerce 1.0
+ */
+function progo_bodyclasses($classes) {
+	if ( get_post_type() == 'wpsc-product' ) {
+		$classes[] = 'wpsc';
+	}
+	if ( is_front_page() ) {
+		$options = get_option( 'progo_options' );
+		if( $options['frontpage'] == 'featured' ) {
+			$classes[] = 'wpsc';
+		}
+	}
+	return $classes;
 }
 endif;
 /**
