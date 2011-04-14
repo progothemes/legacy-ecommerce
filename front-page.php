@@ -11,6 +11,7 @@
 
 get_header();
 global $wp_query, $post;
+$options = get_option( 'progo_options' );
 ?>
 <div id="container" class="container_12">
 <div id="pagetop" class="slides">
@@ -44,15 +45,18 @@ for ( $i = 0; $i < $count; $i++ ) {
 			break;
 	}
 }
-if ( $oneon == true && $count > 1 ) {
-	echo '<div class="ar"><a href="#p" title="Previous Slide"></a><a href="#n" class="n" title="Next Slide"></a></div>';
+if ( $oneon == true && $count > 1 ) { ?>
+<div class="ar"><a href="#p" title="Previous Slide"></a><a href="#n" class="n" title="Next Slide"></a></div>
+<script type="text/javascript">
+progo_timing = <?php $hsecs = absint($options['homeseconds']); echo $hsecs > 0 ? $hsecs * 1000 : "0"; ?>;
+</script>
+<?php
 }
 // i forget why this is here...
 do_action('progo_pagetop'); ?>
 </div>
 <div id="main" role="main" class="grid_8">
 <?php
-$options = get_option( 'progo_options' );
 switch ( $options['frontpage'] ) {
 	case 'featured':
 		echo '<!-- progohomecheck featured -->';

@@ -39,7 +39,7 @@
 <?php wp_head(); ?>
 </head>
 
-<body <?php body_class(); ?>>
+<body <?php body_class(); ?>><div id="fx">
 <div id="wrap" class="container_12">
 	<div id="page" class="container_12">
         <div id="hdr" class="container_12">

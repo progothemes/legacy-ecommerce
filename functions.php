@@ -61,6 +61,7 @@ function progo_setup() {
 	
 	// add custom filters
 	add_filter( 'body_class', 'progo_bodyclasses' );
+	add_filter( 'wp_nav_menu_objects', 'progo_menuclasses' );
 	add_filter( 'site_transient_update_themes', 'progo_update_check' );
 	add_filter( 'wpsc_pre_transaction_results', 'progo_prepare_transaction_results' );
 	add_filter( 'wp_mail_content_type', 'progo_mail_content_type' );
@@ -101,19 +102,20 @@ if ( ! function_exists( 'progo_posted_on' ) ):
  * @since ProGo Ecommerce 1.0
  */
 function progo_posted_on() {
-	printf( __( '<span class="%1$s">Posted on</span> %2$s <span class="meta-sep">by</span> %3$s', 'progo' ),
+	printf( __( '<span class="meta-sep">Posted by</span> %1$s <span class="%2$s">on</span> %3$s', 'progo' ),
+		sprintf( '<span class="author vcard"><a class="url fn n" href="%1$s" title="%2$s">%3$s</a></span>',
+			get_author_posts_url( get_the_author_meta( 'ID' ) ),
+			sprintf( esc_attr__( 'View all posts by %s', 'progo' ), get_the_author() ),
+			get_the_author()
+		),
 		'meta-prep meta-prep-author',
 		sprintf( '<a href="%1$s" title="%2$s" rel="bookmark"><span class="entry-date">%3$s</span></a>',
 			get_permalink(),
 			esc_attr( get_the_time() ),
 			get_the_date()
-		),
-		sprintf( '<span class="author vcard"><a class="url fn n" href="%1$s" title="%2$s">%3$s</a></span>',
-			get_author_posts_url( get_the_author_meta( 'ID' ) ),
-			sprintf( esc_attr__( 'View all posts by %s', 'progo' ), get_the_author() ),
-			get_the_author()
 		)
 	);
+	edit_post_link( __( 'Edit', 'progo' ), '<span class="meta-sep"> : </span> <span class="edit-link">', '</span>' );
 }
 endif;
 if ( ! function_exists( 'progo_posted_in' ) ):
@@ -122,23 +124,10 @@ if ( ! function_exists( 'progo_posted_in' ) ):
  * @since ProGo Ecommerce 1.0
  */
 function progo_posted_in() {
-	// Retrieves tag list of current post, separated by commas.
+	/* Retrieves tag list of current post, separated by commas.
 	$tag_list = get_the_tag_list( '', ', ' );
-	if ( $tag_list ) {
-		$posted_in = __( 'This entry was posted in %1$s and tagged %2$s. Bookmark the <a href="%3$s" title="Permalink to %4$s" rel="bookmark">permalink</a>.', 'progo' );
-	} elseif ( is_object_in_taxonomy( get_post_type(), 'category' ) ) {
-		$posted_in = __( 'This entry was posted in %1$s. Bookmark the <a href="%3$s" title="Permalink to %4$s" rel="bookmark">permalink</a>.', 'progo' );
-	} else {
-		$posted_in = __( 'Bookmark the <a href="%3$s" title="Permalink to %4$s" rel="bookmark">permalink</a>.', 'progo' );
-	}
-	// Prints the string, replacing the placeholders.
-	printf(
-		$posted_in,
-		get_the_category_list( ', ' ),
-		$tag_list,
-		get_permalink(),
-		the_title_attribute( 'echo=0' )
-	);
+	*/
+	echo 'Categories : '. get_the_category_list( ', ' );
 }
 endif;
 if ( ! function_exists( 'progo_productimage' ) ):
@@ -180,7 +169,7 @@ function progo_summary( $morelink, $limit = 150 ) {
 		$content = substr( $content, 0, strrpos( substr( $content, 0, $limit ), ' ' ) ) ."...";
 	}
 	if( $morelink != false ) {
-		$content .= "\n<a href='". wpsc_the_product_permalink() ."' class='details'>$morelink</a>";
+		$content .= "\n<a href='". wpsc_the_product_permalink() ."' class='more-link'>$morelink</a>";
 	}
 	echo wpautop($content);
 }
@@ -706,6 +695,18 @@ function progo_admin_init() {
 			case 'colorBlackGrey':
 				progo_colorscheme_switch( 'BlackGrey' );
 				break;
+			case 'colorGreyGreen':
+				progo_colorscheme_switch( 'GreyGreen' );
+				break;
+			case 'colorBlackOrange':
+				progo_colorscheme_switch( 'BlackOrange' );
+				break;
+			case 'colorLightBlue':
+				progo_colorscheme_switch( 'LightBlue' );
+				break;
+			case 'colorGreenBrown':
+				progo_colorscheme_switch( 'GreenBrown' );
+				break;
 		}
 	}
 	
@@ -979,7 +980,7 @@ if ( ! function_exists( 'progo_colorschemes' ) ):
  * @since Ecommerce 1.0
  */
 function progo_colorschemes() {
-	return array( 'BlackGrey' );
+	return array( 'BlackGrey', 'GreyGreen', 'BlackOrange', 'LightBlue', 'GreenBrown' );
 }
 endif;
 if ( ! function_exists( 'progo_add_styles' ) ):
@@ -1638,8 +1639,13 @@ if ( ! function_exists( 'progo_bodyclasses' ) ):
  * @since Ecommerce 1.0
  */
 function progo_bodyclasses($classes) {
-	if ( get_post_type() == 'wpsc-product' ) {
-		$classes[] = 'wpsc';
+	switch ( get_post_type() ) {
+		case 'wpsc-product':
+			$classes[] = 'wpsc';
+			break;
+		case 'post':
+			$classes[] = 'blog';
+			break;
 	}
 	if ( is_front_page() ) {
 		$options = get_option( 'progo_options' );
@@ -1648,6 +1654,27 @@ function progo_bodyclasses($classes) {
 		}
 	}
 	return $classes;
+}
+endif;
+if ( ! function_exists( 'progo_menuclasses' ) ):
+/**
+ * adds some additional classes to Menu Items
+ * so we can mark active menu trails easier
+ * @param array of classes to add to the <body> tag
+ * @since Ecommerce 1.0
+ */
+function progo_menuclasses($items) {
+	$blogID = get_option('progo_blog_id');
+	foreach ( $items as $i ) {
+		if ( $i->post_content == '[productspage]' && !is_front_page() ) {
+			$i->classes[] = 'wpsc';
+		}
+		if ( $i->object_id == $blogID ) {
+			$i->classes[] = 'blog';
+		}
+	}
+	//wp_die('<pre>'.print_r($items,true) .'</pre>');
+	return $items;
 }
 endif;
 /**

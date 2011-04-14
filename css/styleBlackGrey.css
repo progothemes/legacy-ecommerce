@@ -1,0 +1,6 @@
+/*
+ * as BlackGrey is the default, the colors/bg images are set in the main style.css...
+ * so here, we just need to...
+ */
+
+#wpadminbar .quicklinks #wp-admin-bar-progo_colorschemeBlackGrey a { font-weight: bold; }

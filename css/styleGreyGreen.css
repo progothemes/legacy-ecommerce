@@ -1,0 +1,6 @@
+body { background: url(../images/GreyGreen/bg.gif) repeat 0 0; }
+#fx { background: url(../images/GreyGreen/bg-grad.png) repeat-x 0 0; }
+
+#pagetop { background-image: url(../images/GreyGreen/pagetop.jpg); }
+#pagetop.slides { background: #fff url(../images/GreyGreen/pagetop.png) repeat-x 0 100%; color: #333 }
+#wpadminbar .quicklinks #wp-admin-bar-progo_colorschemeGreyGreen a { font-weight: bold; }

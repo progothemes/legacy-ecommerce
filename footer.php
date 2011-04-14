@@ -24,7 +24,7 @@ echo wp_kses($options['copyright'],array());
 <div class="grid_4 right">Powered by <a href="http://www.wordpress.org" target="_blank">WordPress</a>. Designed by <a href="http://www.progo.com/" title="Performance WordPress Themes" target="_blank"><img src="<?php bloginfo('template_url'); ?>/images/logo_admin.png" alt="ProGo" /></a></div>
 </div><!-- #ftr -->
 </div><!-- #wrap -->
-
+</div>
 <?php
 	/* Always have wp_footer() just before the closing </body>
 	 * tag of your theme, or you will break many plugins, which

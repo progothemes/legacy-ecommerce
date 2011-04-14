@@ -40,11 +40,13 @@ class ProGo_Widget_Share extends WP_Widget {
 		if ( $title )
 			echo $before_title . $title . $after_title;
 			
-		?>
- <a name="fb_share" type="icon" href="http://www.facebook.com/sharer.php">Share</a><script src="http://static.ak.fbcdn.net/connect.php/js/FB.Share" type="text/javascript"></script>
- <a href="http://twitter.com/share?url=<?php echo urlencode(get_permalink($post->ID)); ?>&amp;text=Check%20Out%20This%20Great%20Product!%20" class="twitter" target="_blank">Tweet</a>
- <?php if (function_exists('sharethis_button')) { sharethis_button(); } ?>
+		if (function_exists('sharethis_button')) {
+			sharethis_button();
+		} else { ?>
+        <a name="fb_share" type="icon" href="http://www.facebook.com/sharer.php">Share</a><script src="http://static.ak.fbcdn.net/connect.php/js/FB.Share" type="text/javascript"></script>
+        <a href="http://twitter.com/share?url=<?php echo urlencode(get_permalink($post->ID)); ?>&amp;text=Check%20Out%20This%20Great%20Product!%20" class="twitter" target="_blank">Tweet</a>
 		<?php
+		}
 		echo $after_widget;
 	}
 
