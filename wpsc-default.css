@@ -620,61 +620,7 @@ span.rating_saved{
 
 .shopping-cart-wrapper .shoppingcart table tbody td {	
 	padding:2px;
-	text-align:center;
-}
-
-.shopping-cart-wrapper .shoppingcart table .cart-widget-count{
-	width:70px;
-}
-
-.shopping-cart-wrapper .shoppingcart table tbody td, .shopping-cart-wrapper .shoppingcart table tbody td a {
-	text-decoration: none;
-}
-
-.shopping-cart-wrapper .shoppingcart table tbody td a:hover {
-	text-decoration: underline;
-}
-
-.shopping-cart-wrapper .remove_button {
-	background:url(wpsc-images/delete.png) no-repeat scroll 0 4px transparent;
-	width:14px;
-	text-indent:-9999px;
-	border:none;
-	outline:none;
-	*line-height:1;
-	cursor:pointer;	
-}
-
-.shopping-cart-wrapper .shoppingcart table tbody td.cart-widget-remove{
-	padding:0px;
-}
-
-.shopping-cart-wrapper .checkout-shipping,
-.shopping-cart-wrapper .checkout-tax,
-.widget_wpsc_shopping_cart #cart-widget-links {
-	text-align: right;
-	padding: 0px 6px 0px 0px;
-}
-
-.widget_wpsc_shopping_cart .checkout-total, .widget_wpsc_shopping_cart .pluspostagetax {
-	text-align:right;
-	font-weight:bold;
-}
-
-.shopping-cart-wrapper .shoppingcart table tbody td.product-name{
-	text-align: left;
-	max-width: 90px;
-	word-wrap: break-word;
-	overflow: hidden;
-}
-
-.widget_wpsc_shopping_cart .cart-widget-total td {
-	border-top:solid 2px #000;
-	padding: 5px 6px 5px 5px;
-}
-
-.widget_wpsc_shopping_cart tr.cart-widget-shipping td {
-	border-top:1px solid #000;
+	border-top: 1px solid #ccc;
 }
 
 .widget_wpsc_shopping_cart .shoppingcart{
