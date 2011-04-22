@@ -62,7 +62,7 @@ function progo_setup() {
 	// add custom filters
 	add_filter( 'body_class', 'progo_bodyclasses' );
 	add_filter( 'wp_nav_menu_objects', 'progo_menuclasses' );
-//	add_filter( 'site_transient_update_themes', 'progo_update_check' );
+	add_filter( 'site_transient_update_themes', 'progo_update_check' );
 	add_filter( 'wpsc_pre_transaction_results', 'progo_prepare_transaction_results' );
 	add_filter( 'wp_mail_content_type', 'progo_mail_content_type' );
 	
