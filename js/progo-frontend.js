@@ -75,6 +75,8 @@ jQuery(function($) {
 	if(progo_ptop.hasClass('slides')) {
 		progo_ptop.children('div.ar').children('a:first').click(function() { return progo_homecycle(true); }).next().click(function() { return progo_homecycle(false); });
 		progo_ptop.height(progo_ptop.children('.slide.on').height()).addClass('sliding');
-		progo_homecycling = setTimeout("progo_homecycle(false)",progo_timing); 
+		if(progo_timing > 0) {
+			progo_homecycling = setTimeout("progo_homecycle(false)",progo_timing);
+		}
 	}
 });

@@ -62,7 +62,7 @@ function progo_setup() {
 	// add custom filters
 	add_filter( 'body_class', 'progo_bodyclasses' );
 	add_filter( 'wp_nav_menu_objects', 'progo_menuclasses' );
-	add_filter( 'site_transient_update_themes', 'progo_update_check' );
+//	add_filter( 'site_transient_update_themes', 'progo_update_check' );
 	add_filter( 'wpsc_pre_transaction_results', 'progo_prepare_transaction_results' );
 	add_filter( 'wp_mail_content_type', 'progo_mail_content_type' );
 	
@@ -907,9 +907,9 @@ function progo_ecommerce_widgets() {
 		'id' => 'footer',
 		'description' => 'The Footer area has room for widgets as well',
 		'before_widget' => '<div class="fblock %1$s %2$s">',
-		'after_widget' => '</div></div>',
-		'before_title' => '<h3 class="title"><span class="spacer">',
-		'after_title' => '</span></h3><div class="inside">'
+		'after_widget' => '</div>',
+		'before_title' => '<div class="title">',
+		'after_title' => '</div>'
 	));
 	
 	$progo_widgets = array( 'FBLikeBox', 'Tweets', 'Share', 'Social', 'Support' );
@@ -1117,7 +1117,7 @@ function progo_options_defaults() {
 	
 	update_option( 'progo_ecommerce_installed', true );
 	update_option( 'progo_ecommerce_apikey', '' );
-	update_option( 'progo_ecommerce_apiauth', 'new' );
+	update_option( 'progo_ecommerce_apiauth', '100' );
 	
 	update_option( 'wpsc_ignore_theme', true );
 	

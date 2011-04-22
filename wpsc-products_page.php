@@ -129,14 +129,14 @@ global $wp_query;
 									<?php endif; ?>
 								<?php endif; ?>
 								<?php if(wpsc_product_is_donation()) : ?>
-									<label for="donation_price_<?php echo wpsc_the_product_id(); ?>"><?php _e('Donation', 'wpsc'); ?>: </label>
+									<label for="donation_price_<?php echo wpsc_the_product_id(); ?>"><?php _e('Donation', 'wpsc'); ?> : </label>
 									<input type="text" id="donation_price_<?php echo wpsc_the_product_id(); ?>" name="donation_price" value="<?php echo wpsc_calculate_price(wpsc_the_product_id()); ?>" size="6" />
 
 								<?php else : ?>
 									<?php if(wpsc_product_on_special()) : ?>
-										<div class="pricedisplay product_<?php echo wpsc_the_product_id(); ?>"><span class="oldprice" id="old_product_price_<?php echo wpsc_the_product_id(); ?>"><?php _e('Price', 'wpsc'); ?>: <?php echo wpsc_product_normal_price(); ?></span></div>
+										<div class="pricedisplay product_<?php echo wpsc_the_product_id(); ?>"><span class="oldprice" id="old_product_price_<?php echo wpsc_the_product_id(); ?>"><?php _e('Price', 'wpsc'); ?> : <?php echo wpsc_product_normal_price(); ?></span></div>
 									<?php endif; ?>
-									<div class="pricedisplay product_<?php echo wpsc_the_product_id(); ?>"><?php _e('Price', 'wpsc'); ?>: <span id='product_price_<?php echo wpsc_the_product_id(); ?>' class="currentprice pricedisplay"><?php echo wpsc_the_product_price(); ?></span></div>
+									<div class="pricedisplay product_<?php echo wpsc_the_product_id(); ?>"><?php _e('Price', 'wpsc'); ?> : <span id='product_price_<?php echo wpsc_the_product_id(); ?>' class="currentprice pricedisplay"><?php echo wpsc_the_product_price(); ?></span></div>
 									<?php /*if(wpsc_product_on_special()) : ?>
 										<div class="pricedisplay product_<?php echo wpsc_the_product_id(); ?>"><?php _e('You save', 'wpsc'); ?>: <span class="yousave" id="yousave_<?php echo wpsc_the_product_id(); ?>"><?php echo wpsc_currency_display(wpsc_you_save('type=amount'), array('html' => false)); ?>! (<?php echo wpsc_you_save(); ?>%)</span></div>
 									<?php endif; // who cares */ ?>
@@ -147,7 +147,7 @@ global $wp_query;
                                     <?php endif; ?>
 									
 									<?php if(wpsc_show_pnp()) : ?>
-										<div class="pricedisplay"><?php _e('Shipping', 'wpsc'); ?>:<span class="pp_price"><?php echo wpsc_product_postage_and_packaging(); ?></span></div>
+										<div class="pricedisplay"><?php _e('Shipping', 'wpsc'); ?> : <span class="pp_price"><?php echo wpsc_product_postage_and_packaging(); ?></span></div>
 									<?php endif; ?>							
 								<?php endif; ?>
 							</div><!--close wpsc_product_price-->
@@ -158,7 +158,7 @@ global $wp_query;
 						<div class="wpsc_variation_forms">
                         	<table>
 							<?php while (wpsc_have_variation_groups()) : wpsc_the_variation_group(); ?>
-								<tr><td class="col1"><label for="<?php echo wpsc_vargrp_form_id(); ?>"><?php echo wpsc_the_vargrp_name(); ?>:</label></td>
+								<tr><td class="col1"><label for="<?php echo wpsc_vargrp_form_id(); ?>"><?php echo wpsc_the_vargrp_name(); ?> :</label></td>
 								<?php /** the variation HTML and loop */?>
 								<td class="col2"><select class="wpsc_select_variation" name="variation[<?php echo wpsc_vargrp_id(); ?>]" id="<?php echo wpsc_vargrp_form_id(); ?>">
 								<?php while (wpsc_have_variations()) : wpsc_the_variation(); ?>

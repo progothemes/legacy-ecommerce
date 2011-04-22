@@ -10,6 +10,9 @@
  * @since Ecommerce 1.0
  */
 ?>
+<div id="fbar">
+<?php dynamic_sidebar('footer'); ?>
+</div>
 	</div><!-- #page -->
 	<div id="ftr" class="container_12">
     <div class="grid_8">

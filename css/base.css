@@ -162,7 +162,21 @@ body.page .edit-link { clear: both; display: block;}
 .block.share .st_sharethis .chicklets /*, select.current_country, input.billing_region.text*/ { display: none }
 .block.twitter a.tw { float: left; padding-left: 30px; line-height:21px; background: url(../images/twitter.jpg) no-repeat 0 0; }
 .block.fblike .inside { padding: 14px 0 5px 5px; }
+
 /* footer */
+#fbar { float: left; width: 920px; padding: 12px 20px; color: #fff; background: #000 url(../images/BlackGrey/fbar.png) repeat-x 0 0; font-size: 14px; line-height:20px }
+#fbar a { color: #fff; }
+#fbar ul { list-style: none; float: left; margin: 0; padding: 0; }
+#fbar li { float: left; }
+#fbar .fblock { float: left; width: 50%; }
+#fbar .fblock .title { float: left; }
+#fbar .fblock.widget_nav_menu li { margin-right: 40px; }
+#fbar .fblock.social { float: right; width: auto }
+#fbar .fblock.social ul { margin-left: 14px; }
+#fbar .fblock.social li a { float: left; width: 29px; height: 30px; margin: 0 0 0 7px; text-indent:-999em; background:url(../images/social.png) no-repeat 0 0 }
+#fbar .fblock.social li.tw a { background-position: -29px 0; }
+#fbar .fblock.social li.rss a { background-position: -58px 0; }
+
 #ftr { float: left; padding: 12px 6px 32px; background:url(../images/shade.png) no-repeat 0 0; }
 #ftr, #ftr a { color: #333; }
 #ftr ul { float: left; margin: 0; padding: 0; list-style: none; }

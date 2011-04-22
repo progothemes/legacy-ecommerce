@@ -17,10 +17,12 @@
  */
 if ( ! dynamic_sidebar( 'blog' ) ) :
 ?>
-<div class="block archvies">
+<div class="block widget_archive">
     <h3 class="title"><span class="spacer"><?php _e( 'Archives', 'progo' ); ?></span></h3>
     <div class="inside">
+    <ul>
         <?php wp_get_archives( 'type=monthly' ); ?>
+    </ul>
     </div>
 </div>
 <?php endif; // end primary widget area ?>
