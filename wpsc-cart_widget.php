@@ -40,12 +40,8 @@
 			</tr>
 			<?php endif; ?>
 			<tr id='cart-widget-links'>
-				<td><a target="_parent" href="<?php echo get_option('shopping_cart_url'); ?>" title="Checkout" class="gocheckout"><?php _e('View Cart', 'wpsc'); ?></a>
-                    </td><td colspan="2" align="right">
-					<form action="" method="post" class="wpsc_empty_the_cart">
-						<input type="hidden" name="wpsc_ajax_action" value="empty_cart" />
-							<a target="_parent" href="<?php echo htmlentities(add_query_arg('wpsc_ajax_action', 'empty_cart', remove_query_arg('ajax')), ENT_QUOTES); ?>" class="emptycart" title="Empty Your Cart"><?php _e('Empty Cart', 'wpsc'); ?></a>                                                                                    
-					</form>
+				<td><a target="_parent" href="<?php echo get_option('shopping_cart_url'); ?>" title="Checkout" class="gocheckout"><?php _e('Checkout', 'wpsc'); ?></a>
+                    </td><td colspan="2" align="right"><a target="_parent" href="<?php echo get_option('shopping_cart_url'); ?>" class="editcart"><?php _e('Edit Cart', 'wpsc'); ?></a>
 				</td>
 			</tr>
 		</tfoot>

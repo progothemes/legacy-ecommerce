@@ -281,9 +281,9 @@ table.list_productdisplay .quantity_container {
 	display:inline;	
 }
 
-#main input.wpsc_buy_button, .slide input.wpsc_buy_button, .slide a.morebutton, a.gocheckout { float: left; font-size: 16px; border: none; width: 132px; height: 29px; cursor:pointer; background: url(images/BlackGrey/btn_buy.png) no-repeat 0 0; color: #fff; text-transform: lowercase }
-a.gocheckout { text-align: center; line-height:19px; height: 19px; padding: 5px 0; text-transform:none }
-.slide input.wpsc_buy_button, .slide a.morebutton { width: 198px; height: 40px; color: #000; font-size: 18px; background: url(images/BlackGrey/btn_buyslide.png) no-repeat 0 0; text-transform: none; font-weight: bold }
+#main input.wpsc_buy_button, .slide input.wpsc_buy_button, .slide a.morebutton, a.gocheckout { float: left; font-size: 16px; border: none; width: 132px; height: 29px; cursor:pointer; background: url(images/BlackGrey/btn_buy.png) no-repeat 0 0; color: #fff; text-transform: uppercase }
+a.gocheckout { text-align: center; line-height:19px; height: 19px; padding: 5px 0 }
+.slide input.wpsc_buy_button, .slide a.morebutton { width: 198px; height: 40px; color: #000; font-size: 18px; background: url(images/BlackGrey/btn_buyslide.png) no-repeat 0 0; font-weight: bold }
 .slide a.morebutton { line-height:24px; height: 24px; padding: 8px 0; text-align: center }
 
 table.list_productdisplay .wpsc_buy_button_container {
@@ -637,7 +637,7 @@ span.rating_saved{
 	display: block;
 	width: 100%;
 }
-.shopping-cart-wrapper a.emptycart {
+.shopping-cart-wrapper a.editcart {
 	font-weight: bold;
 	font-size:13px;
 }
