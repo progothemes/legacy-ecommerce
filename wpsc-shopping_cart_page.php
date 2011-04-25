@@ -12,7 +12,6 @@ if(wpsc_cart_item_count() < 1) :
 endif;
 ?>
 <div id="checkout_page_container">
-<h3><?php _e('Please review your order', 'wpsc'); ?></h3>
 <table class="checkout_cart">
    <tr class="header">
       <th colspan="2" ><?php _e('Product', 'wpsc'); ?></th>
@@ -35,7 +34,7 @@ endif;
 
          <td class="firstcol wpsc_product_image wpsc_product_image_<?php echo wpsc_the_cart_item_key(); ?>">
          <?php if('' != wpsc_cart_item_image()): ?>
-            <img src="<?php echo wpsc_cart_item_image(); ?>" alt="<?php echo wpsc_cart_item_name(); ?>" title="<?php echo wpsc_cart_item_name(); ?>" class="product_image" />
+            <img src="<?php echo wpsc_cart_item_image(70,70); ?>" alt="<?php echo wpsc_cart_item_name(); ?>" title="<?php echo wpsc_cart_item_name(); ?>" class="product_image" />
          <?php else:
          /* I dont think this gets used anymore,, but left in for backwards compatibility */
          ?>
@@ -70,7 +69,7 @@ endif;
                <input type="hidden" name="quantity" value="0" />
                <input type="hidden" name="key" value="<?php echo wpsc_the_cart_item_key(); ?>" />
                <input type="hidden" name="wpsc_update_quantity" value="true" />
-               <input type="submit" value="<?php _e('Remove', 'wpsc'); ?>" name="submit" />
+               <input type="submit" value="<?php _e('X REMOVE', 'wpsc'); ?>" name="submit" />
             </form>
          </td>
       </tr>
@@ -345,20 +344,6 @@ endif;
                   </td>
                </tr>
             <?php
-            }elseif( $wpsc_checkout->checkout_item->unique_name == 'billingemail'){ ?>
-               <?php $email_markup =
-               "<div class='wpsc_email_address'>
-                  <p class='<?php echo wpsc_checkout_form_element_id(); ?>'>
-                     <label class='wpsc_email_address' for='" . wpsc_checkout_form_element_id() . "'>
-                     " . __('Enter your email address', 'wpsc') . "
-                     </label>
-                  <p class='wpsc_email_address_p'>
-                  <img src='https://secure.gravatar.com/avatar/empty?s=60&amp;d=mm' id='wpsc_checkout_gravatar' />
-                  " . wpsc_checkout_form_field();
-                  
-                   if(wpsc_the_checkout_item_error() != '')
-                      $email_markup .= "<p class='validation-error'>" . wpsc_the_checkout_item_error() . "</p>";
-               $email_markup .= "</div>";
              }else{ ?>
 			<tr>
                <td class='<?php echo wpsc_checkout_form_element_id(); ?>'>
@@ -381,8 +366,7 @@ endif;
 <?php 
 	$buffer_contents = ob_get_contents();
 	ob_end_clean();
-	if(isset($email_markup))
-		echo $email_markup;
+	
 	echo $buffer_contents;
 ?>
 

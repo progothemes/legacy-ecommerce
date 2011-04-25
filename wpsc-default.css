@@ -88,12 +88,12 @@ Author URI: http://instinct.co.nz
 	background-color:#efefef;	
 }
 
-.default_product_display .imagecol img.no-image, #content .default_product_display .imagecol img.no-image {
+.default_product_display .imagecol img.no-image, #main .default_product_display .imagecol img.no-image {
 	background-color:#EFEFEF;
 	display:block;
 }
 
-.default_product_display h2.prodtitle, #content .default_product_display h2.prodtitle {
+.default_product_display h2.prodtitle, #main .default_product_display h2.prodtitle {
 	margin:0 0 5px 0;
 	line-height:1;
 	clear:none;
@@ -125,12 +125,12 @@ Author URI: http://instinct.co.nz
 	display:none;	
 }
 
-.default_product_display form.product_form fieldset, #content .default_product_display form.product_form fieldset {
+.default_product_display form.product_form fieldset, #main .default_product_display form.product_form fieldset {
 	border: none;
 	padding: 0px;
 }
 
-.default_product_display form.product_form fieldset legend, #content .default_product_display form.product_form fieldset legend {
+.default_product_display form.product_form fieldset legend, #main .default_product_display form.product_form fieldset legend {
 	font-size:18px;
 	font-weight: normal;
 	padding:0px;
@@ -145,20 +145,20 @@ Author URI: http://instinct.co.nz
 	position:relative;
 }
 
-.default_product_display .wpsc_variation_forms table, #content .default_product_display .wpsc_variation_forms table, .default_product_display .wpsc_variation_forms table tr, #content .default_product_display .wpsc_variation_forms table tr, .default_product_display .wpsc_variation_forms table td, #content .default_product_display .wpsc_variation_forms table td {
+.default_product_display .wpsc_variation_forms table, #main .default_product_display .wpsc_variation_forms table, .default_product_display .wpsc_variation_forms table tr, #main .default_product_display .wpsc_variation_forms table tr, .default_product_display .wpsc_variation_forms table td, #main .default_product_display .wpsc_variation_forms table td {
 	border:none;
 	border-collapse:collapse;	
 	margin:0;
 }
 
-.default_product_display .wpsc_variation_forms table td.col1, #content .default_product_display .wpsc_variation_forms table tr td.col1 {
+.default_product_display .wpsc_variation_forms table td.col1, #main .default_product_display .wpsc_variation_forms table tr td.col1 {
 	width:10%;	
 	text-align:left;
 	margin:0;
 	padding:2px;
 }
 
-.default_product_display .wpsc_variation_forms table td.col2, #content .default_product_display .wpsc_variation_forms table tr td.col2 {
+.default_product_display .wpsc_variation_forms table td.col2, #main .default_product_display .wpsc_variation_forms table tr td.col2 {
 	width:80%;	
 	text-align:left;
 	margin:0;
@@ -202,7 +202,7 @@ Author URI: http://instinct.co.nz
 	color:#666;
 }
 
-.default_product_display p.soldout, #content .default_product_display p.soldout {
+.default_product_display p.soldout, #main .default_product_display p.soldout {
 	font-weight:bold;
 	font-size:14px;
 	color:#C33;	
@@ -213,7 +213,7 @@ Author URI: http://instinct.co.nz
 
 .default_product_display div.wpsc_loading_animation { visibility:hidden; float: right; margin-top:5px; }
 
-.default_product_display div.wpsc_loading_animation img, #content .default_product_display div.wpsc_loading_animation img {
+.default_product_display div.wpsc_loading_animation img, #main .default_product_display div.wpsc_loading_animation img {
 	border:none;
 }
 
@@ -233,7 +233,7 @@ Author URI: http://instinct.co.nz
 	float:left;
 }
 
-.default_product_display .wpcart_gallery img, #content .default_product_display .wpcart_gallery img {
+.default_product_display .wpcart_gallery img, #main .default_product_display .wpcart_gallery img {
 	margin-right:6px;
 	border:1px solid #ccc;	
 }
@@ -257,7 +257,7 @@ Author URI: http://instinct.co.nz
 	margin-top:10px;	
 }
 
-#list_view_products_page_container p, #content #list_view_products_page_container p {
+#list_view_products_page_container p, #main #list_view_products_page_container p {
 	line-height:1.2em;
 	margin:0;
 	padding:0;	
@@ -268,7 +268,7 @@ Author URI: http://instinct.co.nz
 }
 
 
-#list_view_products_page_container input, #content #list_view_products_page_container input, #list_view_products_page_container textarea, #content #list_view_products_page_container textarea {
+#list_view_products_page_container input, #main #list_view_products_page_container input, #list_view_products_page_container textarea, #main #list_view_products_page_container textarea {
 	margin:0;
 	padding:0;
 }
@@ -302,7 +302,7 @@ table.list_productdisplay .wpsc_buy_button_container .wpsc_loading_animation {
 	line-height:1.2em;
 }
 
-table.list_productdisplay .wpsc_buy_button_container .wpsc_loading_animation img, #content table.list_productdisplay .wpsc_buy_button_container .wpsc_loading_animation img {
+table.list_productdisplay .wpsc_buy_button_container .wpsc_loading_animation img, #main table.list_productdisplay .wpsc_buy_button_container .wpsc_loading_animation img {
 	vertical-align:middle;
 	border:none;
 	float:left;
@@ -312,19 +312,19 @@ table.list_productdisplay .oldprice {
 	text-decoration:line-through;
 }
 
-table.list_productdisplay h2.prodtitle, #content table.list_productdisplay h2.prodtitle {
+table.list_productdisplay h2.prodtitle, #main table.list_productdisplay h2.prodtitle {
 	font-size:15px;
 	line-height:1.2em;
 	margin:0;
 	word-wrap: break-word;	
 }
 
-table.list_productdisplay h2.prodtitle a:link, #content table.list_productdisplay h2.prodtitle a:link, table.list_productdisplay h2.prodtitle a:visited, #content table.list_productdisplay h2.prodtitle a:visited {
+table.list_productdisplay h2.prodtitle a:link, #main table.list_productdisplay h2.prodtitle a:link, table.list_productdisplay h2.prodtitle a:visited, #main table.list_productdisplay h2.prodtitle a:visited {
 	text-decoration:underline;
 	color:#006699;
 }
 
-table.list_productdisplay h2.prodtitle a:hover, #content table.list_productdisplay h2.prodtitle a:hover, table.list_productdisplay h2.prodtitle a:active, #content table.list_productdisplay h2.prodtitle a:active {
+table.list_productdisplay h2.prodtitle a:hover, #main table.list_productdisplay h2.prodtitle a:hover, table.list_productdisplay h2.prodtitle a:active, #main table.list_productdisplay h2.prodtitle a:active {
 	text-decoration:none;
 }
 
@@ -347,7 +347,7 @@ table.list_productdisplay p.soldout {
 	border:1px solid #ccc;	
 }
 
-.single_product_display .imagecol img.no-image, #content .single_product_display .imagecol img.no-image {
+.single_product_display .imagecol img.no-image, #main .single_product_display .imagecol img.no-image {
 	background-color:#EFEFEF;
 	display:block;
 }
@@ -366,18 +366,18 @@ table.list_productdisplay p.soldout {
 	padding:0;	
 }
 
-.single_product_display form.product_form fieldset, #content .single_product_display form.product_form fieldset {
+.single_product_display form.product_form fieldset, #main .single_product_display form.product_form fieldset {
 	border: none;
 	padding: 0px;
 }
 
-.single_product_display form.product_form fieldset legend, #content .single_product_display form.product_form fieldset legend {
+.single_product_display form.product_form fieldset legend, #main .single_product_display form.product_form fieldset legend {
 	font-size: 18px;
 	font-weight: normal;
 	padding: 0px;
 }
 
-.single_product_display form.product_form input, #content .single_product_display form.product_form input {
+.single_product_display form.product_form input, #main .single_product_display form.product_form input {
 	padding:2px;
 	margin:0;
 
@@ -385,11 +385,11 @@ table.list_productdisplay p.soldout {
 	font-size:14px;
 }
 
-.single_product_display form.product_form input.input_custom_text, #content .single_product_display form.product_form input.input_custom_text {
+.single_product_display form.product_form input.input_custom_text, #main .single_product_display form.product_form input.input_custom_text {
 	width:250px;
 }
 
-.single_product_display form.product_form fieldset p, #content .single_product_display form.product_form fieldset p {
+.single_product_display form.product_form fieldset p, #main .single_product_display form.product_form fieldset p {
 	margin:0 0 10px 0;
 	padding:0;
 	line-height:1.2em;
@@ -401,20 +401,20 @@ table.list_productdisplay p.soldout {
 	margin-bottom:20px;
 }
 
-.single_product_display .wpsc_variation_forms table, #content .single_product_display .wpsc_variation_forms table, .single_product_display .wpsc_variation_forms table tr, #content .single_product_display .wpsc_variation_forms table tr, .single_product_display .wpsc_variation_forms table td, #content .single_product_display .wpsc_variation_forms table td {
+.single_product_display .wpsc_variation_forms table, #main .single_product_display .wpsc_variation_forms table, .single_product_display .wpsc_variation_forms table tr, #main .single_product_display .wpsc_variation_forms table tr, .single_product_display .wpsc_variation_forms table td, #main .single_product_display .wpsc_variation_forms table td {
 	border:none;
 	border-collapse:collapse;	
 	margin:0;
 }
 
-.single_product_display .wpsc_variation_forms table td.col1, #content .single_product_display .wpsc_variation_forms table tr td.col1 {
+.single_product_display .wpsc_variation_forms table td.col1, #main .single_product_display .wpsc_variation_forms table tr td.col1 {
 	width:10%;	
 	text-align:left;
 	margin:0;
 	padding:2px;
 }
 
-.single_product_display .wpsc_variation_forms table td.col2, #content .single_product_display .wpsc_variation_forms table tr td.col2 {
+.single_product_display .wpsc_variation_forms table td.col2, #main .single_product_display .wpsc_variation_forms table tr td.col2 {
 	width:80%;	
 	text-align:left;
 	margin:0;
@@ -433,7 +433,7 @@ table.list_productdisplay p.soldout {
 	margin-left:10px;
 }
 
-.single_product_display .wpsc_quantity_update input, #content .single_product_display .wpsc_quantity_update input {
+.single_product_display .wpsc_quantity_update input, #main .single_product_display .wpsc_quantity_update input {
 	margin:0;
 	line-height:1.2em;
 	font-size:12px;
@@ -446,7 +446,7 @@ table.list_productdisplay p.soldout {
 	padding: 5px;
 }
 */
-.single_product_display .wpsc_product_price p, #content .single_product_display .wpsc_product_price p {
+.single_product_display .wpsc_product_price p, #main .single_product_display .wpsc_product_price p {
 	margin:0;
 }
 
@@ -466,7 +466,7 @@ table.list_productdisplay p.soldout {
 	visibility:hidden;	
 }
 
-.single_product_display .wpcart_gallery img, #content .single_product_display .wpcart_gallery img {
+.single_product_display .wpcart_gallery img, #main .single_product_display .wpcart_gallery img {
 	margin-right:6px;
 	border:1px solid #ccc;	
 }
@@ -673,7 +673,7 @@ span.rating_saved{
 	clear:both;
 }
 
-#checkout_page_container textarea, #checkout_page_container input, #content #checkout_page_container textarea, #content #checkout_page_container input {
+#checkout_page_container textarea, #checkout_page_container input, #main #checkout_page_container textarea, #main #checkout_page_container input {
 	line-height:1.2em;
 	font-size:14px;	
 	margin:0;
@@ -700,7 +700,7 @@ span.rating_saved{
 	padding-left: 0px;
 }
 
-#checkout_page_container table.checkout_cart tr td, #content #checkout_page_container table.checkout_cart tr td {
+#checkout_page_container table.checkout_cart tr td, #main #checkout_page_container table.checkout_cart tr td {
 	margin:0;
 	padding:5px;
 	vertical-align:middle;	
@@ -716,7 +716,7 @@ span.rating_saved{
 	text-align: right;
 }
 
-#content #checkout_page_container p{
+#main #checkout_page_container p{
 	margin-bottom: 0px;
 }
 
@@ -724,7 +724,7 @@ span.rating_saved{
 	width:255px;
 }
 
-#content img#wpsc_checkout_gravatar{
+#main img#wpsc_checkout_gravatar{
 	float:left;
 	margin:0px 10px 10px 0px;
 }
@@ -765,12 +765,12 @@ background-color: #f5f5f5;
 	color:#000;
 }
 
-#content #checkout_page_container table.productcart tr td{
+#main #checkout_page_container table.productcart tr td{
 	border-top:none;
 	padding-left: 0px;
 }
 
-#content #checkout_page_container table.productcart {
+#main #checkout_page_container table.productcart {
 	border: none;
 }
 
@@ -783,12 +783,14 @@ background-color: #f5f5f5;
 	color:red;
 }
 
-#content table.wpsc_checkout_table,
-#content table.wpsc_checkout_table tr td {
+#main table.wpsc_checkout_table,
+#main table.wpsc_checkout_table tr td {
 	border: none;
 	padding:0px;
 	vertical-align: top;
 }
+#main table.wpsc_checkout_table tr td { padding: 10px 0; }
+#main .wpsc_checkout_table h4 { padding: 9px 18px; border: 1px solid #ccc; background: url(images/checkh.png) repeat-x 0 100%; width: 575px; line-height:22px; }
 
 .wpsc-shopping-cart .asterix {
 	color:red;
@@ -803,23 +805,18 @@ background-color: #f5f5f5;
 	border:none;
 }
 
-#checkout_page_container table.checkout_cart tr, #content #checkout_page_container table.checkout_cart tr {
+#checkout_page_container table.checkout_cart tr, #main #checkout_page_container table.checkout_cart tr {
 	margin:0;
 	padding:0;
 }
 
-#content #checkout_page_container table.checkout_cart tr.wpsc_coupon_row td{
+#main #checkout_page_container table.checkout_cart tr.wpsc_coupon_row td{
 	padding-top:15px;
 	padding-bottom: 15px;
 	padding-left: 0px;
 }
 
-#content #checkout_page_container table.checkout_cart tr.product_row td.wpsc_product_image img {
-	height: 31px;
-	width: 31px;
-}
-
-#content #checkout_page_container table.checkout_cart tr.product_row td, #content #checkout_page_container table.checkout_cart tr.product_row {
+#main #checkout_page_container table.checkout_cart tr.product_row td, #main #checkout_page_container table.checkout_cart tr.product_row {
 	padding:2px 0px 1px 0px;
 	margin:0px;
 	line-height: 1;
@@ -859,7 +856,7 @@ background-color: #f5f5f5;
 	color:#bbb;
 }
 
-#content #checkout_page_container table.checkout_cart tr.product_row td.wpsc_product_name {
+#main #checkout_page_container table.checkout_cart tr.product_row td.wpsc_product_name {
 	width: 200px;
 	padding-left: 20px;
 }
