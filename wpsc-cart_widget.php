@@ -23,7 +23,7 @@
 		</tbody>
 		<tfoot>
 					<?php if(wpsc_cart_has_shipping() && !wpsc_cart_show_plus_postage()) : ?>
-			<tr class="cart-widget-total cart-widget-shipping pricedisplay checkout-shipping">
+			<tr class="cart-widget-shipping pricedisplay checkout-shipping">
             	<td><?php _e('Shipping', 'wpsc'); ?></td><td colspan="2" align="right"><?php echo wpsc_cart_shipping(); ?></td>
             </tr>
 					<?php endif; ?>
