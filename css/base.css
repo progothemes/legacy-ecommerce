@@ -60,7 +60,7 @@ a:hover, a.more-link { text-decoration: underline }
 .screen-reader-text { position: absolute; left: -9000px }
 
 /* hdr */
-#hdr { float: left; height: 133px; position: relative; background:url(../images/LightGrey/hdr.png) repeat-x 0 0 }
+#hdr { float: left; height: 133px; position: relative; }
 #logo { float: left; margin: 22px 15px 0; font: bold 39px/46px Arial, Helvetica, sans-serif; position: relative; color: #000; text-decoration: none }
 table#logo { margin-top: 12px; height:75px; border-collapse:collapse }
 table#logo img { float: left }
