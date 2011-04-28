@@ -21,6 +21,7 @@ endif;
       <th><?php _e('Total', 'wpsc'); ?></th>
         <th>&nbsp;</th>
    </tr>
+   <?php if(function_exists('easyupsell_products')) easyupsell_products(); ?>
    <?php while (wpsc_have_cart_items()) : wpsc_the_cart_item(); ?>
       <?php
        $alt++;
