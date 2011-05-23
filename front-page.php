@@ -112,14 +112,14 @@ switch ( $options['frontpage'] ) {
 		break;
 	case 'page':
 		echo '<!-- progohomecheck page -->';
-		if ( have_posts() ) while ( have_posts() ) : the_post(); ?>
-<div id="post-<?php the_ID(); ?>" <?php post_class(); ?>>
+		$page = get_page( get_option('progo_homepage_id') ); ?>
+<div id="post-<?php echo $page->ID; ?>" <?php post_class('', $page->ID); ?>>
 <div class="entry">
-<?php the_content(); ?>
+<?php echo apply_filters('the_content', $page->post_content); ?>
 </div><!-- .entry -->
 </div><!-- #post-## -->
 <?php
-		endwhile;
+		//endwhile;
 		break;
 }
 ?>
