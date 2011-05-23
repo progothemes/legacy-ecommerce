@@ -12,6 +12,7 @@ $options = get_option( 'progo_options' );
 <div id="container" class="container_12">
 <div id="pagetop" class="slides">
 <?php
+$original_query = $wp_query;
 $slides = (array) get_option( 'progo_slides' );
 unset($slides['count']);
 $count = count($slides);
@@ -70,14 +71,13 @@ progo_timing = <?php $hsecs = absint($options['homeseconds']); echo $hsecs > 0 ?
 </script>
 <?php
 }
-// i forget why this is here...
 do_action('progo_pagetop'); ?>
 </div>
 <div id="main" role="main" class="grid_8">
 <?php
+rewind_posts();
 switch ( $options['frontpage'] ) {
 	case 'featured':
-		echo '<!-- progohomecheck featured -->';
 		$sticky_array = get_option( 'sticky_products' );
 		if ( !empty( $sticky_array ) ) {
 			$old_query = $wp_query;
@@ -107,19 +107,17 @@ switch ( $options['frontpage'] ) {
 		}
 		break;
 	case 'posts':
-		echo '<!-- progohomecheck posts -->';
 		get_template_part( 'loop', 'index' );
 		break;
 	case 'page':
-		echo '<!-- progohomecheck page -->';
-		$page = get_page( get_option('progo_homepage_id') ); ?>
-<div id="post-<?php echo $page->ID; ?>" <?php post_class('', $page->ID); ?>>
-<div class="entry">
-<?php echo apply_filters('the_content', $page->post_content); ?>
-</div><!-- .entry -->
-</div><!-- #post-## -->
-<?php
-		//endwhile;
+		if ( have_posts() ) while ( have_posts() ) : the_post(); ?>
+		<div id="post-<?php the_ID(); ?>" <?php post_class(); ?>>
+		<div class="entry">
+		<?php the_content(); ?>
+		</div><!-- .entry -->
+		</div><!-- #post-## -->
+		<?php
+		endwhile;
 		break;
 }
 ?>
