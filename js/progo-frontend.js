@@ -1,5 +1,5 @@
 // js for front end of ProGo Themes Ecommerce sites
-var progo_homecycling, progo_timing;
+var progo_cycle, progo_timing;
 
 function proGoTwitterCallback(twitters) {
   for (var i=0; i<twitters.length; i++){
@@ -37,35 +37,43 @@ function relative_time(time_value) {
   }
 }
 
-function progo_homecycle( prev ) {
-	clearTimeout('progo_homecycling');
-	var onn = jQuery('#pagetop .slide.on');
-	var nex = onn.next();
-	var dir = '-=960px';
-	if( prev == true ) {
-		nex = onn.prev();
-		if(nex.size() == 0) {
-			nex = onn.nextAll('.ar').prev();
-		}
-		nex.css({'left':'-960px'});
-		dir = '+=960px';
-	} else {
-		if(nex.hasClass('slide') == false) {
-			nex = onn.prevAll('.slide:first-child');
-		}
-		nex.css({'left':'960px'});
+function progo_homecycle( lnk ) {
+	if( lnk == false ) {
+		lnk = jQuery('#pagetop .ar a:last');
 	}
-	onn.add(nex).animate({
-		left: dir
-	}, 600, function() {
-		jQuery(this).toggleClass('on');
-	});
-	jQuery('#pagetop').animate({
-		height: nex.outerHeight(true)
-	}, 600 );
-	
-	if( progo_timing > 0 ) {
-		progo_homecycling = setTimeout("progo_homecycle(false)",progo_timing); 
+	if( lnk.hasClass('off') == false ) {
+		lnk.add(lnk.siblings('a')).addClass('off');
+		clearTimeout(progo_cycle);
+		var onn = jQuery('#pagetop .slide.on');
+		var nex = onn.next();
+		var dir = '-=960px';
+		if( lnk.hasClass('n') ) {
+			if(nex.hasClass('slide') == false) {
+				nex = onn.prevAll('.slide:first-child');
+			}
+			nex.css({'left':'960px'});
+		} else {
+			nex = onn.prev();
+			if(nex.size() == 0) {
+				nex = onn.nextAll('.ar').prev();
+			}
+			nex.css({'left':'-960px'});
+			dir = '+=960px';
+		}
+		onn.add(nex).animate({
+			left: dir
+		}, 600, function() {
+			jQuery(this).toggleClass('on');
+		});
+		jQuery('#pagetop').animate({
+			height: nex.outerHeight(true)
+		}, 600, function() {
+			jQuery('#pagetop .ar a').removeClass('off');
+		});
+		
+		if( progo_timing > 0 ) {
+			progo_cycle = setTimeout("progo_homecycle(false)",progo_timing); 
+		}
 	}
 	return false;
 }
@@ -73,10 +81,10 @@ function progo_homecycle( prev ) {
 jQuery(function($) {
 	var progo_ptop = $('#pagetop');
 	if(progo_ptop.hasClass('slides')) {
-		progo_ptop.children('div.ar').children('a:first').click(function() { return progo_homecycle(true); }).next().click(function() { return progo_homecycle(false); });
+		progo_ptop.children('div.ar').children('a').click(function() { return progo_homecycle($(this)); });//.next().click(function() { return progo_homecycle(false); });
 		progo_ptop.height(progo_ptop.children('.slide.on').height()).addClass('sliding');
 		if(progo_timing > 0) {
-			progo_homecycling = setTimeout("progo_homecycle(false)",progo_timing);
+			progo_cycle = setTimeout("progo_homecycle(false)",progo_timing);
 		}
 	}
 });
