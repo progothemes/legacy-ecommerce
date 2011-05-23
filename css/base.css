@@ -164,6 +164,7 @@ body.page .edit-link { clear: both; display: block }
 #fbar .fblock { float: left; width: 50% }
 #fbar .fblock .title { float: left }
 #fbar .fblock.widget_nav_menu li { margin-right: 40px }
+#fbar ul.sub-menu { display: none }
 #fbar .fblock.social { float: right; width: auto }
 #fbar .fblock.social ul { margin-left: 14px }
 #fbar .fblock.social li a { float: left; width: 29px; height: 30px; margin: 0 0 0 7px; text-indent:-999em; background:url(../images/social.png) no-repeat 0 0 }
