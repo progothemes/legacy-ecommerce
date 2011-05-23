@@ -15,9 +15,18 @@
  * then the sidebar simply doesn't exist, so we'll hard-code in
  * some default sidebar stuff just in case.
  */
-if ( ! dynamic_sidebar( 'main' ) ) :
+$sidebar = '';
+if ( is_page() ) {
+	global $post;
+	$custom = get_post_meta($post->ID,'_progo_sidebar');
+	$sidebar = $custom[0];
+}
+if ( $sidebar == '' ) {
+	$sidebar = 'main';
+}
+if ( ! dynamic_sidebar( $sidebar ) ) :
 // do SHOPPING CART widget ?
-?>
- <?php endif; // end primary widget area ?>
+
+endif; // end primary widget area ?>
 </div>
 </div>

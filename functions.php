@@ -54,6 +54,7 @@ function progo_setup() {
 	add_action( 'admin_menu', 'progo_admin_menu_cleanup' );
 	add_action( 'login_head', 'progo_custom_login_logo' );
 	add_action( 'login_headerurl', 'progo_custom_login_url' );
+	add_action( 'save_post', 'progo_save_meta' );
 	add_action('wp_print_scripts', 'progo_add_scripts');
 	add_action('wp_print_styles', 'progo_add_styles');
 	add_action( 'admin_notices', 'progo_admin_notices' );
@@ -894,6 +895,15 @@ function progo_ecommerce_widgets() {
 		'after_title' => '</span></h3><div class="inside">'
 	));
 	register_sidebar(array(
+		'name' => 'Contact',
+		'id' => 'contact',
+		'description' => 'An optional special Sidebar for your Contact or About page(s)',
+		'before_widget' => '<div class="block %1$s %2$s">',
+		'after_widget' => '</div></div>',
+		'before_title' => '<h3 class="title"><span class="spacer">',
+		'after_title' => '</span></h3><div class="inside">'
+	));
+	register_sidebar(array(
 		'name' => 'Header',
 		'id' => 'header',
 		'description' => 'We can put a widget or two in the top right of the header',
@@ -950,10 +960,44 @@ function progo_metabox_cleanup() {
 				$wp_meta_boxes['wpsc-product']['side']['core'] = array_merge( $toparr, $wp_meta_boxes['wpsc-product']['side']['core'] );
 			}
 			break;
+		case 'page':
+			add_meta_box( 'progo_sidebar_box', 'Sidebar', 'progo_sidebar_box', 'page', 'side', 'low' );
+			break;
 	}
 }
 endif;
 add_action( 'do_meta_boxes', 'progo_metabox_cleanup' );
+
+if ( ! function_exists( 'progo_sidebar_box' ) ):
+/**
+ * outputs html for "Sidebar" meta box on EDIT PAGE
+ * lets Admins choose which Sidebar area is displayed on each Page
+ * called by add_meta_box( "progo_direct_box", "Direct Response", "progo_direct_box"...
+ * in progo_admin_init()
+ * @uses progo_direct_meta_defaults()
+ * @since Direct 1.0.9
+ */
+function progo_sidebar_box() {
+	global $post;
+	$custom = get_post_meta($post->ID,'_progo_sidebar');
+	$sidebar = $custom[0];
+	
+	$ids = array('main', 'blog', 'checkout', 'contact');
+	$titles = array('Main Sidebar (default)', 'Blog', 'Checkout', 'Contact');
+	
+	if(!in_array($sidebar, $ids)) {
+		$sidebar = 'main';
+	}
+	?>
+	<p>Choose a Sidebar to display on this Page</p>
+	<select name="_progo_sidebar"><?php
+for ( $i = 0; $i < count($ids); $i++) {
+		echo '<option value="'. $ids[$i] .'"'. ( $ids[$i] == $sidebar ? ' selected="selected"' : '' ) .'>'. esc_attr( $titles[$i] ) .'</option>';
+	} ?></select>
+    <p><a href="<?php echo admin_url('widgets.php'); ?>" target="_blank">Configure Widgets Here &raquo;</a></p>
+	<?php
+}
+endif;
 
 /********* core ProGo Themes' Ecommerce functions *********/
 
@@ -1059,6 +1103,42 @@ function progo_arraytotop($arr, $totop) {
 	unset($arr[$totop]);
 	// Merge the two arrays together so our widget is at the beginning
 	return array_merge( $toparr, $arr );
+}
+endif;
+if ( ! function_exists( 'progo_save_meta' ) ):
+/**
+ * hooked to 'save_post' by add_action in progo_setup()
+ * checks for _progo (direct) meta data, and performs validation & sanitization
+ * @param post_id to check meta on
+ * @return post_id
+ * @since Ecommerce 1.0.9
+ */
+function progo_save_meta( $post_id ){
+	// verify if this is an auto save routine. If it is,
+	// our form has not been submitted, so we don't want to do anything
+	if ( defined('DOING_AUTOSAVE') && DOING_AUTOSAVE ) { 
+		return $post_id;
+	}
+	// check permissions
+	if ( $_POST['post_type'] == 'page' ) {
+		if ( !current_user_can( 'edit_page', $post_id ) ) {
+			return $post_id;
+		}
+	} else {
+	//if ( !current_user_can( 'edit_post', $post_id ) )
+	  return $post_id;
+	}
+	
+	// OK, we're authenticated: we need to find and save the data
+	if ( isset( $_POST['_progo_sidebar'] ) ) {
+		$sidebar = $_POST['_progo_sidebar'];
+		
+		if ( in_array ( $sidebar, array('main', 'blog', 'checkout', 'contact') ) ) {
+			update_post_meta($post_id, "_progo_sidebar", $sidebar);
+			return $sidebar;
+		}
+	}
+	return $post_id;
 }
 endif;
 if ( ! function_exists( 'progo_colorscheme_switch' ) ):
