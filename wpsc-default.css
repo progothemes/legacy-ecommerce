@@ -169,6 +169,7 @@ span.rating_saved{ color: #990000; display: none }
 table.wpsc_checkout_table { width: 100%; border: none; padding: 0 }
 table.wpsc_checkout_table.table-4 { border-top: 1px solid #ccc }
 table.wpsc_checkout_table tr td { padding: 10px 8px; font-size: 13px; vertical-align:top }
+table.wpsc_checkout_table select#region { margin: 0 10px }
 table.wpsc_checkout_table tr td.wpsc_totals { text-align: right }
 table.wpsc_checkout_table tr.total_price td { font-size: 16px; line-height:20px; color: #fff; background-color: #333 }
 body.wpsc-shopping-cart #main h4 { padding: 9px 8px; border: 1px solid #ccc; background: url(images/checkh.png) repeat-x 0 100%; width: 604px; line-height:22px }
