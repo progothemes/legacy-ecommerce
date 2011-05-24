@@ -6,7 +6,7 @@ ul#nav { background-image: url(../images/GreenBrown/nav.png) }
 ul#nav li { background-image:url(../images/GreenBrown/navli.png) }
 ul#nav li.current-menu-item a, body.wpsc ul#nav li.wpsc a, body.blog ul#nav li.blog a { background: url(../images/GreenBrown/navon.png) repeat-x 0 0 }
 
-#main input.wpsc_buy_button, .slide input.wpsc_buy_button, .slide a.morebutton, a.gocheckout { background-image: url(../images/GreenBrown/btn_buy.png) }
+#main input.wpsc_buy_button, .slide input.wpsc_buy_button, .slide a.morebutton, a.gocheckout, #main input#commentsubmit { background-image: url(../images/GreenBrown/btn_buy.png) }
 
 #pagetop { background-image: url(../images/GreenBrown/pagetop.jpg) }
 #pagetop.slides { background: #fff url(../images/GreenBrown/slidetop.png) repeat-x 0 100%; color: #333 }

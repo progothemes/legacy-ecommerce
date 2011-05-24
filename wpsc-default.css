@@ -78,7 +78,8 @@ Author URI: http://www.progo.com
 #list_view_products_page_container input, #main #list_view_products_page_container input, #list_view_products_page_container textarea, #main #list_view_products_page_container textarea { margin:0; padding:0 }
 table.list_productdisplay form.product_form { display:inline }
 table.list_productdisplay .quantity_container { display:inline }
-#main input.wpsc_buy_button, .slide input.wpsc_buy_button, .slide a.morebutton, a.gocheckout, #main input.btn { float: left; font-size: 16px; border: none; width: 132px; height: 29px; cursor:pointer; background: url(images/BlackGrey/btn_buy.png) no-repeat 0 0; color: #fff; text-transform: uppercase }
+#main input.wpsc_buy_button, .slide input.wpsc_buy_button, .slide a.morebutton, a.gocheckout, #main input.btn, #main input#commentsubmit { float: left; font-size: 16px; border: none; width: 132px; height: 29px; cursor:pointer; background: url(images/BlackGrey/btn_buy.png) no-repeat 0 0; color: #fff; text-transform: uppercase }
+#main input#commentsubmit { line-height: 16px; text-transform: none; padding: 0 0 5px }
 a.gocheckout { text-align: center; line-height:19px; height: 19px; padding: 5px 0 }
 .slide input.wpsc_buy_button, .slide a.morebutton { width: 198px; height: 40px; color: #000; font-size: 18px; background: url(images/BlackGrey/btn_buyslide.png) no-repeat 0 0; font-weight: bold }
 .slide a.morebutton { line-height:24px; height: 24px; padding: 8px 0; text-align: center }

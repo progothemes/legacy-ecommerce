@@ -24,16 +24,28 @@
 		 */
 		return;
 	endif;
-?>
 
-<?php
-	// You can start editing here -- including this comment!
-?>
+$req = get_option( 'require_name_email' );
+$aria_req = ( $req ? " aria-required='true'" : '' );
+$args = array(
+	'fields' => array(
+		'author' => '<tr><td width="300"><p class="comment-form-author">' . '<label for="author">' . __( 'Name' ) . '</label> ' . ( $req ? '<span class="required">*</span>' : '' ) .
+		            '<br /><input id="author" name="author" class="text" type="text" value="' . esc_attr( $commenter['comment_author'] ) . '" size="42"' . $aria_req . ' /></p></td>',
+		'email'  => '<td width="296"><p class="comment-form-email"><label for="email">' . __( 'Email' ) . '</label> ' . ( $req ? '<span class="required">*</span>' : '' ) .
+		            '<br /><input id="email" name="email" class="text" type="text" value="' . esc_attr(  $commenter['comment_author_email'] ) . '" size="42"' . $aria_req . ' /></p></td></tr>'
+	),
+	'comment_field'        => '<tr><td colspan="2"><p class="comment-form-comment"><label for="comment">' . _x( 'Comment', 'noun' ) . '</label><br /><textarea id="comment" name="comment" cols="89" rows="5" aria-required="true"></textarea></p></td></tr>',
+	'comment_notes_before' => '<table width="596" cellpadding="0" cellspacing="0">',
+	'comment_notes_after' => '</table>',
+	'id_submit'            => 'commentsubmit',
+	'label_submit'         => __( 'submit comment' )
+);
+comment_form( $args );
 
-<?php if ( have_comments() ) : ?>
+if ( have_comments() ) : ?>
 			<h3 id="comments-title"><?php
 			printf( _n( 'One Response to %2$s', '%1$s Responses to %2$s', get_comments_number(), 'progo' ),
-			number_format_i18n( get_comments_number() ), '<em>' . get_the_title() . '</em>' );
+			number_format_i18n( get_comments_number() ), '&ldquo;' . get_the_title() . '&rdquo;' );
 			?></h3>
 
 <?php if ( get_comment_pages_count() > 1 && get_option( 'page_comments' ) ) : // Are there comments to navigate through? ?>
@@ -44,7 +56,11 @@
 <?php endif; // check for comment navigation ?>
 
 			<ol class="commentlist">
-				<?php wp_list_comments(); ?>
+				<?php
+				$args = array(
+					'callback' => 'progo_comments'
+				);
+				wp_list_comments($args); ?>
 			</ol>
 
 <?php if ( get_comment_pages_count() > 1 && get_option( 'page_comments' ) ) : // Are there comments to navigate through? ?>
@@ -65,7 +81,5 @@
 <?php endif; // end ! comments_open() ?>
 
 <?php endif; // end have_comments() ?>
-
-<?php comment_form(); ?>
 
 </div><!-- #comments -->
