@@ -342,7 +342,7 @@ try{convertEntities(wpsc_adminL10n);}catch(e){};
 			echo "<p>WP e-Commerce Plugin is activated!</p>";
 			
 			//check wpsc settings dimensions for thumbnail (product_image) & product image (single_view_image)
-			if ( get_option( 'product_image_width' ) == 70 && get_option( 'product_image_height' ) == 70 && get_option( 'single_view_image_width' ) == 290 && get_option( 'single_view_image_height' ) == 290 ) {
+			if ( get_option( 'product_image_width' ) == 70 && get_option( 'product_image_height' ) == 70 && get_option( 'single_view_image_width' ) == 290 && get_option( 'single_view_image_height' ) == '' ) {
 				echo "<p>WP e-Commerce settings match ProGo Themes' Recommended Settings!</p>";
 			} else {
 				echo "<p><strong>A few WP e-Commerce Store Settings, like Product Thumbnail Sizes, differ from ProGo Themes' Recommended Settings</strong><br /><br />";
@@ -1105,7 +1105,7 @@ function progo_reset_wpsc($fromlink = false){
 	update_option( 'product_image_width', 70 );
 	update_option( 'product_image_height', 70 );
 	update_option( 'single_view_image_width', 290 );
-	update_option( 'single_view_image_height', 290 );
+	update_option( 'single_view_image_height', '' );
 	
 	update_option( 'wpsc_email_receipt', "Any items to be shipped will be processed as soon as possible, any items that can be downloaded can be downloaded using the links on this page. All prices include tax and postage and packaging where applicable.\n\n%product_list%%total_price%%find_us%" );
 	
