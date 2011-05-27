@@ -1,6 +1,8 @@
 #header-logo {
 	background-image: url(../images/logo_admin.png);
 	width: 60px;
+	height: 32px;
+	margin: 0;
 }
 #progo_welcome li ul {
 	margin-top: 6px;

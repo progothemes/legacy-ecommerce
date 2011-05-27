@@ -184,6 +184,7 @@ img.avatar { float: left; margin: 0 10px 10px 0 }
 
 #ftr { float: left; padding: 12px 6px 32px; background:url(../images/shade.png) no-repeat 0 0 }
 #ftr, #ftr a { color: #333 }
+.custombg #ftr, .custombg #ftr a { color: #fff }
 #ftr ul { float: left; margin: 0; padding: 0; list-style: none }
 #ftr ul li { float: left; margin: 0; padding: 0; list-style: none }
 #ftr .grid_8 { position: relative; left: 15px }

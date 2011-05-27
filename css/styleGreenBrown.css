@@ -10,13 +10,13 @@ ul#nav li.current-menu-item a, body.wpsc ul#nav li.wpsc a, body.blog ul#nav li.b
 
 #pagetop { background-image: url(../images/GreenBrown/pagetop.jpg) }
 #pagetop.slides { background: #fff url(../images/GreenBrown/slidetop.png) repeat-x 0 100%; color: #333 }
-.slide .productcol div.prodtitle { color: #630; }
+.slide .productcol div.prodtitle { color: #630 }
 .slide .productcol a.more-link { color: #333 }
-#pagetop.slides div.price { color: #898900; }
+#pagetop.slides div.price { color: #898900 }
 .slide input.wpsc_buy_button, .slide a.morebutton { background-image: url(../images/GreenBrown/btn_buyslide.png); color: #fff }
 #pagetop.slides .slide.page-title { background: url(../images/GreenBrown/pagetop.jpg) no-repeat 0 0; color: #fff; margin: 0; padding: 26px 27px }
 
 #fbar { background: #630 url(../images/GreenBrown/fbar.png) repeat-x 0 0 }
-#ftr, #ftr a { color: #fff; }
+#ftr, #ftr a { color: #fff }
 
 #wpadminbar .quicklinks #wp-admin-bar-progo_colorschemeGreenBrown a { font-weight: bold }

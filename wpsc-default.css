@@ -7,7 +7,7 @@ Author: ProGo Themes
 Author URI: http://www.progo.com
 */
 /*-----GENERAL-----*/
-.imagecol img { float: right; width: 290px; height: 290px; margin: 0 }
+.imagecol img { float: right; margin: 0 }
 .wpsc_hidden{ display:none }
 /*-----DEFAULT PRODUCT DISPLAY-----*/
 #default_products_page_container { width:100%; position:relative; line-height:1.2em }

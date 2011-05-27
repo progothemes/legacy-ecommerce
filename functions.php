@@ -32,23 +32,26 @@ if ( ! function_exists( 'progo_setup' ) ):
  * @since Ecommerce 1.0
  */
 function progo_setup() {
-	// This theme styles the visual editor with editor-style.css to match the theme style.
+	// This theme styles the visual editor with editor-style.css to match the theme style
 	add_editor_style( 'css/editor-style.css' );
 	
-	// This theme uses wp_nav_menu() in one location.
+	// This theme uses wp_nav_menu() in two locations
 	register_nav_menus( array(
 		'mainmenu' => 'Main Menu',
 		'footer' => 'Footer Links'
 	) );
 	
-	// This theme uses post thumbnails
+	// Add support for custom backgrounds
+	add_custom_background();
+	
+	// Add support for post thumbnails
 	add_theme_support( 'post-thumbnails' );
 	add_image_size( 'large', 596, 397, true );
 	add_image_size( 'prodL', 290, 290, true );
 	add_image_size( 'prod3', 190, 190, true );
 	add_image_size( 'thm', 70, 70, true );
 	
-	// add custom actions
+	// Add custom actions
 	add_action( 'admin_init', 'progo_admin_init' );
 	add_action( 'widgets_init', 'progo_ecommerce_widgets' );
 	add_action( 'admin_menu', 'progo_admin_menu_cleanup' );
@@ -176,6 +179,10 @@ function progo_summary( $morelink, $limit = 150 ) {
 }
 endif;
 if ( ! function_exists( 'progo_comments' ) ):
+/**
+ * walker function for comment display
+ * @since Ecommerce 1.0.9
+ */
 function progo_comments($comment, $args, $depth) {	
 	$GLOBALS['comment'] = $comment;
 	extract($args, EXTR_SKIP);
@@ -218,7 +225,59 @@ function progo_comments($comment, $args, $depth) {
 	<?php
 }
 endif;
+if ( ! function_exists( 'progo_product_image' ) ):
+/**
+ * wpsc_the_product_image does not actually care
+ * about the $width & $height args, at least as of 3.8.3,
+ * so this fixes that
+ *
+ * @param image (thumbnail) width
+ * @param image (thumbnail) height
+ * @param product (post) id
+ *
+ * @since Ecommerce 1.1.0
+ */
+function progo_product_image( $width='', $height='', $product_id='' ) {
+	if ( empty( $product_id ) )
+		$product_id = get_the_ID();
 
+	$imagesize = ( ( $width == '' ) && ( $height == '' ) ) ? 'large' : array( $width, $height );
+
+	$product = get_post( $product_id );
+
+	if ( $product->post_parent > 0 )
+		$product_id = $product->post_parent;
+
+	$attached_images = (array)get_posts( array(
+				'post_type' => 'attachment',
+				'numberposts' => 1,
+				'post_status' => null,
+				'post_parent' => $product_id,
+				'orderby' => 'menu_order',
+				'order' => 'ASC'
+			) );
+
+
+	$post_thumbnail_id = get_post_thumbnail_id( $product_id );
+
+	$src = wp_get_attachment_image_src( $post_thumbnail_id, $imagesize );
+
+	if ( ! empty( $src ) && is_string( $src[0] ) ) {
+		$src = $src[0];
+	} elseif ( ! empty( $attached_images ) ) {
+		$attached_image = wp_get_attachment_image_src( $attached_images[0]->ID, $imagesize );
+		$src = $attached_image[0];
+	} else {
+		$src = false;
+	}
+	
+	if ( is_ssl() && ! empty( $src ) )
+		$src = str_replace( 'http://', 'https://', $src );
+	$src = apply_filters( 'wpsc_product_image', $src );
+	
+	return $src;
+}
+endif;
 /********* Back-End Functions *********/
 if ( ! function_exists( 'progo_admin_menu_cleanup' ) ):
 /**
@@ -228,22 +287,53 @@ if ( ! function_exists( 'progo_admin_menu_cleanup' ) ):
 function progo_admin_menu_cleanup() {
 	global $menu;
 	global $submenu;
-	// move POSTS to farther down the line...
-	$menu[7] = $menu[5];
+	// wp-admin menu shuffle of CONTENT items
 	
-	add_menu_page( 'Installation', 'ProGo Themes', 'edit_theme_options', 'progo_admin', 'progo_admin_page', get_bloginfo( 'template_url' ) .'/images/logo_menu.png', 5 );
+	// move POSTS to farther down the line...
+	$menu[24] = $menu[5];
+	// move PRODUCTS first
+	if ( post_type_exists('wpsc-product') ) {
+		$id = progo_admin_menu_finder( $menu, 'edit.php?post_type=wpsc-product' );
+		if( $id > 0 ) {
+			$menu[7] = $menu[$id];
+			unset($menu[$id]);
+		}
+	}
+	// PAGES is next
+	$menu[8] = $menu[20];
+	unset($menu[20]);
+	// and what are LINKS anyways? after COMMENTS
+	$menu[26] = $menu[15];
+	unset($menu[15]);
+	
+	add_menu_page( 'Installation', 'ProGo', 'edit_theme_options', 'progo_admin', 'progo_admin_page', get_bloginfo( 'template_url' ) .'/images/logo_menu.png', 5 );
 	add_submenu_page( 'progo_admin', 'Installation', 'Installation', 'edit_theme_options', 'progo_admin', 'progo_admin_page' );
 	add_submenu_page( 'progo_admin', 'Shipping Settings', 'Shipping Settings', 'edit_theme_options', 'progo_shipping', 'progo_admin_page' );
 	add_submenu_page( 'progo_admin', 'Payment Gateway', 'Payment Gateway', 'edit_theme_options', 'progo_gateway', 'progo_admin_page' );
 	add_submenu_page( 'progo_admin', 'Appearance', 'Appearance', 'edit_theme_options', 'progo_appearance', 'progo_admin_page' );
 	add_submenu_page( 'progo_admin', 'Homepage Slides', 'Homepage Slides', 'edit_theme_options', 'progo_home_slides', 'progo_home_slides_page' );
-	add_submenu_page( 'progo_admin', 'Menus', 'Menus', 'edit_theme_options', 'nav-menus.php' );
-	add_submenu_page( 'progo_admin', 'Widgets', 'Widgets', 'edit_theme_options', 'widgets.php' );
+	//add_submenu_page( 'progo_admin', 'Menus', 'Menus', 'edit_theme_options', 'nav-menus.php' );
+	//add_submenu_page( 'progo_admin', 'Widgets', 'Widgets', 'edit_theme_options', 'widgets.php' );
 	
 	// add an extra dividing line...
 	$menu[6] = $menu[4];
 	
-	//wp_die('<pre>'. print_r($menu,true) .'</pre>');
+//	wp_die('<pre>'. print_r($menu,true) .'</pre>');
+}
+endif;
+if ( ! function_exists( 'progo_admin_menu_finder' ) ):
+/**
+ * helper function to find the $key for the menu item with given $slug
+ * @since Ecommerce 1.1.0
+ */
+function progo_admin_menu_finder($menu, $slug) {
+	$id = 0;
+	foreach ( $menu as $k => $v ) {
+		if( $v[2] == $slug ) {
+			$id = $k;
+		}
+	}
+	return $id;
 }
 endif;
 if ( ! function_exists( 'progo_admin_page_tabs' ) ):
@@ -903,7 +993,6 @@ function progo_admin_init() {
 	}
 }
 endif;
-
 if ( ! function_exists( 'progo_ecommerce_widgets' ) ):
 /**
  * registers a sidebar area for the WIDGETS page
@@ -1011,7 +1100,6 @@ function progo_metabox_cleanup() {
 }
 endif;
 add_action( 'do_meta_boxes', 'progo_metabox_cleanup' );
-
 if ( ! function_exists( 'progo_sidebar_box' ) ):
 /**
  * outputs html for "Sidebar" meta box on EDIT PAGE
@@ -1248,6 +1336,10 @@ function progo_options_defaults() {
 	// set large image size
 	update_option( 'large_size_w', 650 );
 	update_option( 'large_size_h', 413 );
+	
+	// no SHARETHIS automatically all over the place?
+	update_option( 'st_add_to_content', 'no' );
+	update_option( 'st_add_to_page', 'no' );
 }
 if ( ! function_exists( 'progo_validate_homeslides' ) ):
 /**
@@ -1691,7 +1783,7 @@ function progo_field_frontpage() {
 	);
 	$msgs = array(
 		'posts' => '<a href="edit.php">Edit Posts Here</a>',
-		'featured' => '<a href="edit.php?post_type=wpsc-product">Designate Featured Products Here</a>',
+		'featured' => 'Designate Featured Products by clicking on the Star in the Featured column on your <a href="edit.php?post_type=wpsc-product">Products Page</a>',
 		'page' => '<a href="post.php?post='. get_option('progo_homepage_id') .'&action=edit">Edit Homepage Content Here</a>'
 	);
 	$msg = '';
@@ -1777,6 +1869,11 @@ function progo_bodyclasses($classes) {
 			$classes[] = 'wpsc';
 		}
 	}
+	// add another class to body if we have a custom bg image
+	if ( get_background_image() != '' ) {
+		$classes[] = 'custombg';
+	}
+	
 	return $classes;
 }
 endif;
