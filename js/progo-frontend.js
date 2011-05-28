@@ -1,5 +1,5 @@
 // js for front end of ProGo Themes Ecommerce sites
-var progo_cycle, progo_timing;
+var progo_cycle, progo_timing, progo_holdup = false;
 
 function proGoTwitterCallback(twitters) {
   for (var i=0; i<twitters.length; i++){
@@ -69,13 +69,20 @@ function progo_homecycle( lnk ) {
 			height: nex.outerHeight(true)
 		}, 600, function() {
 			jQuery('#pagetop .ar a').removeClass('off');
+			progo_scrollcheck();
 		});
-		
-		if( progo_timing > 0 ) {
-			progo_cycle = setTimeout("progo_homecycle(false)",progo_timing); 
-		}
 	}
 	return false;
+}
+
+function progo_scrollcheck() {
+	var ptop = jQuery('#pagetop');
+	var fset = ptop.offset();
+	var wscrolltop = jQuery(window).scrollTop();
+	clearTimeout(progo_cycle);
+	if( ( progo_timing > 0 ) && ( wscrolltop < fset.top ) ) {
+		progo_cycle = setTimeout("progo_homecycle(false)",progo_timing);
+	}
 }
 
 jQuery(function($) {
@@ -83,8 +90,12 @@ jQuery(function($) {
 	if(progo_ptop.hasClass('slides')) {
 		progo_ptop.children('div.ar').children('a').click(function() { return progo_homecycle($(this)); });//.next().click(function() { return progo_homecycle(false); });
 		progo_ptop.height(progo_ptop.children('.slide.on').height()).addClass('sliding');
-		if(progo_timing > 0) {
-			progo_cycle = setTimeout("progo_homecycle(false)",progo_timing);
-		}
+		$(window).bind('scroll.progo',progo_scrollcheck).trigger('scroll.progo');
 	}
+	
+	$('#nav ul').prev().addClass('first').bind('mouseover',function() {
+		$(this).parent().addClass('hover');
+	}).parent().bind('mouseleave',function() {
+		$(this).removeClass('hover');
+	});
 });

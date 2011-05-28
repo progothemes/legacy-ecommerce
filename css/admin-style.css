@@ -1,9 +1,10 @@
+#wphead { height: 46px }
 #header-logo {
 	background-image: url(../images/logo_admin.png);
 	width: 60px;
 	height: 32px;
-	margin: 0;
 }
+#wphead h1 { font-size: 22px }
 #progo_welcome li ul {
 	margin-top: 6px;
 	list-style: inside;

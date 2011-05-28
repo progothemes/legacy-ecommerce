@@ -4,7 +4,7 @@ body { background: #c3c110 url(../images/GreenBrown/bg.png) repeat-x 0 0 }
 
 ul#nav { background-image: url(../images/GreenBrown/nav.png) }
 ul#nav li { background-image:url(../images/GreenBrown/navli.png) }
-ul#nav li.current-menu-item a, body.wpsc ul#nav li.wpsc a, body.blog ul#nav li.blog a { background: url(../images/GreenBrown/navon.png) repeat-x 0 0 }
+ul#nav li.current-menu-item a.first, body.wpsc ul#nav li.wpsc a.first, body.blog ul#nav li.blog a.first { background: url(../images/GreenBrown/navon.png) repeat-x 0 0 }
 
 #main input.wpsc_buy_button, .slide input.wpsc_buy_button, .slide a.morebutton, a.gocheckout, #main input#commentsubmit { background-image: url(../images/GreenBrown/btn_buy.png) }
 

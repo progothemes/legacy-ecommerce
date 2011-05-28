@@ -1003,7 +1003,7 @@ function progo_ecommerce_widgets() {
 	register_sidebar(array(
 		'name' => 'Main Sidebar',
 		'id' => 'main',
-		'description' => 'Main Sidebar for most of your site\'s pages',
+		'description' => 'Standard right column sidebar area',
 		'before_widget' => '<div class="block %1$s %2$s">',
 		'after_widget' => '</div></div>',
 		'before_title' => '<h3 class="title"><span class="spacer">',
@@ -1021,7 +1021,7 @@ function progo_ecommerce_widgets() {
 	register_sidebar(array(
 		'name' => 'Checkout',
 		'id' => 'checkout',
-		'description' => 'The CHECKOUT page could be even more streamlined',
+		'description' => 'Streamline your Checkout process',
 		'before_widget' => '<div class="block %1$s %2$s">',
 		'after_widget' => '</div></div>',
 		'before_title' => '<h3 class="title"><span class="spacer">',
@@ -1030,7 +1030,7 @@ function progo_ecommerce_widgets() {
 	register_sidebar(array(
 		'name' => 'Contact',
 		'id' => 'contact',
-		'description' => 'An optional special Sidebar for your Contact or About page(s)',
+		'description' => 'Optional Contact/About page sidebar',
 		'before_widget' => '<div class="block %1$s %2$s">',
 		'after_widget' => '</div></div>',
 		'before_title' => '<h3 class="title"><span class="spacer">',
@@ -1048,7 +1048,7 @@ function progo_ecommerce_widgets() {
 	register_sidebar(array(
 		'name' => 'Footer',
 		'id' => 'footer',
-		'description' => 'The Footer area has room for widgets as well',
+		'description' => 'This Sidebar appears at the bottom of each Page',
 		'before_widget' => '<div class="fblock %1$s %2$s">',
 		'after_widget' => '</div>',
 		'before_title' => '<div class="title">',

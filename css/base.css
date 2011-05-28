@@ -67,10 +67,14 @@ table#logo img { float: left }
 a#logo .g { display: block; width: 100%; height: 37px; position: absolute; top: 9px; left: 0; background: url(../images/titlegradient.png) repeat-x 0 0 }
 #slogan { float: left; margin: 45px 0 0; font-size: 14px; color: #999 }
 ul#nav { display:block; width: 100%; height: 35px; margin: 0; padding: 0; list-style: none; position: absolute; bottom: 0; left: 0; background: url(../images/nav.png) repeat-x 0 0 }
-ul#nav li { float: left; width: 132px; padding-right: 1px; background: url(../images/navli.png) no-repeat 100% 0 }
+ul#nav li { float: left; position: relative; width: 132px; padding-right: 1px; background: url(../images/navli.png) no-repeat 100% 0 }
 ul#nav li a { float: left; width: 132px; text-align: center; height: 27px; color: #fff; font-size: 14px; padding: 8px 0 0 }
-ul#nav li.current-menu-item a, body.wpsc ul#nav li.wpsc a, body.blog ul#nav li.blog a { background: url(../images/navon.png) no-repeat 0 0; font-weight: bold }
+ul#nav li.current-menu-item a.first, body.wpsc ul#nav li.wpsc a.first, body.blog ul#nav li.blog a.first { background: url(../images/navon.png) no-repeat 0 0; font-weight: bold }
 ul#nav li a:hover { font-weight: bold; text-decoration:none }
+ul#nav ul { display: none; position: absolute; top: 35px; left: -1px; width: 132px; list-style: none; background: rgba(255, 255, 255, 0.97); border: 1px solid #dfdfdf; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); z-index: 3; margin: 0; }
+ul#nav ul li { float: none; display: block; padding: 0; background: none }
+ul#nav ul li a { float: none; display: block; padding: 0; background: none !important; color: #333; font-size: 13px; line-height: 28px; height: 28px; padding: 0 10px; text-align: left }
+ul#nav li.hover ul { display: block }
 #hdr .hblock.support { float: right; margin-top: 40px }
 #hdr .hblock.support h3 { float: left; font-size: 17px; font-weight: normal; margin: 0 10px 0 0; color: #666 }
 #hdr .hblock.support .inside { float:left; font-size: 17px; color: #333 }
@@ -82,7 +86,7 @@ ul#nav li a:hover { font-weight: bold; text-decoration:none }
 #pagetop .slide { display: none; float: left; width: 960px }
 #pagetop .slide.page-title { width: 906px } 
 #pagetop .slide.on { display: block }
-#pagetop.sliding .slide { display: block; position: absolute; top: 0; left: 960px }
+#pagetop.sliding .slide { display: block; position: absolute; top: 0; left: 960px; z-index: 1 }
 #pagetop.sliding .slide.on { left: 0 }
 #pagetop .slide a.product_image { float: left; width: 290px; height: 290px; padding: 7px 21px 8px 19px; margin: 13px 0 12px; background:url(../images/prodimg.png) no-repeat 0 0 }
 
