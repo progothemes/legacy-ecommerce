@@ -1,5 +1,5 @@
 // js for front end of ProGo Themes Ecommerce sites
-var progo_cycle, progo_timing, progo_holdup = false;
+var progo_cycle, progo_timing;
 
 function proGoTwitterCallback(twitters) {
   for (var i=0; i<twitters.length; i++){
@@ -82,6 +82,9 @@ function progo_scrollcheck() {
 	clearTimeout(progo_cycle);
 	if( ( progo_timing > 0 ) && ( wscrolltop < fset.top ) ) {
 		progo_cycle = setTimeout("progo_homecycle(false)",progo_timing);
+		//console.log('scrollon');
+	} else {
+		//console.log('noscroll');
 	}
 }
 

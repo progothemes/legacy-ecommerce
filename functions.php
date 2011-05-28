@@ -38,7 +38,7 @@ function progo_setup() {
 	// This theme uses wp_nav_menu() in two locations
 	register_nav_menus( array(
 		'mainmenu' => 'Main Menu',
-		'footer' => 'Footer Links'
+		'ftrlnx' => 'Footer Links'
 	) );
 	
 	// Add support for custom backgrounds
@@ -888,8 +888,8 @@ function progo_admin_init() {
 		
 		// create new menus in the Menu system
 		$new_menus = array(
-			'mainmenu' => 'Main Menu',
-			'footer' => 'Footer Links'
+			'ftrlnx' => 'Footer Links',
+			'mainmenu' => 'Main Menu'
 		);
 		$aok = 1;
 		foreach ( $new_menus as $k => $m ) {
@@ -930,19 +930,19 @@ function progo_admin_init() {
 				'title' => __( 'Terms & Conditions', 'progo' ),
 				'content' => "<h3>List your Terms and Conditions here</h3>$lipsum",
 				'id' => '',
-				'menu' => 'footer'
+				'menu' => 'ftrlnx'
 			),
 			'privacy' => array(
 				'title' => __( 'Privacy Policy', 'progo' ),
 				'content' => "<h3>Put your Privacy Policy here</h3>$lipsum",
 				'id' => '',
-				'menu' => 'footer'
+				'menu' => 'ftrlnx'
 			),
 			'customer-service' => array(
 				'title' => __( 'Customer Service', 'progo' ),
 				'content' => "<h3>This Page could have Customer Service info on it</h3>$lipsum",
 				'id' => '',
-				'menu' => 'footer'
+				'menu' => 'ftrlnx'
 			)
 		);
 		foreach ( $new_pages as $slug => $page ) {
@@ -1047,7 +1047,7 @@ function progo_ecommerce_widgets() {
 	));
 	register_sidebar(array(
 		'name' => 'Footer',
-		'id' => 'footer',
+		'id' => 'fbar',
 		'description' => 'This Sidebar appears at the bottom of each Page',
 		'before_widget' => '<div class="fblock %1$s %2$s">',
 		'after_widget' => '</div>',
