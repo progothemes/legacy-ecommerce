@@ -1997,7 +1997,7 @@ function progo_update_check($data) {
 		
 	if ( !empty( $response ) ) {
 		// got response back. check authcode
-		//wp_die('response:<br /><pre>'. print_r($response,true) .'</pre><br /><br />apikey: '. $apikey );
+		// wp_die('response:<br /><pre>'. print_r($response,true) .'</pre><br /><br />apikey: '. $apikey );
 		// only save AUTHCODE if APIKEY is not blank.
 		if ( $apikey != '' ) {
 			update_option( 'progo_ecommerce_apiauth', $response[authcode] );
