@@ -90,7 +90,7 @@ ul#nav li.hover ul { display: block }
 #pagetop.sliding .slide.on { left: 0 }
 #pagetop .slide a.product_image { float: left; width: 290px; height: 290px; padding: 7px 21px 8px 19px; margin: 13px 0 12px; background:url(../images/prodimg.png) no-repeat 0 0 }
 
-.ar { float: right; display: block; width: 112px; height: 24px; position: absolute; bottom: 0; right: 10px; background: url(../images/ar.png) no-repeat 0 0 }
+.ar { float: right; display: block; width: 112px; height: 24px; position: absolute; bottom: 0; right: 10px; z-index:2; background: url(../images/ar.png) no-repeat 0 0 }
 .ar a { float: left; width: 56px; height: 24px; background: url(../images/fx.gif) repeat 0 0 }
 
 #main, #main input, #main textarea { color: #333; font-size: 13px; line-height: 120% }

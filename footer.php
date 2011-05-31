@@ -11,7 +11,9 @@
  */
 ?>
 <div id="fbar">
-<?php dynamic_sidebar('fbar'); ?>
+<?php if(!dynamic_sidebar('fbar')) {
+	wp_nav_menu( array( 'container_class' => 'fblock widget_nav_menu', 'theme_location' => 'mainmenu' ) );
+} ?>
 </div>
 	</div><!-- #page -->
 	<div id="ftr" class="container_12">

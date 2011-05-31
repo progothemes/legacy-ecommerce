@@ -96,7 +96,7 @@ jQuery(function($) {
 		$(window).bind('scroll.progo',progo_scrollcheck).trigger('scroll.progo');
 	}
 	
-	$('#nav ul').prev().addClass('first').bind('mouseover',function() {
+	$('#nav > li > a').addClass('first').bind('mouseover',function() {
 		$(this).parent().addClass('hover');
 	}).parent().bind('mouseleave',function() {
 		$(this).removeClass('hover');

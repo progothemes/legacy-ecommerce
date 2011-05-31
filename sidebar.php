@@ -32,7 +32,13 @@ if ( ! dynamic_sidebar( $sidebar ) ) :
     <div class="inside">
         <div class="shopping-cart-wrapper" id="sliding_cart">
         <?php
-            include( wpsc_get_template_file_path( 'wpsc-cart_widget.php' ) );
+			if ( function_exists('wpsc_get_template_file_path') ) {
+            	include( wpsc_get_template_file_path( 'wpsc-cart_widget.php' ) );
+			} elseif ( current_user_can( 'activate_plugins' ) ) {
+				echo '<p>Install &amp; Activate the WP e-Commerce Plugin to enable your Store &amp; Shopping Cart.</p>';
+			} else {
+				echo '<p>Coming soon...</p>';
+			}
         ?>
         </div>
     </div>
