@@ -69,6 +69,8 @@ function progo_setup() {
 	add_filter( 'site_transient_update_themes', 'progo_update_check' );
 	add_filter( 'wpsc_pre_transaction_results', 'progo_prepare_transaction_results' );
 	add_filter( 'wp_mail_content_type', 'progo_mail_content_type' );
+	add_filter('custom_menu_order', 'progo_admin_menu_order');
+	add_filter('menu_order', 'progo_admin_menu_order');
 	
 	if ( !is_admin() ) {
 		// brick it if not activated
@@ -299,15 +301,10 @@ function progo_admin_menu_cleanup() {
 	$sub[] = $sub1;
 	$submenu['themes.php'] = $sub;
 	
-	// reorder the CONTENT menus
-	// from : 5 Posts, 10 Media, 15 Links, 20 Pages, 25 Comments, 26 Products
-	// to : Products, Pages, Posts, Comments, Media, Links
-	
-	
 //	wp_die('<pre>'. print_r($menu,true) .'</pre>');
-	
 }
 endif;
+if ( ! function_exists( 'progo_admin_menu_order' ) ):
 function progo_admin_menu_order($menu_ord) {
     if (!$menu_ord) return true;
     return array(
@@ -321,9 +318,7 @@ function progo_admin_menu_order($menu_ord) {
      'link-manager.php' // this is the default POST admin menu
  );
 }
-add_filter('custom_menu_order', 'progo_admin_menu_order');
-add_filter('menu_order', 'progo_admin_menu_order');
-
+endif;
 if ( ! function_exists( 'progo_admin_menu_finder' ) ):
 /**
  * helper function to find the $key for the menu item with given $slug
@@ -719,7 +714,6 @@ function progo_admin_init() {
 	
 	if ( $pagenow == 'admin.php' && isset( $_GET['page'] ) ) {
 		if ( $_GET['page'] == 'progo_admin' ) {
-//			wp_die('hi');
 			wp_redirect( admin_url( 'themes.php?page=progo_admin' ) );
 		}
 	}
