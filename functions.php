@@ -1946,3 +1946,9 @@ function progo_mail_content_type( $content_type ) {
 	return 'text/html';
 }
 endif;
+
+if(!function_exists('progo_nomenu_cb')):
+function progo_nomenu_cb() {
+	return '<ul></ul>';
+}
+endif;
