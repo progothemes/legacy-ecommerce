@@ -416,7 +416,7 @@ try{convertEntities(wpsc_adminL10n);}catch(e){};
             <td><?php
 			//check wpsc settings dimensions for thumbnail (product_image) & product image (single_view_image)
 			if ( get_option( 'product_image_width' ) == 70 && get_option( 'product_image_height' ) == 70 && get_option( 'single_view_image_width' ) == 290 && get_option( 'single_view_image_height' ) == '' ) {
-				$wpec = '<a href="http://localhost/wp-admin/options-general.php?page=wpsc-settings&tab=';
+				$wpec = 'options-general.php?page=wpsc-settings&tab=';
 				$tabs = array(
 					"General",
 					"Presentation",
@@ -427,7 +427,7 @@ try{convertEntities(wpsc_adminL10n);}catch(e){};
 				);
 				for ( $i = 0; $i < count($tabs); $i++ ) {
 					$l = ($tabs[$i] == "Payment Gateway" ? "gateway" : strtolower($tabs[$i]) );
-					echo ( $i > 0 ? ' &nbsp;|&nbsp; ' : '' ). $wpec . $l .'">'. $tabs[$i] .'</a>';
+					echo ( $i > 0 ? ' &nbsp;|&nbsp; ' : '' ). '<a href="'. admin_url( $wpec . $l ) .'" target="_blank">'. $tabs[$i] .'</a>';
 				}
 			} else {
 				echo "<p><strong>A few WP e-Commerce Store Settings, like Product Thumbnail Sizes, differ from ProGo Themes' Recommended Settings</strong></p><p>";

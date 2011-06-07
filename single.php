@@ -13,7 +13,7 @@ get_header(); ?>
 <h1 class="page-title"><?php echo get_the_title( get_option('progo_blog_id') ); ?></h1>
 <?php do_action('progo_pagetop'); ?>
 </div>
-<div id="main" role="main" class="grid_8">
+<div id="main" class="grid_8">
 <?php if ( have_posts() ) while ( have_posts() ) : the_post(); ?>
 <div id="post-<?php the_ID(); ?>" <?php post_class(); ?>>
 <h2 class="entry-title"><?php the_title(); ?></h2>

@@ -73,7 +73,7 @@ progo_timing = <?php $hsecs = absint($options['homeseconds']); echo $hsecs > 0 ?
 }
 do_action('progo_pagetop'); ?>
 </div>
-<div id="main" role="main" class="grid_8">
+<div id="main" class="grid_8">
 <?php
 rewind_posts();
 switch ( $options['frontpage'] ) {
