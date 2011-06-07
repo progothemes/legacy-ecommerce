@@ -192,6 +192,7 @@ img.avatar { float: left; margin: 0 10px 10px 0 }
 #ftr ul { float: left; margin: 0; padding: 0; list-style: none }
 #ftr ul li { float: left; margin: 0; padding: 0; list-style: none }
 #ftr .grid_8 { position: relative; left: 15px }
+#ftr .grid_8.nom { top: 5px }
 #ftr .right { text-align: right; margin-top: 5px }
 #ftr .right img { float: right; margin: -5px 7px 0 5px }
 
