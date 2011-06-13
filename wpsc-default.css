@@ -173,7 +173,7 @@ table.wpsc_checkout_table tr td { padding: 10px 8px; font-size: 13px; vertical-a
 table.wpsc_checkout_table select#region { margin: 0 10px }
 table.wpsc_checkout_table tr td.wpsc_totals { text-align: right }
 table.wpsc_checkout_table tr.total_price td { font-size: 16px; line-height:20px; color: #fff; background-color: #333 }
-body.wpsc-shopping-cart #main h4 { padding: 9px 8px; border: 1px solid #ccc; background: url(images/checkh.png) repeat-x 0 100%; width: 604px; line-height:22px }
+body.wpsc-shopping-cart #main h4 { padding: 9px 7px; border: 1px solid #ccc; background: url(images/checkh.png) repeat-x 0 100%; width: 100%; line-height:22px }
 #main table.wpsc_checkout_table td h4 { margin:0 -8px }
 div.wpsc_make_purchase { float: left; width: 100%; margin: 0 0 20px; padding: 20px 0; border-top: 1px solid #ccc }
 div.wpsc_make_purchase .req { float: left; margin: 6px 0 0 14px; font-size: 12px }
