@@ -371,35 +371,6 @@ try{convertEntities(wpsc_adminL10n);}catch(e){};
 		do_settings_sections( 'progo_hometop' );
 		?>
         <p class="submit"><input type="submit" value="Save Changes" class="button-primary" /></p>
-        <h3>Additional Options</h3>
-        <table class="form-table">
-        <?php
-		$addl = array(
-			'Homepage Slides' => array(
-				'url' => 'themes.php?page=progo_home_slides',
-				'btn' => 'Manage Homepage Slides',
-				'desc' => ''
-			),
-			'Background' => array(
-				'url' => 'themes.php?page=custom-background',
-				'btn' => 'Customize Your Background',
-				'desc' => 'Change the underlying color, or upload your own custom background image.'
-			),
-			'Menus' => array(
-				'url' => 'nav-menus.php',
-				'btn' => 'Manage Menu Links',
-				'desc' => 'Control the links in the Header &amp; Footer area of your site.'
-			),
-			'Widgets' => array(
-				'url' => 'widgets.php',
-				'btn' => 'Manage Widgets',
-				'desc' => 'Customize what appears in the right column on various areas of your site.'
-			)
-		);
-		foreach ( $addl as $k => $v ) {
-			echo '<tr><th scope="row">'. wp_kses($k,array()) .'</th><td><a href="'. esc_url($v['url']) .'" class="button">'. wp_kses($v['btn'],array()) .' &raquo;</a> <span class="description">'. wp_kses($v['desc'],array()) .'</span></td></tr>';
-		} ?>
-        </table><p><br /></p>
         <h3>WP e-Commerce</h3>
 		<p>Your ProGo <em>Ecommerce</em> Theme works hand-in-hand with the <strong>WP e-Commerce</strong> Plugin.</p>
 		<?php
@@ -443,6 +414,35 @@ try{convertEntities(wpsc_adminL10n);}catch(e){};
 		?>
 		<p><br /></p>
 		</form>
+        <h3>Additional Options</h3>
+        <table class="form-table">
+        <?php
+		$addl = array(
+			'Homepage Slides' => array(
+				'url' => 'themes.php?page=progo_home_slides',
+				'btn' => 'Manage Homepage Slides',
+				'desc' => ''
+			),
+			'Background' => array(
+				'url' => 'themes.php?page=custom-background',
+				'btn' => 'Customize Your Background',
+				'desc' => 'Change the underlying color, or upload your own custom background image.'
+			),
+			'Menus' => array(
+				'url' => 'nav-menus.php',
+				'btn' => 'Manage Menu Links',
+				'desc' => 'Control the links in the Header &amp; Footer area of your site.'
+			),
+			'Widgets' => array(
+				'url' => 'widgets.php',
+				'btn' => 'Manage Widgets',
+				'desc' => 'Customize what appears in the right column on various areas of your site.'
+			)
+		);
+		foreach ( $addl as $k => $v ) {
+			echo '<tr><th scope="row">'. wp_kses($k,array()) .'</th><td><a href="'. esc_url($v['url']) .'" class="button">'. wp_kses($v['btn'],array()) .' &raquo;</a> <span class="description">'. wp_kses($v['desc'],array()) .'</span></td></tr>';
+		} ?>
+        </table><p><br /></p>
         <h3>Recommended Plugins</h3>
                 <?php if ( function_exists( 'alex_recommends_widget' ) ) {
 					alex_recommends_widget();
@@ -1191,7 +1191,8 @@ function progo_options_defaults() {
 			"copyright" => "© Copyright 2011, All Rights Reserved",
 			"credentials" => "",
 			"companyinfo" => "We sincerely thank you for your patronage.\nThe Our Company Staff\n\nOur Company, Inc.\n1234 Address St\nSuite 43\nSan Diego, CA 92107\n619-555-5555",
-			"frontpage" => get_option( 'show_on_front' )
+			"frontpage" => get_option( 'show_on_front' ),
+			"homeseconds" => 6
 		);
 		update_option( 'progo_options', $def );
 	}
