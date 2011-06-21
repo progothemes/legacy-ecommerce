@@ -60,7 +60,6 @@ function progo_setup() {
 	add_action( 'save_post', 'progo_save_meta' );
 	add_action('wp_print_scripts', 'progo_add_scripts');
 	add_action('wp_print_styles', 'progo_add_styles');
-	add_action( 'admin_notices', 'progo_admin_notices' );
 	add_action( 'wp_before_admin_bar_render', 'progo_admin_bar_render' );
 	
 	// add custom filters
@@ -72,8 +71,10 @@ function progo_setup() {
 	add_filter('custom_menu_order', 'progo_admin_menu_order');
 	add_filter('menu_order', 'progo_admin_menu_order');
 	
-	if ( !is_admin() ) {
-		// brick it if not activated
+	if ( is_admin() ) {
+		add_action( 'admin_notices', 'progo_admin_notices' );
+	} else {
+		// brick site if theme is not activated
 		if ( get_option( 'progo_ecommerce_apiauth' ) != 100 ) {
 			add_action( 'template_redirect', 'progo_to_twentyten' );
 		}
@@ -366,6 +367,9 @@ try{convertEntities(wpsc_adminL10n);}catch(e){};
 	<form action="options.php" method="post" enctype="multipart/form-data"><?php
 		settings_fields( 'progo_options' );
 		do_settings_sections( 'progo_api' );
+		?>
+        <p class="submit"><input type="submit" value="Save Changes" class="button-primary" /></p>
+        <?php
 		do_settings_sections( 'progo_theme' );
 		do_settings_sections( 'progo_info' );
 		do_settings_sections( 'progo_hometop' );
@@ -384,26 +388,7 @@ try{convertEntities(wpsc_adminL10n);}catch(e){};
 			?><table class="form-table">
             <tr valign="top">
             <th scope="row">Store Settings</th>
-            <td><?php
-			//check wpsc settings dimensions for thumbnail (product_image) & product image (single_view_image)
-			if ( get_option( 'product_image_width' ) == 70 && get_option( 'product_image_height' ) == 70 && get_option( 'single_view_image_width' ) == 290 && get_option( 'single_view_image_height' ) == '' ) {
-				$wpec = 'options-general.php?page=wpsc-settings&tab=';
-				$tabs = array(
-					"General",
-					"Presentation",
-					"Taxes",
-					"Shipping",
-					"Payment Gateway",
-					"Checkout"
-				);
-				for ( $i = 0; $i < count($tabs); $i++ ) {
-					$l = ($tabs[$i] == "Payment Gateway" ? "gateway" : strtolower($tabs[$i]) );
-					echo ( $i > 0 ? ' &nbsp;|&nbsp; ' : '' ). '<a href="'. admin_url( $wpec . $l ) .'" target="_blank">'. $tabs[$i] .'</a>';
-				}
-			} else {
-				echo "<p><strong>A few WP e-Commerce Store Settings, like Product Thumbnail Sizes, differ from ProGo Themes' Recommended Settings</strong></p><p>";
-				echo '<a href="'.wp_nonce_url("admin.php?progo_admin_action=reset_wpsc", 'progo_reset_wpsc').'" class="button-primary">Click Here to Reset</a></p>';
-			} ?></td></tr>
+            <td><?php progo_ecommerce_reccheck( true ); ?></td></tr>
             </table><?php
         } else {
 			$lnk = ( function_exists( 'wp_nonce_url' ) ) ? wp_nonce_url('plugins.php?action=activate&amp;plugin=wp-e-commerce/wp-shopping-cart.php&amp;plugin_status=all&amp;paged=1', 'activate-plugin_wp-e-commerce/wp-shopping-cart.php') : 'plugins.php';
@@ -694,6 +679,12 @@ function progo_admin_init() {
 			case 'reset_logo':
 				progo_reset_logo();
 				break;
+			case 'no_taxes':
+				progo_no_taxes();
+				break;
+			case 'no_shipping':
+				progo_no_shipping();
+				break;
 			case 'colorBlackGrey':
 				progo_colorscheme_switch( 'BlackGrey' );
 				break;
@@ -708,6 +699,12 @@ function progo_admin_init() {
 				break;
 			case 'colorGreenBrown':
 				progo_colorscheme_switch( 'GreenBrown' );
+				break;
+			case 'permalink_recommended':
+				progo_permalink_check( 'recommended' );
+				break;
+			case 'permalink_default':
+				progo_permalink_check( 'default' );
 				break;
 		}
 	}
@@ -1092,6 +1089,49 @@ function progo_reset_logo(){
 	update_option( 'progo_settings_just_saved', 1 );
 	
 	wp_redirect( get_option('siteurl') .'/wp-admin/themes.php?page=progo_admin' );
+	exit();
+}
+endif;
+if ( ! function_exists( 'progo_no_taxes' ) ):
+/**
+ * @since Ecommerce 1.1.23
+ */
+function progo_no_taxes(){
+	check_admin_referer( 'progo_no_taxes' );
+	
+	update_option( 'progo_ecommerce_notaxes', true );
+	
+	wp_redirect( admin_url("options-general.php?page=wpsc-settings&tab=taxes") );
+	exit();
+}
+endif;
+if ( ! function_exists( 'progo_no_shipping' ) ):
+/**
+ * @since Ecommerce 1.1.23
+ */
+function progo_no_shipping(){
+	check_admin_referer( 'progo_no_shipping' );
+	
+	update_option( 'progo_ecommerce_noshipping', true );
+	
+	wp_redirect( admin_url("options-general.php?page=wpsc-settings&tab=shipping") );
+	exit();
+}
+endif;
+ //recommended | default :: progo_permalink_check
+if ( ! function_exists( 'progo_permalink_check' ) ):
+/**
+ * @since Ecommerce 1.1.23
+ */
+function progo_permalink_check( $arg ){
+	check_admin_referer( 'progo_permalink_check' );
+	
+	if ( $arg == 'recommended' ) {
+		update_option( 'permalink_structure', '/%year%/%monthnum%/%day%/%postname%/' );
+	} elseif ( $arg == 'default' ) {
+		update_option( 'progo_permalink_checked', true );
+	}
+	wp_redirect( admin_url("options-permalink.php") );
 	exit();
 }
 endif;
@@ -1771,6 +1811,163 @@ function progo_menuclasses($items) {
 	return $items;
 }
 endif;
+
+if ( ! function_exists( 'progo_ecommerce_reccheck' ) ):
+/**
+ * check wpsc settings dimensions for thumbnail (product_image) & product image (single_view_image)
+ * @since Ecommerce 1.1.23
+ */
+function progo_ecommerce_reccheck( $echo ) {
+	if ( get_option( 'product_image_width' ) == 70 && get_option( 'product_image_height' ) == 70 && get_option( 'single_view_image_width' ) == 290 && get_option( 'single_view_image_height' ) == '' ) {
+		if ( $echo === true ) {
+			$wpec = 'options-general.php?page=wpsc-settings&tab=';
+			$tabs = array(
+				"General",
+				"Presentation",
+				"Taxes",
+				"Shipping",
+				"Payment Gateway",
+				"Checkout"
+			);
+			for ( $i = 0; $i < count($tabs); $i++ ) {
+				$l = ($tabs[$i] == "Payment Gateway" ? "gateway" : strtolower($tabs[$i]) );
+				echo ( $i > 0 ? ' &nbsp;|&nbsp; ' : '' ). '<a href="'. admin_url( $wpec . $l ) .'" target="_blank">'. $tabs[$i] .'</a>';
+			}
+		} else {
+			return true;
+		}
+	} else {
+		if ( $echo === true ) {
+			echo "<p><strong>A few WP e-Commerce Store Settings, like Product Thumbnail Sizes, differ from ProGo Themes' Recommended Settings</strong></p><p>";
+			echo '<a href="'.wp_nonce_url("admin.php?progo_admin_action=reset_wpsc", 'progo_reset_wpsc').'" class="button-primary">Click Here to Reset</a></p>';
+		} else {
+			return false;
+		}
+	}
+}
+endif;			
+if ( ! function_exists( 'progo_ecommerce_completeness' ) ):
+/**
+ * check which step / % complete current site is at
+ * @since Ecommerce 1.1.23
+ */
+function progo_ecommerce_completeness( $onstep ) {
+	if ( $onstep < 1 || $onstep > 100 ) {
+		$onstep = 1;
+	}
+	
+	if ( $onstep < 21 ) { // ok check it
+		switch($onstep) {
+			case 1: // check API auth
+				$apiauth = get_option( 'progo_ecommerce_apiauth', true );
+				if( $apiauth == '100' ) {
+					$onstep = 2;
+				}
+				break;
+			case 2: // WP e-Commerce INSTALLED
+				$plugs = get_plugins();
+				if( isset( $plugs['wp-e-commerce/wp-shopping-cart.php'] ) == true ) {
+					$onstep = 3;
+				}
+				break;
+			case 3: // WP e-Commerce ACTIVATED
+				if ( is_plugin_active( 'wp-e-commerce/wp-shopping-cart.php' ) ) {
+					$onstep = 4;
+				}
+				break;
+			case 4: // ProGo Recommended Settings
+				if ( progo_ecommerce_reccheck(false) === true ) {
+					$onstep = 5;
+				}
+				break;
+			case 5: // WPEC Store Location
+				$base_country = get_option( 'base_country', '' );
+				if ( $base_country !=='' ) {
+					$onstep = 6;
+				}
+				break;
+			case 6: // WPEC Currency
+				// now that base_country is set, if CURRENCY = 156 = NZ$ , & base_country != NZ, then needs adjusting
+				$base_country = get_option( 'base_country', '' );
+				$currency = absint( get_option( 'currency_type' ) );
+				if ( ( $currency==156 && $base_country=='NZ' ) || ( $currency != 156 ) ) {
+					$onstep = 7;
+				}
+				break;
+			case 7: // WPEC Tax Settings
+				$notaxes = get_option('progo_ecommerce_notaxes');
+				$wpec_taxes_enabled = get_option('wpec_taxes_enabled');
+				if ( $notaxes==true || ($notaxes==false && $wpec_taxes_enabled==1) ) {
+					$onstep = 8;
+				}
+				break;
+			case 8: // WPEC Shipping
+				$noshipping = get_option('progo_ecommerce_noshipping');
+				$wpec_noshipping = get_option('do_not_use_shipping');
+				if ( $noshipping==true || ($noshipping==false && $wpec_noshipping!=1) ) {
+					$onstep = 9;
+				}
+				break;
+			case 9: // WPEC Payment Gateway
+				$gateways = get_option('custom_gateway_options', true);
+				$stilltest = false;
+				foreach ( $gateways as $g ) {
+					if ( $g == 'wpsc_merchant_testmode' ) {
+						$stilltest = true;
+					}
+				}
+				if ( $stilltest == false ) {
+					$onstep = 10;
+				}
+				break;
+			case 10: // Permalinks
+				$permalink = get_option( 'permalink_structure', '' );
+				$defaultok = get_option( 'progo_permalink_checked', false );
+				if ( ( $permalink != '' ) || ( $permalink == '' && $defaultok == true ) ) {
+					$onstep = 11;
+				}
+				break;
+			case 11: // Product Category(s)
+				$args = array(
+					'hide_empty' => 0
+				);
+				$pcats = get_terms( 'wpsc_product_category', $args );
+				if( ( count($pcats) != 1 ) || ( $pcats[0]->name != 'Product Category' ) ) {
+					$onstep = 12;
+				}
+				break;
+			case 12: // Products
+				
+				break;
+			case 13: // Featured Products
+				
+				break;
+			case 14: // Homepage Displays...
+				
+				break;
+			case 15: // Homepage Slides
+				
+				break;
+			case 16: // Main Menu
+				
+				break;
+			case 17: // ABOUT page
+				
+				break;
+			case 18: // TERMS page
+				
+				break;
+			case 19: // PRIVACY page
+				
+				break;
+			case 20: // CUSTOMER SUPPORT page
+				
+				break;
+		}
+	}
+	return $onstep;
+}
+endif;
 /**
  * hooked to 'admin_notices' by add_action in progo_setup()
  * used to display "Settings updated" message after Site Settings page has been saved
@@ -1778,12 +1975,12 @@ endif;
  * @uses update_option() To save the setting to only show the message once.
  * @since Ecommerce 1.0
  */
-function progo_admin_notices() {	
+function progo_admin_notices() {
 	// api auth check
 	$apiauth = get_option( 'progo_ecommerce_apiauth', true );
 	if( $apiauth != '100' ) {
 	?>
-	<div id="message" class="error">
+	<div class="error">
 		<p><?php
         switch($apiauth) {
 			case 'new':	// key has not been entered yet
@@ -1801,14 +1998,120 @@ function progo_admin_notices() {
 <?php
 	}
 	
-	if( get_option('progo_settings_just_saved')==true ) {
-	?>
-	<div id="message" class="updated fade">
+	if( get_option('progo_settings_just_saved')==true ) { ?>
+	<div class="updated fade">
 		<p>Settings updated. <a href="<?php bloginfo('url'); ?>/">View site</a></p>
 	</div>
 <?php
 		update_option('progo_settings_just_saved',false);
 	}
+	
+	$onstep = absint(get_option('progo_ecommerce_onstep', true));
+	$onstep = progo_ecommerce_completeness( $onstep );
+	update_option( 'progo_ecommerce_onstep', $onstep);
+	
+	/*
+	echo '<div class="updated progo-steps">on step #'. $onstep .'</div>';
+	if ( $onstep > 1 && $onstep < 21 ) {
+		// couldnt check step 2 before but now we have get_plugins() function
+		if ( ($onstep == 2) && ( $_REQUEST['action'] == 'install-plugin' ) ) {
+				return;
+		}
+		
+		echo '<div class="updated progo-steps">';
+		$pct = 0;
+		$nst = '';
+		switch($onstep) {
+			case 2: // WP e-Commerce INSTALLED
+				$lnk = ( function_exists( 'wp_nonce_url' ) ) ? wp_nonce_url( 'update.php?action=install-plugin&amp;plugin=wp-e-commerce', 'install-plugin_wp-e-commerce' ) : 'plugin-install.php';
+				$pct = 10;
+				$nst = '<a href="'. esc_url( $lnk ) .'">Click Here to Install the WP e-Commerce Plugin</a>';
+				break;
+			case 3: // WP e-Commerce ACTIVATED
+				$lnk = ( function_exists( 'wp_nonce_url' ) ) ? wp_nonce_url( 'plugins.php?action=activate&amp;plugin=wp-e-commerce/wp-shopping-cart.php', 'activate-plugin_wp-e-commerce/wp-shopping-cart.php' ) : 'plugins.php';
+				$pct = 15;
+				$nst = '<a href="'. esc_url( $lnk ) .'">Click Here to Activate the WP e-Commerce Plugin</a>';
+				break;
+			case 4: // ProGo Recommended Settings
+				$pct = 20;
+				$nst = 'A few WP e-Commerce Store Settings, like Product Thumbnail Sizes, differ from the Recommended Settings. <a href="'. wp_nonce_url("admin.php?progo_admin_action=reset_wpsc", 'progo_reset_wpsc') .'">Click Here to Reset</a>';
+				break;
+			case 5: // WPEC Store Location
+				$pct = 22;
+				$nst = '<a href="'. admin_url("options-general.php?page=wpsc-settings") .'">Set your Store\'s Base Country/Region</a>';
+				break;
+			case 6: // WPEC Currency
+				$pct = 25;
+				$nst = '<a href="'. admin_url("options-general.php?page=wpsc-settings") .'">Set your Store\'s Currency Settings</a>';
+				break;
+			case 7: // WPEC Tax Settings
+				$pct = 27;
+				$nst = '<a href="'. wp_nonce_url("admin.php?progo_admin_action=no_taxes", 'progo_no_taxes') .'">Click Here if your Store will NOT charge Taxes</a>. Otherwise, <a href="'. admin_url("options-general.php?page=wpsc-settings&tab=taxes") .'">configure Taxes here</a>.';
+				break;
+			case 8: // WPEC Shipping
+				$pct = 32;
+				$nst = '<a href="'. wp_nonce_url("admin.php?progo_admin_action=no_shipping", 'progo_no_shipping') .'">Click Here if your Store will NOT charge Shipping</a>. Otherwise, <a href="'. admin_url("options-general.php?page=wpsc-settings&tab=shipping") .'">configure Shipping here</a>.';
+				break;
+			case 9: // WPEC Payment Gateway
+				$pct = 42;
+				$nst = '<a href="'. admin_url("options-general.php?page=wpsc-settings&tab=gateway") .'">Please choose a Payment Gateway besides the Test Gateway</a>.';
+				break;
+			case 10: // Permalinks
+				$pct = 52;
+				$nst = 'Your <em>Permalinks</em> settings are still set to the Default option. <a href="'. wp_nonce_url("admin.php?progo_admin_action=permalink_recommended", 'progo_permalink_check') .'">Use the ProGo-Recommended "Day and name" setting</a>, <a href="'. admin_url("options-permalink.php") .'">Choose another non-Default option for yourself</a>, or <a href="'. wp_nonce_url("admin.php?progo_admin_action=permalink_default", 'progo_permalink_check') .'">keep the Default setting and move to the next step</a>.';
+				break;
+			case 11: // Product Category(s)
+				$pct = 54;
+				$args = array(
+					'hide_empty' => 0
+				);
+				$pcats = get_terms( 'wpsc_product_category', $args );
+				$nst = 'WP e-Commerce groups Products into Categories. <a href="'. admin_url('edit-tags.php?taxonomy=wpsc_product_category&post_type=wpsc-product') .'">Add another category</a>, or <a href="'. admin_url('edit-tags.php?action=edit&taxonomy=wpsc_product_category&tag_ID='. $pcats[0]->term_id .'&post_type=wpsc-product') .'">change the name of the first (default) category to something besides "Product Category"</a>.';
+				//http://localhost/wp-admin/edit-tags.php?action=edit&taxonomy=wpsc_product_category&tag_ID=5&post_type=wpsc-product
+				break;
+			case 12: // Products
+				$pct = 56;
+				$nst = 'You are now ready to add Products to your Store! Click <a href="'. admin_url('post-new.php?post_type=wpsc-product') .'">Add New</a> under the left <a href="'. admin_url('edit.php?post_type=wpsc-product') .'">Products</a> menu.';
+				break;
+			case 13: // Featured Products
+				$pct = 66;
+				$nst = 'Featured Products';
+				break;
+			case 14: // Homepage Displays...
+				$pct = 70;
+				$nst = 'Homepage Displays...';
+				break;
+			case 15: // Homepage Slides
+				$pct = 74;
+				$nst = 'Homepage Slides';
+				break;
+			case 16: // Main Menu
+				$pct = 78;
+				$nst = 'Main Menu';
+				break;
+			case 17: // ABOUT page
+				$pct = 88;
+				$nst = 'ABOUT page';
+				break;
+			case 18: // TERMS page
+				$pct = 91;
+				$nst = 'TERMS page';
+				break;
+			case 19: // PRIVACY page
+				$pct = 94;
+				$nst = 'PRIVACY page';
+				break;
+			case 20: // CUSTOMER SUPPORT page
+				$pct = 97;
+				$nst = 'CUSTOMER SUPPORT page';
+				break;
+			default: // #1- API key
+				
+				break;
+		}
+		echo '<p>Your ProGo Ecommerce site is <strong>'. $pct .'% Complete</strong> - Next Step: '. $nst .'</p></div>';
+	}
+	*/
 }
 
 /**
