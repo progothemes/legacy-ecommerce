@@ -70,6 +70,9 @@ function progo_setup() {
 	add_filter( 'wp_mail_content_type', 'progo_mail_content_type' );
 	add_filter('custom_menu_order', 'progo_admin_menu_order');
 	add_filter('menu_order', 'progo_admin_menu_order');
+	// force some metaboxes turned ON
+	add_filter('get_user_option_metaboxhidden_nav-menus', 'progo_metaboxhidden_defaults', 10, 3 );
+	add_filter('get_user_option_managenav-menuscolumnshidden', 'progo_metaboxhidden_defaults', 10, 3 );
 	
 	if ( is_admin() ) {
 		add_action( 'admin_notices', 'progo_admin_notices' );
@@ -303,6 +306,27 @@ function progo_admin_menu_cleanup() {
 	$submenu['themes.php'] = $sub;
 	
 //	wp_die('<pre>'. print_r($menu,true) .'</pre>');
+}
+endif;
+if ( ! function_exists( 'progo_metaboxhidden_defaults' ) ):
+function progo_metaboxhidden_defaults( $result, $option, $user ) {
+	$alwayson = array();
+	switch ( $option ) {
+		case 'metaboxhidden_nav-menus':
+			$alwayson = array( 'add-wpsc_product_category' );
+			break;
+		case 'managenav-menuscolumnshidden':
+			$alwayson = array( 'link-target', 'css-classes' );
+			break;
+	}
+	if ( ( count( $alwayson ) > 0 ) && ( count( (array) $result ) > 0 ) )  {
+		foreach ( $result as $k => $v ) {
+			if ( in_array( $v, $alwayson) ) {
+				unset( $result[$k] );
+			}
+		}
+	}
+	return $result;
 }
 endif;
 if ( ! function_exists( 'progo_admin_menu_order' ) ):
@@ -706,6 +730,9 @@ function progo_admin_init() {
 			case 'permalink_default':
 				progo_permalink_check( 'default' );
 				break;
+			case 'homepage_blogs':
+				progo_homepage_blogs_check();
+				break;
 		}
 	}
 	
@@ -759,8 +786,8 @@ function progo_admin_init() {
 		
 		// create new menus in the Menu system
 		$new_menus = array(
-			'ftrlnx' => 'Footer Links',
-			'mainmenu' => 'Main Menu'
+			'mainmenu' => 'Main Menu',
+			'ftrlnx' => 'Footer Links'
 		);
 		$aok = 1;
 		foreach ( $new_menus as $k => $m ) {
@@ -1069,7 +1096,7 @@ function progo_reset_wpsc($fromlink = false){
 	update_option( 'wpsc_email_receipt', "Any items to be shipped will be processed as soon as possible, any items that can be downloaded can be downloaded using the links on this page. All prices include tax and postage and packaging where applicable.\n\n%product_list%%total_price%%find_us%" );
 	
 	if ( $fromlink == true ) {
-		wp_redirect( get_option('siteurl') .'/wp-admin/themes.php?page=progo_admin' );
+		wp_redirect( admin_url('options-general.php?page=wpsc-settings') );
 		exit();
 	}
 }
@@ -1101,7 +1128,7 @@ function progo_no_taxes(){
 	
 	update_option( 'progo_ecommerce_notaxes', true );
 	
-	wp_redirect( admin_url("options-general.php?page=wpsc-settings&tab=taxes") );
+	wp_redirect( admin_url("options-general.php?page=wpsc-settings&tab=shipping") );
 	exit();
 }
 endif;
@@ -1114,11 +1141,23 @@ function progo_no_shipping(){
 	
 	update_option( 'progo_ecommerce_noshipping', true );
 	
-	wp_redirect( admin_url("options-general.php?page=wpsc-settings&tab=shipping") );
+	wp_redirect( admin_url("options-general.php?page=wpsc-settings&tab=gateway") );
 	exit();
 }
 endif;
- //recommended | default :: progo_permalink_check
+if ( ! function_exists( 'progo_homepage_blogs_check' ) ):
+/**
+ * @since Ecommerce 1.1.23
+ */
+function progo_homepage_blogs_check(){
+	check_admin_referer( 'progo_homepage_blogs_check' );
+	// since homepage just shows BLOG POSTS, skip FEATURED PRODUCT explanation...
+	update_option( 'progo_ecommerce_onstep', 15);
+	
+	wp_redirect( admin_url("edit.php?post_type=wpsc-product") );
+	exit();
+}
+endif;
 if ( ! function_exists( 'progo_permalink_check' ) ):
 /**
  * @since Ecommerce 1.1.23
@@ -1131,7 +1170,7 @@ function progo_permalink_check( $arg ){
 	} elseif ( $arg == 'default' ) {
 		update_option( 'progo_permalink_checked', true );
 	}
-	wp_redirect( admin_url("options-permalink.php") );
+	wp_redirect( admin_url('edit-tags.php?taxonomy=wpsc_product_category&post_type=wpsc-product') );
 	exit();
 }
 endif;
@@ -1695,9 +1734,9 @@ function progo_field_frontpage() {
 		'page' => 'Static Content'
 	);
 	$msgs = array(
-		'posts' => '<a href="edit.php">Edit Posts Here</a>',
-		'featured' => 'Designate Featured Products by clicking on the Star in the Featured column on your <a href="edit.php?post_type=wpsc-product">Products Page</a>',
-		'page' => '<a href="post.php?post='. get_option('progo_homepage_id') .'&action=edit">Edit Homepage Content Here</a>'
+		'posts' => '<a href="edit.php" target="_blank">Edit Posts Here</a>',
+		'featured' => 'Designate Featured Products by clicking on the Star in the Featured column on your <a href="edit.php?post_type=wpsc-product" target="_blank">Products Page</a>',
+		'page' => '<a href="post.php?post='. get_option('progo_homepage_id') .'&action=edit" target="_blank">Edit Homepage Content Here</a>'
 	);
 	$msg = '';
 	if ( !function_exists('wpsc_admin_pages')) {
@@ -1937,16 +1976,35 @@ function progo_ecommerce_completeness( $onstep ) {
 				}
 				break;
 			case 12: // Products
-				
+				$prodcount = wp_count_posts( 'wpsc-product' );
+				if ( $prodcount->publish > 0 ) {
+					$onstep = 13;
+				}
 				break;
-			case 13: // Featured Products
-				
+			case 13: // Homepage Displays...
+				$options = get_option( 'progo_options' );
+				switch ( $options[frontpage] ) {
+					case 'featured':
+						$onstep = 14;
+						break;
+					case 'page':
+						$onstep = 15;
+						break;
+				}
 				break;
-			case 14: // Homepage Displays...
-				
+			case 14: // Featured Products
+				$featured = get_option( 'sticky_products' );
+				if ( is_array($featured) ) {
+					if ( count($featured) > 0 ) {
+						$onstep = 15;
+					}
+				}
 				break;
 			case 15: // Homepage Slides
-				
+				$slides = (array) get_option( 'progo_slides' );
+				if ( $slides['count'] > 0 ) {
+					$onstep = 16;
+				}
 				break;
 			case 16: // Main Menu
 				
@@ -2009,7 +2067,6 @@ function progo_admin_notices() {
 	$onstep = absint(get_option('progo_ecommerce_onstep', true));
 	$onstep = progo_ecommerce_completeness( $onstep );
 	update_option( 'progo_ecommerce_onstep', $onstep);
-	
 	/*
 	echo '<div class="updated progo-steps">on step #'. $onstep .'</div>';
 	if ( $onstep > 1 && $onstep < 21 ) {
@@ -2073,17 +2130,17 @@ function progo_admin_notices() {
 				$pct = 56;
 				$nst = 'You are now ready to add Products to your Store! Click <a href="'. admin_url('post-new.php?post_type=wpsc-product') .'">Add New</a> under the left <a href="'. admin_url('edit.php?post_type=wpsc-product') .'">Products</a> menu.';
 				break;
-			case 13: // Featured Products
+			case 13: // Homepage Displays...
 				$pct = 66;
-				$nst = 'Featured Products';
+				$nst = 'The bottom content area of your Homepage can display Featured Products, Latest Blog Posts, or Static Content. By default, it is set to show Latest Blog Posts. <a href="'. wp_nonce_url("admin.php?progo_admin_action=homepage_blogs", 'progo_homepage_blogs_check') .'">Click Here to keep that setting and move to the next step</a>, or <a href="'. admin_url('themes.php?page=progo_admin#progo_homepage') .'">Click Here to select another option</a>';
 				break;
-			case 14: // Homepage Displays...
+			case 14: // Featured Products
 				$pct = 70;
-				$nst = 'Homepage Displays...';
+				$nst = 'Designate Featured Products by clicking on the Star in the Featured column on your <a href="edit.php?post_type=wpsc-product">Products Page</a>';
 				break;
 			case 15: // Homepage Slides
 				$pct = 74;
-				$nst = 'Homepage Slides';
+				$nst = '<a href="'. admin_url('themes.php?page=progo_home_slides') .'">Manage Slides for the top area of your Homepage</a>. Promote Special Products &amp; Benefit Points';
 				break;
 			case 16: // Main Menu
 				$pct = 78;
