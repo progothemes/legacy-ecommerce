@@ -70,6 +70,7 @@ function progo_setup() {
 	add_filter( 'wp_mail_content_type', 'progo_mail_content_type' );
 	add_filter('custom_menu_order', 'progo_admin_menu_order');
 	add_filter('menu_order', 'progo_admin_menu_order');
+	add_filter('nav_menu_meta_box_object', 'progo_metabox_filter');
 	// force some metaboxes turned ON
 	add_filter('get_user_option_metaboxhidden_nav-menus', 'progo_metaboxhidden_defaults', 10, 3 );
 	add_filter('get_user_option_managenav-menuscolumnshidden', 'progo_metaboxhidden_defaults', 10, 3 );
@@ -319,6 +320,7 @@ function progo_metaboxhidden_defaults( $result, $option, $user ) {
 			$alwayson = array( 'link-target', 'css-classes' );
 			break;
 	}
+	echo '<!-- progo_metaboxhidden_defaults : '. print_r($result,true) .' : '. $option .' -->';
 	if ( ( count( $alwayson ) > 0 ) && ( count( (array) $result ) > 0 ) )  {
 		foreach ( $result as $k => $v ) {
 			if ( in_array( $v, $alwayson) ) {
@@ -331,17 +333,42 @@ function progo_metaboxhidden_defaults( $result, $option, $user ) {
 endif;
 if ( ! function_exists( 'progo_admin_menu_order' ) ):
 function progo_admin_menu_order($menu_ord) {
-    if (!$menu_ord) return true;
-    return array(
-     'index.php', // this represents the dashboard link
-	 'separator1',
-     'edit.php?post_type=wpsc-product', // this is a custom post type menu
-     'edit.php?post_type=page', // this is the default page menu
-     'edit.php', // this is the default POST admin menu
-     'upload.php', // this is the default POST admin menu
-     'edit-comments.php', // this is the default POST admin menu
-     'link-manager.php' // this is the default POST admin menu
- );
+	if (!$menu_ord) return true;
+	return array(
+		'index.php', // this represents the dashboard link
+		'separator1',
+		'edit.php?post_type=wpsc-product', // this is a custom post type menu
+		'edit.php?post_type=page', // this is the default page menu
+		'edit.php', // this is the default POST admin menu
+		'upload.php', // this is the default POST admin menu
+		'edit-comments.php', // this is the default POST admin menu
+		'link-manager.php' // this is the default POST admin menu
+	);
+}
+endif;
+// 
+if ( ! function_exists( 'progo_metabox_filter' ) ):
+/**
+ * helper function to rename some metaboxes on the MENUS admin page
+ * to clear up confusion since by default, Post Categories & (wpsc) Product Categories
+ * are both just called "Categories"
+ * 
+ * @param metabox object
+ * @return metabox object
+ * @since Ecommerce 1.1.23
+ */
+function progo_metabox_filter($obj) {
+	// array( 'post', 'page', 'wpsc-product', 'category', 'post_tag', 'product_tag' )
+	switch ( $obj->name ) {
+		case 'category':
+			$obj->label = $obj->labels->name = $obj->labels->menu_name = 'Post Categories';
+			break;
+		case 'wpsc_product_category':
+			$obj->label = $obj->labels->name = $obj->labels->menu_name = 'Product Categories';
+			break;
+	}
+	//
+	return $obj;
 }
 endif;
 if ( ! function_exists( 'progo_admin_menu_finder' ) ):
@@ -732,6 +759,9 @@ function progo_admin_init() {
 				break;
 			case 'homepage_blogs':
 				progo_homepage_blogs_check();
+				break;
+			case 'menus_set':
+				progo_menus_set();
 				break;
 		}
 	}
@@ -1171,6 +1201,18 @@ function progo_permalink_check( $arg ){
 		update_option( 'progo_permalink_checked', true );
 	}
 	wp_redirect( admin_url('edit-tags.php?taxonomy=wpsc_product_category&post_type=wpsc-product') );
+	exit();
+}
+endif;
+if ( ! function_exists( 'progo_menus_set' ) ):
+/**
+ * @since Ecommerce 1.1.23
+ */
+function progo_menus_set(){
+	check_admin_referer( 'progo_menus_set' );
+	update_option( 'progo_ecommerce_onstep', 17);
+	
+	wp_redirect( admin_url("edit.php?post_type=page") );
 	exit();
 }
 endif;
@@ -1891,11 +1933,11 @@ if ( ! function_exists( 'progo_ecommerce_completeness' ) ):
  * @since Ecommerce 1.1.23
  */
 function progo_ecommerce_completeness( $onstep ) {
-	if ( $onstep < 1 || $onstep > 100 ) {
+	if ( $onstep < 1 || $onstep > 17 ) {
 		$onstep = 1;
 	}
 	
-	if ( $onstep < 21 ) { // ok check it
+	if ( $onstep < 17 ) { // ok check it
 		switch($onstep) {
 			case 1: // check API auth
 				$apiauth = get_option( 'progo_ecommerce_apiauth', true );
@@ -2006,21 +2048,6 @@ function progo_ecommerce_completeness( $onstep ) {
 					$onstep = 16;
 				}
 				break;
-			case 16: // Main Menu
-				
-				break;
-			case 17: // ABOUT page
-				
-				break;
-			case 18: // TERMS page
-				
-				break;
-			case 19: // PRIVACY page
-				
-				break;
-			case 20: // CUSTOMER SUPPORT page
-				
-				break;
 		}
 	}
 	return $onstep;
@@ -2065,11 +2092,10 @@ function progo_admin_notices() {
 	}
 	
 	$onstep = absint(get_option('progo_ecommerce_onstep', true));
-	$onstep = progo_ecommerce_completeness( $onstep );
-	update_option( 'progo_ecommerce_onstep', $onstep);
-	/*
-	echo '<div class="updated progo-steps">on step #'. $onstep .'</div>';
-	if ( $onstep > 1 && $onstep < 21 ) {
+	
+	if ( $onstep > 1 && $onstep < 17 ) {
+		$onstep = progo_ecommerce_completeness( $onstep );
+		update_option( 'progo_ecommerce_onstep', $onstep);
 		// couldnt check step 2 before but now we have get_plugins() function
 		if ( ($onstep == 2) && ( $_REQUEST['action'] == 'install-plugin' ) ) {
 				return;
@@ -2094,31 +2120,31 @@ function progo_admin_notices() {
 				$nst = 'A few WP e-Commerce Store Settings, like Product Thumbnail Sizes, differ from the Recommended Settings. <a href="'. wp_nonce_url("admin.php?progo_admin_action=reset_wpsc", 'progo_reset_wpsc') .'">Click Here to Reset</a>';
 				break;
 			case 5: // WPEC Store Location
-				$pct = 22;
+				$pct = 25;
 				$nst = '<a href="'. admin_url("options-general.php?page=wpsc-settings") .'">Set your Store\'s Base Country/Region</a>';
 				break;
 			case 6: // WPEC Currency
-				$pct = 25;
+				$pct = 30;
 				$nst = '<a href="'. admin_url("options-general.php?page=wpsc-settings") .'">Set your Store\'s Currency Settings</a>';
 				break;
 			case 7: // WPEC Tax Settings
-				$pct = 27;
+				$pct = 35;
 				$nst = '<a href="'. wp_nonce_url("admin.php?progo_admin_action=no_taxes", 'progo_no_taxes') .'">Click Here if your Store will NOT charge Taxes</a>. Otherwise, <a href="'. admin_url("options-general.php?page=wpsc-settings&tab=taxes") .'">configure Taxes here</a>.';
 				break;
 			case 8: // WPEC Shipping
-				$pct = 32;
+				$pct = 40;
 				$nst = '<a href="'. wp_nonce_url("admin.php?progo_admin_action=no_shipping", 'progo_no_shipping') .'">Click Here if your Store will NOT charge Shipping</a>. Otherwise, <a href="'. admin_url("options-general.php?page=wpsc-settings&tab=shipping") .'">configure Shipping here</a>.';
 				break;
 			case 9: // WPEC Payment Gateway
-				$pct = 42;
+				$pct = 50;
 				$nst = '<a href="'. admin_url("options-general.php?page=wpsc-settings&tab=gateway") .'">Please choose a Payment Gateway besides the Test Gateway</a>.';
 				break;
 			case 10: // Permalinks
-				$pct = 52;
+				$pct = 60;
 				$nst = 'Your <em>Permalinks</em> settings are still set to the Default option. <a href="'. wp_nonce_url("admin.php?progo_admin_action=permalink_recommended", 'progo_permalink_check') .'">Use the ProGo-Recommended "Day and name" setting</a>, <a href="'. admin_url("options-permalink.php") .'">Choose another non-Default option for yourself</a>, or <a href="'. wp_nonce_url("admin.php?progo_admin_action=permalink_default", 'progo_permalink_check') .'">keep the Default setting and move to the next step</a>.';
 				break;
 			case 11: // Product Category(s)
-				$pct = 54;
+				$pct = 65;
 				$args = array(
 					'hide_empty' => 0
 				);
@@ -2127,48 +2153,28 @@ function progo_admin_notices() {
 				//http://localhost/wp-admin/edit-tags.php?action=edit&taxonomy=wpsc_product_category&tag_ID=5&post_type=wpsc-product
 				break;
 			case 12: // Products
-				$pct = 56;
+				$pct = 70;
 				$nst = 'You are now ready to add Products to your Store! Click <a href="'. admin_url('post-new.php?post_type=wpsc-product') .'">Add New</a> under the left <a href="'. admin_url('edit.php?post_type=wpsc-product') .'">Products</a> menu.';
 				break;
 			case 13: // Homepage Displays...
-				$pct = 66;
+				$pct = 80;
 				$nst = 'The bottom content area of your Homepage can display Featured Products, Latest Blog Posts, or Static Content. By default, it is set to show Latest Blog Posts. <a href="'. wp_nonce_url("admin.php?progo_admin_action=homepage_blogs", 'progo_homepage_blogs_check') .'">Click Here to keep that setting and move to the next step</a>, or <a href="'. admin_url('themes.php?page=progo_admin#progo_homepage') .'">Click Here to select another option</a>';
 				break;
 			case 14: // Featured Products
-				$pct = 70;
+				$pct = 85;
 				$nst = 'Designate Featured Products by clicking on the Star in the Featured column on your <a href="edit.php?post_type=wpsc-product">Products Page</a>';
 				break;
 			case 15: // Homepage Slides
-				$pct = 74;
+				$pct = 90;
 				$nst = '<a href="'. admin_url('themes.php?page=progo_home_slides') .'">Manage Slides for the top area of your Homepage</a>. Promote Special Products &amp; Benefit Points';
 				break;
 			case 16: // Main Menu
-				$pct = 78;
-				$nst = 'Main Menu';
-				break;
-			case 17: // ABOUT page
-				$pct = 88;
-				$nst = 'ABOUT page';
-				break;
-			case 18: // TERMS page
-				$pct = 91;
-				$nst = 'TERMS page';
-				break;
-			case 19: // PRIVACY page
-				$pct = 94;
-				$nst = 'PRIVACY page';
-				break;
-			case 20: // CUSTOMER SUPPORT page
-				$pct = 97;
-				$nst = 'CUSTOMER SUPPORT page';
-				break;
-			default: // #1- API key
-				
+				$pct = 95;
+				$nst = '<a href="'. admin_url('nav-menus.php') .'">Customize your site\'s Menus</a> by adding more links from the left column, and rearranging links with Drag-n-Drop. When your Menus are set, <a href="'. wp_nonce_url("admin.php?progo_admin_action=menus_set", 'progo_menus_set') .'">click here to move on to the next step</a>.';
 				break;
 		}
 		echo '<p>Your ProGo Ecommerce site is <strong>'. $pct .'% Complete</strong> - Next Step: '. $nst .'</p></div>';
 	}
-	*/
 }
 
 /**
