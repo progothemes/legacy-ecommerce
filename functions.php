@@ -320,7 +320,6 @@ function progo_metaboxhidden_defaults( $result, $option, $user ) {
 			$alwayson = array( 'link-target', 'css-classes' );
 			break;
 	}
-	echo '<!-- progo_metaboxhidden_defaults : '. print_r($result,true) .' : '. $option .' -->';
 	if ( ( count( $alwayson ) > 0 ) && ( count( (array) $result ) > 0 ) )  {
 		foreach ( $result as $k => $v ) {
 			if ( in_array( $v, $alwayson) ) {
@@ -1069,9 +1068,13 @@ if ( ! function_exists( 'progo_add_scripts' ) ):
  */
 function progo_add_scripts() {
 	if ( !is_admin() ) {
-		wp_register_script( 'progo', get_bloginfo('template_url') .'/js/progo-frontend.js', array('jquery'), '1.0' );
-		wp_enqueue_script( 'progo' );
+		wp_enqueue_script( 'progo', get_bloginfo('template_url') .'/js/progo-frontend.js', array('jquery'), '1.0' );
 		do_action('progo_frontend_scripts');
+		
+		 if ( current_user_can('edit_theme_options') ) {
+			wp_enqueue_script( 'progo-tooltips', get_bloginfo('template_url') .'/js/progo-tooltips.js', array('jquery'), '1.0', true );
+			echo '<script type="text/javascript">var progo_adminurl = "'. admin_url('') .'";</script>';
+		}
 	} else {
 		//
 	}
@@ -1200,7 +1203,7 @@ function progo_permalink_check( $arg ){
 	} elseif ( $arg == 'default' ) {
 		update_option( 'progo_permalink_checked', true );
 	}
-	wp_redirect( admin_url('edit-tags.php?taxonomy=wpsc_product_category&post_type=wpsc-product') );
+	wp_redirect( admin_url('options-permalink.php') );
 	exit();
 }
 endif;
@@ -2061,6 +2064,7 @@ endif;
  * @since Ecommerce 1.0
  */
 function progo_admin_notices() {
+	global $pagenow;
 	// api auth check
 	$apiauth = get_option( 'progo_ecommerce_apiauth', true );
 	if( $apiauth != '100' ) {
@@ -2093,7 +2097,7 @@ function progo_admin_notices() {
 	
 	$onstep = absint(get_option('progo_ecommerce_onstep', true));
 	
-	if ( $onstep > 1 && $onstep < 17 ) {
+	if ( $onstep < 17 ) {
 		$onstep = progo_ecommerce_completeness( $onstep );
 		update_option( 'progo_ecommerce_onstep', $onstep);
 		// couldnt check step 2 before but now we have get_plugins() function
@@ -2170,7 +2174,7 @@ function progo_admin_notices() {
 				break;
 			case 16: // Main Menu
 				$pct = 95;
-				$nst = '<a href="'. admin_url('nav-menus.php') .'">Customize your site\'s Menus</a> by adding more links from the left column, and rearranging links with Drag-n-Drop. When your Menus are set, <a href="'. wp_nonce_url("admin.php?progo_admin_action=menus_set", 'progo_menus_set') .'">click here to move on to the next step</a>.';
+				$nst = '<a href="'. admin_url('nav-menus.php') .'">Customize your site\'s Menus</a> by adding more links from the left column, and rearranging links with Drag-n-Drop. <strong>This is the last step to setting up your Ecommerce site!</strong> When your Menus are set, <a href="'. wp_nonce_url("admin.php?progo_admin_action=menus_set", 'progo_menus_set') .'">click here to remove this message</a>.';
 				break;
 		}
 		echo '<p>Your ProGo Ecommerce site is <strong>'. $pct .'% Complete</strong> - Next Step: '. $nst .'</p></div>';

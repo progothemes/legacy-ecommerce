@@ -20,3 +20,5 @@ tr.status-notdirect { display: none; }
 .metabox-holder .postbox .inside h3 { background: none; cursor: text; padding: 0; }
 .metabox-holder .postbox .inside.noh3 h3 { display: none; }
 .progo-form .form-table th { width: 160px; }
+
+div.updated.progo-steps { border-width: 2px; padding-right: 7%; background: #FFFFE0 url(../images/logo_admin.png) no-repeat 99% 50% }

@@ -15,7 +15,7 @@ body, input, textarea, .pingback a.url { font-family: Arial, Helvetica, sans-ser
 
 /* =Layout */
 #fx { float: left; width: 100%; min-width: 972px }
-#page { float: left; background: url(../images/shadow.png) repeat-y 0 0; padding: 0 6px }
+#page { float: left; position: relative; background: url(../images/shadow.png) repeat-y 0 0; padding: 0 6px }
 #container { float: left; margin: 0; position: relative }
 #main { float:left; padding: 20px 0 0 }
 #main div.page { padding: 6px 17px }
@@ -199,3 +199,8 @@ img.avatar { float: left; margin: 0 10px 10px 0 }
 /* other */
 .asterix { color:red }
 *:focus { outline: none }
+
+.ptip { display: block; background: url(../images/tip.png) no-repeat 0 0; width: 28px; height: 25px; position: absolute; z-index: 999 }
+.ptip span { display: none }
+.ptip:hover { width: auto; z-index: 2000; }
+.ptip:hover span { display: block; background-color: #ccc; border: 1px solid #000; width: auto; padding: 2px }
