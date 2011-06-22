@@ -202,5 +202,5 @@ img.avatar { float: left; margin: 0 10px 10px 0 }
 
 .ptip { display: block; background: url(../images/tip.png) no-repeat 0 0; width: 28px; height: 25px; position: absolute; z-index: 999 }
 .ptip span { display: none }
-.ptip:hover { width: auto; z-index: 2000; }
-.ptip:hover span { display: block; background-color: #ccc; border: 1px solid #000; width: auto; padding: 2px }
+.ptip:hover { z-index: 2000; text-decoration: none }
+.ptip:hover span { display: block; width: 180px; position: absolute; top: 0; left: 0; background-color: #eee; border: 1px solid #000; padding: 2px 4px }

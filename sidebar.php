@@ -53,6 +53,12 @@ if ( ! dynamic_sidebar( $sidebar ) ) :
         <a name="fb_share" type="icon" href="http://www.facebook.com/sharer.php">Share</a><script src="http://static.ak.fbcdn.net/connect.php/js/FB.Share" type="text/javascript"></script>
         <a href="http://twitter.com/share?url=<?php echo urlencode(get_permalink($post->ID)); ?>&amp;text=Check%20Out%20This%20Great%20Product!%20" class="twitter" target="_blank">Tweet</a>
 		<?php
+			if ( current_user_can('edit_theme_options') ) {
+				$options = get_option( 'progo_options' );
+				if ( (int) $options['showtips'] == 1 ) {
+					echo '<a style="position: relative" class="ptip" href="'. admin_url('themes.php?page=progo_admin#recommended') .'"><span>Install the ShareThis plugin to add more SHARE functionality</span></a>';
+				}
+			}
 		}
         ?>
     </div>

@@ -354,7 +354,7 @@ if ( ! function_exists( 'progo_metabox_filter' ) ):
  * 
  * @param metabox object
  * @return metabox object
- * @since Ecommerce 1.1.23
+ * @since Ecommerce 1.1.24
  */
 function progo_metabox_filter($obj) {
 	// array( 'post', 'page', 'wpsc-product', 'category', 'post_tag', 'product_tag' )
@@ -478,7 +478,7 @@ try{convertEntities(wpsc_adminL10n);}catch(e){};
 			echo '<tr><th scope="row">'. wp_kses($k,array()) .'</th><td><a href="'. esc_url($v['url']) .'" class="button">'. wp_kses($v['btn'],array()) .' &raquo;</a> <span class="description">'. wp_kses($v['desc'],array()) .'</span></td></tr>';
 		} ?>
         </table><p><br /></p>
-        <h3>Recommended Plugins</h3>
+        <h3><a name="recommended"></a>Recommended Plugins</h3>
                 <?php if ( function_exists( 'alex_recommends_widget' ) ) {
 					alex_recommends_widget();
 				} else { ?>
@@ -796,6 +796,7 @@ function progo_admin_init() {
 	add_settings_field( 'progo_copyright', 'Copyright Notice', 'progo_field_copyright', 'progo_info', 'progo_info' );
 	add_settings_field( 'progo_secure', 'Security Logos', 'progo_field_cred', 'progo_info', 'progo_info' );
 	add_settings_field( 'progo_companyinfo', 'Company Info', 'progo_field_compinf', 'progo_info', 'progo_info' );
+	add_settings_field( 'progo_field_showtips', 'Show/Hide ProGo Tips', 'progo_field_showtips', 'progo_info', 'progo_info' );
 
 	add_settings_section( 'progo_homepage', 'Homepage Settings', 'progo_section_text', 'progo_hometop' );
 	add_settings_field( 'progo_frontpage', 'Display', 'progo_field_frontpage', 'progo_hometop', 'progo_homepage' );
@@ -1072,8 +1073,11 @@ function progo_add_scripts() {
 		do_action('progo_frontend_scripts');
 		
 		 if ( current_user_can('edit_theme_options') ) {
-			wp_enqueue_script( 'progo-tooltips', get_bloginfo('template_url') .'/js/progo-tooltips.js', array('jquery'), '1.0', true );
-			echo '<script type="text/javascript">var progo_adminurl = "'. admin_url('') .'";</script>';
+			$options = get_option( 'progo_options' );
+			if ( (int) $options['showtips'] == 1 ) {
+				wp_enqueue_script( 'progo-tooltips', get_bloginfo('template_url') .'/js/progo-tooltips.js', array('jquery'), '1.0', true );
+				echo '<script type="text/javascript">var progo_adminurl = "'. admin_url('') .'";</script>';
+			}
 		}
 	} else {
 		//
@@ -1154,7 +1158,7 @@ function progo_reset_logo(){
 endif;
 if ( ! function_exists( 'progo_no_taxes' ) ):
 /**
- * @since Ecommerce 1.1.23
+ * @since Ecommerce 1.1.24
  */
 function progo_no_taxes(){
 	check_admin_referer( 'progo_no_taxes' );
@@ -1167,7 +1171,7 @@ function progo_no_taxes(){
 endif;
 if ( ! function_exists( 'progo_no_shipping' ) ):
 /**
- * @since Ecommerce 1.1.23
+ * @since Ecommerce 1.1.24
  */
 function progo_no_shipping(){
 	check_admin_referer( 'progo_no_shipping' );
@@ -1180,7 +1184,7 @@ function progo_no_shipping(){
 endif;
 if ( ! function_exists( 'progo_homepage_blogs_check' ) ):
 /**
- * @since Ecommerce 1.1.23
+ * @since Ecommerce 1.1.24
  */
 function progo_homepage_blogs_check(){
 	check_admin_referer( 'progo_homepage_blogs_check' );
@@ -1193,7 +1197,7 @@ function progo_homepage_blogs_check(){
 endif;
 if ( ! function_exists( 'progo_permalink_check' ) ):
 /**
- * @since Ecommerce 1.1.23
+ * @since Ecommerce 1.1.24
  */
 function progo_permalink_check( $arg ){
 	check_admin_referer( 'progo_permalink_check' );
@@ -1209,7 +1213,7 @@ function progo_permalink_check( $arg ){
 endif;
 if ( ! function_exists( 'progo_menus_set' ) ):
 /**
- * @since Ecommerce 1.1.23
+ * @since Ecommerce 1.1.24
  */
 function progo_menus_set(){
 	check_admin_referer( 'progo_menus_set' );
@@ -1315,6 +1319,7 @@ function progo_options_defaults() {
 			"copyright" => "© Copyright 2011, All Rights Reserved",
 			"credentials" => "",
 			"companyinfo" => "We sincerely thank you for your patronage.\nThe Our Company Staff\n\nOur Company, Inc.\n1234 Address St\nSuite 43\nSan Diego, CA 92107\n619-555-5555",
+			"showtips" => 1,
 			"frontpage" => get_option( 'show_on_front' ),
 			"homeseconds" => 6
 		);
@@ -1426,8 +1431,11 @@ function progo_validate_options( $input ) {
 	}
 	
 	// opt[showdesc] can only be 1 or 0
-	if ( (int) $input['showdesc'] != 1 ) {
-		$input['showdesc'] = 0;
+	$bincheck = array( 'showdesc', 'showtips' );
+	foreach( $bincheck as $f ) {
+		if ( (int) $input[$f] != 1 ) {
+			$input[$f] = 0;
+		}
 	}
 	
 	// save blogname & blogdescription to other options as well
@@ -1706,7 +1714,7 @@ function progo_field_blogdesc() {
 endif;
 if ( ! function_exists( 'progo_field_showdesc' ) ):
 /**
- * outputs HTML for checkbox "Show Slogan" field on Site Settings page
+ * outputs HTML for checkbox "Show/Hide Tips" field on Site Settings page
  * @since Ecommerce 1.0
  */
 function progo_field_showdesc() {
@@ -1718,6 +1726,21 @@ function progo_field_showdesc() {
 	} ?> />
 Show the Site Slogan next to the Logo at the top of <a target="_blank" href="<?php echo esc_url( trailingslashit( get_bloginfo( 'url' ) ) ); ?>">your site</a></label>
 </fieldset>
+<?php }
+endif;
+if ( ! function_exists( 'progo_field_showtips' ) ):
+/**
+ * outputs HTML for checkbox "Show Slogan" field on Site Settings page
+ * @since Ecommerce 1.0
+ */
+function progo_field_showtips() {
+	$options = get_option( 'progo_options' ); ?>
+<label for="progo_showtips">
+<input type="checkbox" value="1" id="progo_showtips" name="progo_options[showtips]"<?php
+	if ( (int) $options['showtips'] == 1 ) {
+		echo ' checked="checked"';
+	} ?> />
+Show ProGo Tips <img src="<?php bloginfo('template_url'); ?>/images/tip.png" alt="Tip" /> for Admin users viewing the front-end of <a target="_blank" href="<?php echo esc_url( trailingslashit( get_bloginfo( 'url' ) ) ); ?>">your site</a></label>
 <?php }
 endif;
 if ( ! function_exists( 'progo_field_support' ) ):
@@ -1899,7 +1922,7 @@ endif;
 if ( ! function_exists( 'progo_ecommerce_reccheck' ) ):
 /**
  * check wpsc settings dimensions for thumbnail (product_image) & product image (single_view_image)
- * @since Ecommerce 1.1.23
+ * @since Ecommerce 1.1.24
  */
 function progo_ecommerce_reccheck( $echo ) {
 	if ( get_option( 'product_image_width' ) == 70 && get_option( 'product_image_height' ) == 70 && get_option( 'single_view_image_width' ) == 290 && get_option( 'single_view_image_height' ) == '' ) {
@@ -1933,7 +1956,7 @@ endif;
 if ( ! function_exists( 'progo_ecommerce_completeness' ) ):
 /**
  * check which step / % complete current site is at
- * @since Ecommerce 1.1.23
+ * @since Ecommerce 1.1.24
  */
 function progo_ecommerce_completeness( $onstep ) {
 	if ( $onstep < 1 || $onstep > 17 ) {
