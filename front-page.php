@@ -13,27 +13,40 @@ $options = get_option( 'progo_options' );
 <div id="pagetop" class="slides">
 <?php
 $original_query = $wp_query;
-$slides = (array) get_option( 'progo_slides' );
-unset($slides['count']);
+$slides = get_posts('post_type=progo_homeslide&post_status=publish&posts_per_page=-1&orderby=menu_order&order=ASC');
 $count = count($slides);
 $oneon = false;
-for ( $i = 0; $i < $count; $i++ ) {
-	$show = $slides[$i]['show'];
+foreach ( $slides as $s ) {
 	$on = '';
-	if($oneon == false && $show != 'new') {
+	if ( $oneon == false ) {
 		$oneon = true;
 		$on = ' on';
 	}
 	
-	switch($show) {
-		case 'text':
-			echo "<div class='slide$on page-title'>". wp_kses($slides[$i]['text'],array()) ."</div>";
+	$slidecustom = get_post_meta($s->ID,'_progo_slidecontent');
+	$slidecontent = (array) $slidecustom[0];
+	$bg = ' '. $slidecontent['textcolor'];
+	$thmID = get_post_thumbnail_id( $s->ID );
+	if ( $thmID ) {
+		$thm = get_post( $thmID );
+		$bg .= ' custombg " style="background-image: url('. $thm->guid .')';
+	}
+	switch($slidecontent['type']) {
+		case 'Text':
+			echo '<div class="textslide slide'. $on . $bg .'"><div class="page-title">'. wp_kses($s->post_title,array()) .'</div>';
+			echo '<div class="content productcol">'. apply_filters('the_content',$slidecontent['text']) .'</div></div>';
 			break;
-		case 'product':
+		case 'Image':
+			echo '<div class="imageslide slide'. $on . $bg .'">'. wp_kses($s->post_title,array()) .'</div>';
+			break;
+		case 'Product':
+			echo '<div class="product slide'. $on . $bg .'">';
 			$oldpost = $post;
+			//echo '<pre style="display:none">'. print_r($slidecontent,true) .'</pre>';
+			$post = get_post($slidecontent['product']);
+			//echo '<pre style="display:none">'. print_r($post,true) .'</pre>';
 			wpsc_the_product();
-			echo "<div class='slide$on product'>";
-			$post = get_post($slides[$i]['product']);
+			$post = get_post($slidecontent['product']);
 			echo '<a href="'. wpsc_the_product_permalink() .'" class="product_image"><img alt="'. wpsc_the_product_title() .'" src="'. progo_product_image(290,290) .'" width="290" height="290" /></a>';
 			echo '<div class="productcol grid_7"><div class="prodtitle">'. wpsc_the_product_title() .'</div>';
 			progo_summary( 'View Details', 260 );
@@ -59,7 +72,7 @@ for ( $i = 0; $i < $count; $i++ ) {
 											} ?>
 						</form><!--close product_form-->
             <?php
-			echo "</div></div>";
+			echo '</div></div>';
 			$post = $oldpost;
 			break;
 	}

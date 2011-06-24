@@ -84,12 +84,14 @@ ul#nav li.hover ul { display: block }
 /* homepage slides */
 #pagetop.sliding { overflow: hidden }
 #pagetop .slide { display: none; float: left; width: 960px }
-#pagetop .slide.page-title { width: 906px } 
 #pagetop .slide.on { display: block }
 #pagetop.sliding .slide { display: block; position: absolute; top: 0; left: 960px; z-index: 1 }
 #pagetop.sliding .slide.on { left: 0 }
 #pagetop .slide a.product_image { float: left; width: 290px; height: 290px; padding: 7px 21px 8px 19px; margin: 13px 0 12px; background:url(../images/prodimg.png) no-repeat 0 0 }
-
+#pagetop .slide.custombg { height: 330px; background-repeat: no-repeat; background-position: 0 0 }
+#pagetop .slide.imageslide { text-indent: -999em }
+#pagetop .Dark { color: #333 }
+#pagetop .slide.textslide .content { margin: 0 27px 26px }
 .ar { float: right; display: block; width: 112px; height: 24px; position: absolute; bottom: 0; right: 10px; z-index:2; background: url(../images/ar.png) no-repeat 0 0 }
 .ar a { float: left; width: 56px; height: 24px; background: url(../images/fx.gif) repeat 0 0 }
 

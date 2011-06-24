@@ -102,6 +102,7 @@ table.list_productdisplay p.soldout { color:#C33 }
 .slide .productcol { font-size: 15px; line-height: 22px }
 .slide .productcol div { font-size: 40px; line-height: 120%; display: block; margin: 28px 0 3px }
 .slide .productcol a.more-link { color: #fff; font-weight: bold; text-decoration: none }
+.slide.Dark .productcol a.more-link { color: #000 }
 .slide .productcol div.price { font-size: 30px }
 .moredetails { float: left; width: 586px; margin: 28px 0 0 8px }
 .single_product_display .product_description, .single_product_display .single_additional_description { font-size:14px; line-height:1.2em; margin:0 0 10px 0; padding:0 }

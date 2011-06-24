@@ -297,7 +297,6 @@ function progo_admin_menu_cleanup() {
 	global $submenu;
 	
 	// add Theme Options and Homepage Slides pages under APPEARANCE
-	add_theme_page( 'Homepage Slides', 'Homepage Slides', 'edit_theme_options', 'progo_home_slides', 'progo_home_slides_page' );
 	add_theme_page( 'Theme Options', 'Theme Options', 'edit_theme_options', 'progo_admin', 'progo_admin_page' );
 	// and reorder that APPEARANCE submenu
 	$sub = $submenu['themes.php'];
@@ -455,7 +454,7 @@ try{convertEntities(wpsc_adminL10n);}catch(e){};
         <?php
 		$addl = array(
 			'Homepage Slides' => array(
-				'url' => 'themes.php?page=progo_home_slides',
+				'url' => 'edit.php?post_type=progo_homeslide',
 				'btn' => 'Manage Homepage Slides',
 				'desc' => ''
 			),
@@ -571,107 +570,6 @@ function progo_site_settings_page() {
 <?php
 }
 endif;
-if ( ! function_exists( 'progo_home_slides_page' ) ):
-/**
- * outputs HTML for ProGo Themes "Site Settings" page
- * @uses settings_fields() for hidden form items for 'progo_slides'
- * @uses do_settings_sections() for 'progo_home_slides'
- * @since Ecommerce 1.0
- */
-function progo_home_slides_page() {
-?>
-	<div class="wrap">
-		<div class="icon32" id="icon-themes"></div>
-		<h2>Homepage Slides</h2>
-		<form action="options.php" method="post" enctype="multipart/form-data"><?php
-		settings_fields( 'progo_slides' );
-		do_settings_sections( 'progo_home_slides' );
-		?><p class="submit"><input type="submit" name="updateoption" value="Save Changes" class="button-primary" /></p>
-		</form>
-	</div>
-<?php
-}
-endif;
-if ( ! function_exists( 'progo_homeslide_start' ) ):
-/**
- * helper function
- * @since Ecommerce 1.0
- */
-function progo_homeslide_action($num, $sel, $slidedata = false) {
-	$slideproduct = $slideimg = 0;
-	$slidetext = '';
-	if(is_array($slidedata)) {
-		if(isset($slidedata['product'])) $slideproduct = absint($slidedata['product']);
-		if(isset($slidedata['text'])) $slidetext = $slidedata['text'];
-		if(isset($slidedata['image'])) $slideimg = absint($slidedata['image']);
-	}
-?><div class="postbox">
-<div class="handlediv" title="Click to toggle"><br /></div><h3 class="hndle"><span>Slide <?php echo $num; ?></span></h3>
-<div class="inside">
-<p><a href="#" onclick="return progo_slideremove(jQuery(this));" style="float:right">Delete This Slide</a>Slide shows :<br /><select class="homeslideshows" name="progo_slides[<?php echo $num; ?>][show]" onchange="progo_slidefor(jQuery(this));"><option value="">- please select -</option>
-<?php
-$slidetypes = array(
-	"product" => "Product",
-	"text" => "Text Area"/*,
-	"image" => "Image Banner"*/
-);
-foreach ( $slidetypes as $k => $v ) {
-	$s = $sel == $k ? " selected='selected'" : "";
-	echo "<option value='$k'$s>$v</option>";
-}
-?></select></p>
-<p class="product" style="<?php if ( $sel != 'product' ) echo 'display:none'; ?>">Select a Product for this Slide<br />
-<select name="progo_slides[<?php echo $num; ?>][product]">
-<?php
-$prods = get_posts(array('numberposts' => -1, 'post_type' => 'wpsc-product'));
-foreach ( $prods as $p ) {
-	$s = $slideproduct == $p->ID ? ' selected="selected"' : '';
-	echo '<option value="'. $p->ID .'"'. $s .'>'. esc_attr($p->post_title) .'</option>';
-}
-?>
-</select></p>
-<p class="text" style="<?php if ( $sel != 'text' ) echo 'display:none'; ?>">Text to Display<br />
-<textarea name="progo_slides[<?php echo $num; ?>][text]" rows="3" style="width: 100%"><?php echo esc_attr($slidetext); ?></textarea></p>
-<p class="image" style="<?php if ( $sel != 'image' ) echo 'display:none'; ?>">Choose an Image to display on this Slide. Images should be 960px width.<br />
-<input type="hidden" name="progo_slides[<?php echo $num; ?>][image]" /></p>
-</div>
-</div>
-<?php
-}
-endif;
-if ( ! function_exists( 'progo_field_slides' ) ):
-/**
- * outputs HTML for "Homepage Slides"
- * @since Ecommerce 1.0
- */
-function progo_field_slides() {
-	$slides = get_option( 'progo_slides' );
-	$count = isset($slides['count']) ? absint($slides['count']) : 0;
-	echo '<pre style="display:none">'. print_r($slides,true) .'</pre>';
-	?>
-<div id="poststuff" class="metabox-holder"><div id="normal-sortables" class="meta-box-sortables ui-sortable">
-<?php
-	if ( $count > 0 ) {
-		unset($slides['count']);
-		foreach($slides as $n => $s ) {
-			progo_homeslide_action($n+1, $s['show'], $s);
-		}
-	}
-?>
-</div></div>
-<p class="submit"><input type="submit" name="addmore" value="Add Another Slide &raquo;" onclick="return progo_anotherslide();" /><input type="hidden" name="progo_slides[count]" id="numslides" value="<?php echo $count; ?>" /></p>
-<?php }
-endif;
-add_action('wp_ajax_progo_homeslide_ajax', 'progo_ajax_callback');
-if ( ! function_exists( 'progo_ajax_callback' ) ):
-function progo_ajax_callback() {
-	$slidenum = absint($_POST['slidenum']);
-	$slideaction = $_POST['slideaction'];
-	progo_homeslide_action($slidenum, $slideaction);
-
-	die(); // this is required to return a proper result
-}
-endif;
 if ( ! function_exists( 'progo_admin_page_styles' ) ):
 /**
  * hooked to 'admin_print_styles' by add_action in progo_setup()
@@ -703,11 +601,6 @@ function progo_admin_page_scripts() {
 		switch ( $_GET['page'] ) {
 			case 'progo_admin':
         		wp_enqueue_script( 'thickbox' );
-				break;
-			case 'progo_home_slides':
-				# here be drag'ns
-				wp_enqueue_script('post');
-				wp_enqueue_script('progo-homeslides-admin', get_bloginfo( 'template_url' ) .'/js/homeslides-admin.js', array ( 'jquery', 'post' ), false, true );
 				break;
         }
 	}
@@ -802,11 +695,6 @@ function progo_admin_init() {
 	add_settings_section( 'progo_homepage', 'Homepage Settings', 'progo_section_text', 'progo_hometop' );
 	add_settings_field( 'progo_frontpage', 'Display', 'progo_field_frontpage', 'progo_hometop', 'progo_homepage' );
 	add_settings_field( 'progo_homeseconds', 'Slide Rotation Speed', 'progo_field_homeseconds', 'progo_hometop', 'progo_homepage' );
-	
-	// Homepage Slides settings
-	register_setting( 'progo_slides', 'progo_slides', 'progo_validate_homeslides' );
-	add_settings_section( 'progo_slide', 'Homepage Slides', 'progo_section_text', 'progo_home_slides' );
-	add_settings_field( 'progo_make_slides', 'Homepage Slides', 'progo_field_slides', 'progo_home_slides', 'progo_slide' );
 	
 	// since there does not seem to be an actual THEME_ACTIVATION hook, we'll fake it here
 	if ( get_option( 'progo_ecommerce_installed' ) != true ) {
@@ -931,7 +819,7 @@ function progo_ecommerce_init() {
 	register_post_type( 'progo_homeslide',
 		array(
 			'labels' => array(
-				'name' => 'Home Slides',
+				'name' => 'Homepage Slides',
 				'singular_name' => 'Slide',
 				'add_new_item' => 'Add New Slide',
 				'edit_item' => 'Edit Slide',
@@ -941,14 +829,14 @@ function progo_ecommerce_init() {
 				'not_found' =>  'No slides found',
 				'not_found_in_trash' => 'No slides found in Trash', 
 				'parent_item_colon' => '',
-				'menu_name' => 'Home Slides'
+				'menu_name' => 'Homepage Slides'
 			),
 			'public' => true,
 			'public_queryable' => true,
 			'exclude_from_search' => true,
-			'show_in_menu' => false,
-			'hierarchical' => false,
-			'supports' => array( 'thumbnail', 'revisions', 'page-attributes' )
+			'show_in_menu' => 'themes.php',
+			'hierarchical' => true,
+			'supports' => array( 'title', 'thumbnail', 'revisions', 'page-attributes' )
 		)
 	);
 }
@@ -1112,13 +1000,77 @@ function progo_slidecontent_box() {
 	if ( ! isset( $content['type'] ) ) {
 		$content['type'] = 'Product';
 	}
+	if ( ! isset( $content['product'] ) ) {
+		$slideproduct = 0;
+	} else {
+		$slideproduct = absint( $content['product'] );
+	}
+	if ( ! isset( $content['text'] ) ) {
+		$slidetext = '';
+	} else {
+		$slidetext = $content['text'];
+	}
+	if ( ! isset( $content['textcolor'] ) ) {
+		$content['textcolor'] = 'Light';
+	}
+	
 	
 	$types = array( 'Product', 'Text', 'Image');
 	?>
 	<table><tr><th scope="row">Slide shows :</th><?php
 	foreach ( $types as $t ) {
-		echo '<td><label for="slidetype'. $t .'"><input type="radio" name="slidetype" id="slidetype'. $t .'" value="'. $t .'" /> '. $t .'</label></td>';
+		?><td style="padding-right: 41px"><label for="slidetype<?php esc_attr_e( $t ); ?>"><input type="radio" name="progo_slidecontent[type]" id="slidetype<?php esc_attr_e( $t ); ?>" value="<?php esc_attr_e( $t ); ?>" <?php checked($content['type'], $t) ?> /> <?php esc_attr_e( $t ); ?></label></td><?php
 	} ?></tr></table>
+    <div class="slidecontent" id="slidetypeProductContent"<?php if ( $content['type'] != 'Product' ) echo ' style="display:none"'; ?>>  
+        <p>Select a Product for this Slide<br />
+        <select name="progo_slidecontent[product]" id="progo_slideproduct">
+        <?php
+        $prods = get_posts(array('numberposts' => -1, 'post_type' => 'wpsc-product'));
+        foreach ( $prods as $p ) {
+            $s = $slideproduct == $p->ID ? ' selected="selected"' : '';
+            echo '<option value="'. $p->ID .'"'. $s .'>'. esc_attr($p->post_title) .'</option>';
+        }
+        ?>
+        </select></p>
+    </div>
+    <div class="slidecontent" id="slidetypeTextContent"<?php if ( $content['type'] != 'Text' ) echo ' style="display:none"'; ?>>
+    	<p><em>Title (above) will be used as the main text Headline for this Slide</em></p>
+        <p>Text Additional Copy (optional)<br />
+        <textarea name="progo_slidecontent[text]" rows="3" style="width: 100%"><?php echo esc_attr($slidetext); ?></textarea></p>
+    </div>
+    <div class="slidecontent" id="slidetypeImageContent"<?php if ( $content['type'] != 'Image' ) echo ' style="display:none"'; ?>>
+    <p><em>Upload/Select the Image for this slide, via the "Slide Background Image" tool on this page.<br />
+The Title (above) will only be used as the title/alt attribute for the image</em></p>
+    </div>
+    <table id="slideTextColor"><tr><th scope="row">Slide Text Color :</th><?php
+	
+	$colors = array( 'Light', 'Dark');
+	foreach ( $colors as $c ) {
+		?><td style="padding-right: 41px"><label for="slideTextColor<?php esc_attr_e( $c ); ?>"><input type="radio" name="progo_slidecontent[textcolor]" id="slideTextColor<?php esc_attr_e( $c ); ?>" value="<?php esc_attr_e( $c ); ?>" <?php checked($content['textcolor'], $c) ?> /> <?php esc_attr_e( $c ); ?></label></td><?php
+	} ?></tr></table>
+    <script type="text/javascript">
+/* <![CDATA[ */
+jQuery(function() {
+	jQuery('#progo_slideproduct').change(function() {
+		jQuery('#title').val(jQuery(this).children(':selected').html());
+	});
+	jQuery('input[name="progo_slidecontent[type]"]').click(function() {
+		var id = jQuery(this).attr('id');
+		jQuery('#'+ id +'Content').show().siblings('.slidecontent').hide();
+		if( id == 'slidetypeProduct' ) {
+			jQuery('#progo_slideproduct').trigger('change');
+		}
+		if( id == 'slidetypeImage' ) {
+			jQuery('#slideTextColor').hide();
+		} else {
+			jQuery('#slideTextColor').show();
+		}
+	}).filter(':checked').trigger('click');
+	jQuery('#parent_id').hide().prevAll().hide();
+	jQuery('#edit-slug-box').hide();
+});
+/* ]]> */
+	</script>
     <?php
 }
 endif;
@@ -1318,24 +1270,39 @@ function progo_save_meta( $post_id ){
 		return $post_id;
 	}
 	// check permissions
-	if ( $_POST['post_type'] == 'page' ) {
-		if ( ! current_user_can( 'edit_page', $post_id ) ) {
-			return $post_id;
-		}
-	} else {
-	//if ( !current_user_can( 'edit_post', $post_id ) )
-	  return $post_id;
+	switch( $_POST['post_type'] ) {
+		case 'page':
+			if ( current_user_can( 'edit_page', $post_id ) ) {
+				// OK, we're authenticated: we need to find and save the data
+				if ( isset( $_POST['_progo_sidebar'] ) ) {
+					$sidebar = $_POST['_progo_sidebar'];
+					
+					if ( in_array ( $sidebar, array('main', 'blog', 'checkout', 'contact') ) ) {
+						update_post_meta($post_id, "_progo_sidebar", $sidebar);
+						return $sidebar;
+					}
+				}
+			}
+			break;
+		case 'progo_homeslide':
+			if ( current_user_can( 'edit_page', $post_id ) ) {
+				// OK, we're authenticated: we need to find and save the data
+				if ( isset( $_POST['progo_slidecontent'] ) ) {
+					$slidecontent = $_POST['progo_slidecontent'];
+					if ( !in_array( $slidecontent['type'], array( 'Product', 'Text', 'Image' ) ) ) {
+						$slidecontent['type'] = 'Product';
+					}
+					$slidecontent['product'] = absint( $slidecontent['product'] );
+					$slidecontent['textcolor'] = $slidecontent['textcolor'] == 'Light' ? 'Light' : 'Dark';
+					
+					update_post_meta($post_id, "_progo_slidecontent", $slidecontent);
+					return $slidecontent;
+					
+				}
+			}
+			break;
 	}
 	
-	// OK, we're authenticated: we need to find and save the data
-	if ( isset( $_POST['_progo_sidebar'] ) ) {
-		$sidebar = $_POST['_progo_sidebar'];
-		
-		if ( in_array ( $sidebar, array('main', 'blog', 'checkout', 'contact') ) ) {
-			update_post_meta($post_id, "_progo_sidebar", $sidebar);
-			return $sidebar;
-		}
-	}
 	return $post_id;
 }
 endif;
@@ -1409,41 +1376,6 @@ function progo_options_defaults() {
 	update_option( 'st_add_to_content', 'no' );
 	update_option( 'st_add_to_page', 'no' );
 }
-if ( ! function_exists( 'progo_validate_homeslides' ) ):
-/**
- * ProGo Homeslides Options settings validation function
- * @param $input options to validate
- * @return $input after validation has taken place
- * @since Ecommerce 1.0
- */
-function progo_validate_homeslides( $input ) {
-	$counto = absint( $input['count'] );
-	unset( $input['count'] );
-	$newslides = array();
-	$count = 0;
-	foreach ( $input as $slide ) {
-		$newslide = array();
-		$newslide['show'] = $slide['show'];
-		$newslide['product'] = isset($slide['product']) ? absint($slide['product']) : 0;
-		$newslide['text'] = isset($slide['text']) ? wp_kses($slide['text'], array()) : '';
-		$newslide['image'] = isset($slide['image']) ? absint($slide['image']) : 0;
-		$newslides[] = $newslide;
-		$count++;
-	}
-	// check for new slide addition ...
-	for ( $i = $count; $i < $counto; $i++ ) {
-		$newslides[] = array(
-			'show' => '',
-			'product' => 0,
-			'text' => '',
-			'image' => 0
-		);
-	}
-	$newslides['count'] = $counto;
-	$input = $newslides;
-	return $input;
-}
-endif;
 if ( ! function_exists( 'progo_validate_options' ) ):
 /**
  * ProGo Site Settings Options validation function
@@ -2133,8 +2065,8 @@ function progo_ecommerce_completeness( $onstep ) {
 				}
 				break;
 			case 15: // Homepage Slides
-				$slides = (array) get_option( 'progo_slides' );
-				if ( $slides['count'] > 0 ) {
+				$count = wp_count_posts( 'progo_homeslide' );
+				if ( $count->publish > 0 ) {
 					$onstep = 16;
 				}
 				break;
@@ -2257,7 +2189,7 @@ function progo_admin_notices() {
 				break;
 			case 15: // Homepage Slides
 				$pct = 90;
-				$nst = '<a href="'. admin_url('themes.php?page=progo_home_slides') .'">Manage Slides for the top area of your Homepage</a>. Promote Special Products &amp; Benefit Points';
+				$nst = '<a href="'. admin_url('edit.php?post_type=progo_homeslide') .'">Manage Slides for the top area of your Homepage</a>. Promote Special Products &amp; Benefit Points';
 				break;
 			case 16: // Main Menu
 				$pct = 95;
@@ -2399,7 +2331,7 @@ function progo_admin_bar_render() {
 	// move Appearance > Widgets & Menus submenus to below our new ones
 	$wp_admin_bar->remove_menu('widgets');
 	$wp_admin_bar->remove_menu('menus');
-	$wp_admin_bar->add_menu( array( 'parent' => 'appearance', 'id' => 'homeslides', 'title' => __('Homepage Slides'), 'href' => admin_url('themes.php?page=progo_home_slides') ) );
+	$wp_admin_bar->add_menu( array( 'parent' => 'appearance', 'id' => 'homeslides', 'title' => __('Homepage Slides'), 'href' => admin_url('edit.php?post_type=progo_homeslide') ) );
 	$wp_admin_bar->add_menu( array( 'parent' => 'appearance', 'id' => 'background', 'title' => __('Background'), 'href' => admin_url('themes.php?page=custom-background') ) );
 	$wp_admin_bar->add_menu( array( 'parent' => 'appearance', 'id' => 'menus', 'title' => __('Menus'), 'href' => admin_url('nav-menus.php') ) );
 	$wp_admin_bar->add_menu( array( 'parent' => 'appearance', 'id' => 'widgets', 'title' => __('Widgets'), 'href' => admin_url('widgets.php') ) );
