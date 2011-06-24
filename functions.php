@@ -66,6 +66,7 @@ function progo_setup() {
 	add_filter( 'body_class', 'progo_bodyclasses' );
 	add_filter( 'wp_nav_menu_objects', 'progo_menuclasses' );
 	add_filter( 'site_transient_update_themes', 'progo_update_check' );
+	add_filter( 'admin_post_thumbnail_html', 'progo_admin_post_thumbnail_html' );
 	add_filter( 'wpsc_pre_transaction_results', 'progo_prepare_transaction_results' );
 	add_filter( 'wp_mail_content_type', 'progo_mail_content_type' );
 	add_filter('custom_menu_order', 'progo_admin_menu_order');
@@ -332,7 +333,7 @@ function progo_metaboxhidden_defaults( $result, $option, $user ) {
 endif;
 if ( ! function_exists( 'progo_admin_menu_order' ) ):
 function progo_admin_menu_order($menu_ord) {
-	if (!$menu_ord) return true;
+	if ( ! $menu_ord ) return true;
 	return array(
 		'index.php', // this represents the dashboard link
 		'separator1',
@@ -619,7 +620,7 @@ foreach ( $slidetypes as $k => $v ) {
 	echo "<option value='$k'$s>$v</option>";
 }
 ?></select></p>
-<p class="product" style="<?php if($sel!='product') echo 'display:none'; ?>">Select a Product for this Slide<br />
+<p class="product" style="<?php if ( $sel != 'product' ) echo 'display:none'; ?>">Select a Product for this Slide<br />
 <select name="progo_slides[<?php echo $num; ?>][product]">
 <?php
 $prods = get_posts(array('numberposts' => -1, 'post_type' => 'wpsc-product'));
@@ -629,9 +630,9 @@ foreach ( $prods as $p ) {
 }
 ?>
 </select></p>
-<p class="text" style="<?php if($sel!='text') echo 'display:none'; ?>">Text to Display<br />
+<p class="text" style="<?php if ( $sel != 'text' ) echo 'display:none'; ?>">Text to Display<br />
 <textarea name="progo_slides[<?php echo $num; ?>][text]" rows="3" style="width: 100%"><?php echo esc_attr($slidetext); ?></textarea></p>
-<p class="image" style="<?php if($sel!='image') echo 'display:none'; ?>">Choose an Image to display on this Slide. Images should be 960px width.<br />
+<p class="image" style="<?php if ( $sel != 'image' ) echo 'display:none'; ?>">Choose an Image to display on this Slide. Images should be 960px width.<br />
 <input type="hidden" name="progo_slides[<?php echo $num; ?>][image]" /></p>
 </div>
 </div>
@@ -662,7 +663,7 @@ function progo_field_slides() {
 <?php }
 endif;
 add_action('wp_ajax_progo_homeslide_ajax', 'progo_ajax_callback');
-if(!function_exists('progo_ajax_callback')):
+if ( ! function_exists( 'progo_ajax_callback' ) ):
 function progo_ajax_callback() {
 	$slidenum = absint($_POST['slidenum']);
 	$slideaction = $_POST['slideaction'];
@@ -921,6 +922,38 @@ function progo_admin_init() {
 	}
 }
 endif;
+if ( ! function_exists( 'progo_ecommerce_init' ) ):
+/**
+ * registers our "Homepage Slides" Custom Post Type
+ * @since Ecommerce 1.1.25
+ */
+function progo_ecommerce_init() {
+	register_post_type( 'progo_homeslide',
+		array(
+			'labels' => array(
+				'name' => 'Home Slides',
+				'singular_name' => 'Slide',
+				'add_new_item' => 'Add New Slide',
+				'edit_item' => 'Edit Slide',
+				'new_item' => 'New Slide',
+				'view_item' => 'View Slide',
+				'search_items' => 'Search Slides',
+				'not_found' =>  'No slides found',
+				'not_found_in_trash' => 'No slides found in Trash', 
+				'parent_item_colon' => '',
+				'menu_name' => 'Home Slides'
+			),
+			'public' => true,
+			'public_queryable' => true,
+			'exclude_from_search' => true,
+			'show_in_menu' => false,
+			'hierarchical' => false,
+			'supports' => array( 'thumbnail', 'revisions', 'page-attributes' )
+		)
+	);
+}
+add_action( 'init', 'progo_ecommerce_init' );
+endif;
 if ( ! function_exists( 'progo_ecommerce_widgets' ) ):
 /**
  * registers a sidebar area for the WIDGETS page
@@ -1015,14 +1048,19 @@ function progo_metabox_cleanup() {
 					'submitdiv' => $wp_meta_boxes['wpsc-product']['side']['core']['submitdiv'],
 					'wpsc_price_control_forms' => $wp_meta_boxes['wpsc-product']['side']['low']['wpsc_price_control_forms']
 				);
-				unset($wp_meta_boxes['wpsc-product']['side']['core']['submitdiv']);
-				unset($wp_meta_boxes['wpsc-product']['side']['low']['wpsc_price_control_forms']);
+				unset( $wp_meta_boxes['wpsc-product']['side']['core']['submitdiv'] );
+				unset( $wp_meta_boxes['wpsc-product']['side']['low']['wpsc_price_control_forms'] );
 				// Merge the two arrays together so our widget is at the beginning
 				$wp_meta_boxes['wpsc-product']['side']['core'] = array_merge( $toparr, $wp_meta_boxes['wpsc-product']['side']['core'] );
 			}
 			break;
 		case 'page':
 			add_meta_box( 'progo_sidebar_box', 'Sidebar', 'progo_sidebar_box', 'page', 'side', 'low' );
+			break;
+		case 'progo_homeslide':
+			$wp_meta_boxes['progo_homeslide']['side']['low']['postimagediv']['title'] = 'Slide Background Image';
+			
+			add_meta_box( 'progo_slidecontent_box', 'Slide Content', 'progo_slidecontent_box', 'progo_homeslide', 'normal', 'high' );
 			break;
 	}
 }
@@ -1045,7 +1083,7 @@ function progo_sidebar_box() {
 	$ids = array('main', 'blog', 'checkout', 'contact');
 	$titles = array('Main Sidebar (default)', 'Blog', 'Checkout', 'Contact');
 	
-	if(!in_array($sidebar, $ids)) {
+	if( ! in_array( $sidebar, $ids ) ) {
 		$sidebar = 'main';
 	}
 	?>
@@ -1058,6 +1096,32 @@ for ( $i = 0; $i < count($ids); $i++) {
 	<?php
 }
 endif;
+if ( ! function_exists( 'progo_slidecontent_box' ) ):
+/**
+ * outputs html for "Sidebar" meta box on EDIT PAGE
+ * lets Admins choose which Sidebar area is displayed on each Page
+ * called by add_meta_box( "progo_direct_box", "Direct Response", "progo_direct_box"...
+ * in progo_admin_init()
+ * @uses progo_direct_meta_defaults()
+ * @since Direct 1.0.9
+ */
+function progo_slidecontent_box() {
+	global $post;
+	$custom = get_post_meta($post->ID,'_progo_slidecontent');
+	$content = (array) $custom[0];
+	if ( ! isset( $content['type'] ) ) {
+		$content['type'] = 'Product';
+	}
+	
+	$types = array( 'Product', 'Text', 'Image');
+	?>
+	<table><tr><th scope="row">Slide shows :</th><?php
+	foreach ( $types as $t ) {
+		echo '<td><label for="slidetype'. $t .'"><input type="radio" name="slidetype" id="slidetype'. $t .'" value="'. $t .'" /> '. $t .'</label></td>';
+	} ?></tr></table>
+    <?php
+}
+endif;
 
 /********* core ProGo Themes' Ecommerce functions *********/
 
@@ -1068,7 +1132,7 @@ if ( ! function_exists( 'progo_add_scripts' ) ):
  * @since BookIt 1.0
  */
 function progo_add_scripts() {
-	if ( !is_admin() ) {
+	if ( ! is_admin() ) {
 		wp_enqueue_script( 'progo', get_bloginfo('template_url') .'/js/progo-frontend.js', array('jquery'), '1.0' );
 		do_action('progo_frontend_scripts');
 		
@@ -1101,7 +1165,7 @@ if ( ! function_exists( 'progo_add_styles' ) ):
  * @since Ecommerce 1.0
  */
 function progo_add_styles() {
-	if ( !is_admin() ) {
+	if ( ! is_admin() ) {
 		$options = get_option('progo_options');
 		$color = $options['colorscheme'];
 		$avail = progo_colorschemes();
@@ -1255,7 +1319,7 @@ function progo_save_meta( $post_id ){
 	}
 	// check permissions
 	if ( $_POST['post_type'] == 'page' ) {
-		if ( !current_user_can( 'edit_page', $post_id ) ) {
+		if ( ! current_user_can( 'edit_page', $post_id ) ) {
 			return $post_id;
 		}
 	} else {
@@ -1308,7 +1372,7 @@ endif;
 function progo_options_defaults() {
 	// Define default option settings
 	$tmp = get_option( 'progo_options' );
-    if ( !is_array( $tmp ) ) {
+    if ( ! is_array( $tmp ) ) {
 		$def = array(
 			"colorscheme" => "BlackGrey",
 			"logo" => "",
@@ -1326,7 +1390,7 @@ function progo_options_defaults() {
 		update_option( 'progo_options', $def );
 	}
 	$tmp = get_option( 'progo_slides' );
-    if ( !is_array( $tmp ) ) {
+    if ( ! is_array( $tmp ) ) {
 		$def = array('count'=>0);	
 		update_option( 'progo_slides', $def );
 	}
@@ -1407,7 +1471,7 @@ function progo_validate_options( $input ) {
 	
 	// opt[colorscheme] must be one of the allowed colors
 	$colors = progo_colorschemes();
-	if ( !in_array( $input['colorscheme'], $colors ) ) {
+	if ( ! in_array( $input['colorscheme'], $colors ) ) {
 		$input['colorscheme'] = 'BlackGrey';
 	}
 	
@@ -1416,7 +1480,7 @@ function progo_validate_options( $input ) {
 		'featured',
 		'page'
 	);
-	if ( !in_array( $input['frontpage'], $choices ) ) {
+	if ( ! in_array( $input['frontpage'], $choices ) ) {
 		$input['frontpage'] = get_option('show_on_front');
 	}
 	switch ( $input['frontpage'] ) {
@@ -1477,19 +1541,19 @@ function progo_validate_options( $input ) {
 				default:
 					$error = "File upload failed due to unknown error.";
 			}
-		} elseif ( !$_FILES['progo_options']['size']['logotemp'] ) {
+		} elseif ( ! $_FILES['progo_options']['size']['logotemp'] ) {
 			$error = "The file &ldquo;". $_FILES['progo_options']['name']['logotemp'] ."&rdquo; was not uploaded. Did you provide the correct filename?";
-		} elseif ( !in_array( $_FILES['progo_options']['type']['logotemp'], array( "image/jpeg", "image/pjpeg", "image/gif", "image/png", "image/x-png" ) ) ) {
+		} elseif ( ! in_array( $_FILES['progo_options']['type']['logotemp'], array( "image/jpeg", "image/pjpeg", "image/gif", "image/png", "image/x-png" ) ) ) {
 			$error = "The uploaded file type &ldquo;". $_FILES['progo_options']['type']['logotemp'] ."&rdquo; is not allowed.";
 		}
 		$tmppath = $_FILES['progo_options']['tmp_name']['logotemp'];
 		
 		$imageinfo = null;
-		if(!$error){			
+		if ( ! $error ) {			
 			$imageinfo = getimagesize($tmppath);
-			if ( !$imageinfo || !$imageinfo[0] || !$imageinfo[1] ) {
+			if ( ( ! $imageinfo ) || ( ! $imageinfo[0] ) || ( ! $imageinfo[1] ) ) {
 				$error = __("Unable to get image dimensions.", 'user-photo');
-			} else if( $imageinfo[0] > 598 || $imageinfo[1] > 75 ) {
+			} else if ( $imageinfo[0] > 598 || $imageinfo[1] > 75 ) {
 				/*
 				if(userphoto_resize_image($tmppath, null, $userphoto_maximum_dimension, $error)) {
 					$imageinfo = getimagesize($tmppath);
@@ -1502,16 +1566,16 @@ function progo_validate_options( $input ) {
 				#	$userphoto_jpeg_compression = USERPHOTO_DEFAULT_JPEG_COMPRESSION;
 				
 				$info = @getimagesize($filename);
-				if(!$info || !$info[0] || !$info[1]){
+				if ( ( ! $info ) || ( ! $info[0] ) || ( ! $info[1] ) ) {
 					$error = __("Unable to get image dimensions.", 'user-photo');
 				}
 				//From WordPress image.php line 22
 				else if (
-					!function_exists( 'imagegif' ) && $info[2] == IMAGETYPE_GIF
+					! function_exists( 'imagegif' ) && $info[2] == IMAGETYPE_GIF
 					||
-					!function_exists( 'imagejpeg' ) && $info[2] == IMAGETYPE_JPEG
+					! function_exists( 'imagejpeg' ) && $info[2] == IMAGETYPE_JPEG
 					||
-					!function_exists( 'imagepng' ) && $info[2] == IMAGETYPE_PNG
+					! function_exists( 'imagepng' ) && $info[2] == IMAGETYPE_PNG
 				) {
 					$error = __( 'Filetype not supported.', 'user-photo' );
 				}
@@ -1526,7 +1590,7 @@ function progo_validate_options( $input ) {
 					elseif ( $info[2] == IMAGETYPE_PNG ) {
 						$image = imagecreatefrompng( $filename );
 					}
-					if(!isset($image)){
+					if ( ! isset( $image ) ) {
 						$error = __("Unrecognized image format.", 'user-photo');
 						return false;
 					}
@@ -1557,12 +1621,12 @@ function progo_validate_options( $input ) {
 			
 					// move the thumbnail to its final destination
 					if ( $info[2] == IMAGETYPE_GIF ) {
-						if (!imagegif( $imageresized, $newFilename ) ) {
+						if ( ! imagegif( $imageresized, $newFilename ) ) {
 							$error = __( "Logo path invalid" );
 						}
 					}
 					elseif ( $info[2] == IMAGETYPE_JPEG ) {
-						if (!imagejpeg( $imageresized, $newFilename, $jpeg_compression ) ) {
+						if ( ! imagejpeg( $imageresized, $newFilename, $jpeg_compression ) ) {
 							$error = __( "Logo path invalid" );
 						}
 					}
@@ -1578,7 +1642,7 @@ function progo_validate_options( $input ) {
 						}
 						@ imagecopyresampled( $imageresized, $image, 0, 0, 0, 0, $image_new_width, $image_new_height, $info[0], $info[1] );
 
-						if (!imagepng( $imageresized, $newFilename ) ) {
+						if ( ! imagepng( $imageresized, $newFilename ) ) {
 							$error = __( "Logo path invalid" );
 						}
 					}
@@ -1589,12 +1653,12 @@ function progo_validate_options( $input ) {
 			}
 		}
 		
-		if ( !$error ){
+		if ( ! $error ) {
 			$upload_dir = wp_upload_dir();
 			$dir = trailingslashit( $upload_dir['basedir'] );
 			$imagepath = $dir . $_FILES['progo_options']['name']['logotemp'];
 			
-			if ( !move_uploaded_file( $tmppath, $imagepath ) ) {
+			if ( ! move_uploaded_file( $tmppath, $imagepath ) ) {
 				$error = "Unable to place the user photo at: ". $imagepath;
 			}
 			else {
@@ -1907,7 +1971,7 @@ if ( ! function_exists( 'progo_menuclasses' ) ):
 function progo_menuclasses($items) {
 	$blogID = get_option('progo_blog_id');
 	foreach ( $items as $i ) {
-		if ( $i->post_content == '[productspage]' && !is_front_page() ) {
+		if ( ( $i->post_content == '[productspage]' ) && ! is_front_page() ) {
 			$i->classes[] = 'wpsc';
 		}
 		if ( $i->object_id == $blogID ) {
@@ -1989,7 +2053,7 @@ function progo_ecommerce_completeness( $onstep ) {
 				break;
 			case 5: // WPEC Store Location
 				$base_country = get_option( 'base_country', '' );
-				if ( $base_country !=='' ) {
+				if ( $base_country !== '' ) {
 					$onstep = 6;
 				}
 				break;
@@ -2011,7 +2075,7 @@ function progo_ecommerce_completeness( $onstep ) {
 			case 8: // WPEC Shipping
 				$noshipping = get_option('progo_ecommerce_noshipping');
 				$wpec_noshipping = get_option('do_not_use_shipping');
-				if ( $noshipping==true || ($noshipping==false && $wpec_noshipping!=1) ) {
+				if ( $noshipping || ( ( ! $noshipping ) && ( $wpec_noshipping != 1 ) ) ) {
 					$onstep = 9;
 				}
 				break;
@@ -2030,7 +2094,7 @@ function progo_ecommerce_completeness( $onstep ) {
 			case 10: // Permalinks
 				$permalink = get_option( 'permalink_structure', '' );
 				$defaultok = get_option( 'progo_permalink_checked', false );
-				if ( ( $permalink != '' ) || ( $permalink == '' && $defaultok == true ) ) {
+				if ( ( $permalink != '' ) || ( ( $permalink == '' ) &&  ( $defaultok == true ) ) ) {
 					$onstep = 11;
 				}
 				break;
@@ -2258,10 +2322,10 @@ function progo_update_check($data) {
 
 	$raw_response = wp_remote_post('http://www.progo.com/updatecheck/', $checkplz);
 	
-	if (!is_wp_error($raw_response) && ($raw_response['response']['code'] == 200))
+	if ( ( ! is_wp_error( $raw_response ) ) && ( $raw_response['response']['code'] == 200 ) )
 		$response = unserialize($raw_response['body']);
 		
-	if ( !empty( $response ) ) {
+	if ( ! empty( $response ) ) {
 		// got response back. check authcode
 		// wp_die('response:<br /><pre>'. print_r($response,true) .'</pre><br /><br />apikey: '. $apikey );
 		// only save AUTHCODE if APIKEY is not blank.
@@ -2308,6 +2372,20 @@ function progo_product_image_forms() {
 <?php
 }
 endif;
+if ( ! function_exists( 'progo_admin_post_thumbnail_html' ) ):
+/**
+ * hooked by add_filter to 'admin_post_thumbnail_html'
+ * @since Ecommerce 1.1.25
+ */
+function progo_admin_post_thumbnail_html($html) {
+	global $post_type;
+	global $post;
+	if( $post_type=='progo_homeslide' ) {
+		$html = str_replace(__('Set featured image').'</a>',__('Upload/Select a Background Image</a>. Recommended Size: 960px W x 330px H'), $html );
+	}
+	return $html;
+}
+endif;
 /**
  * hooked by add_filter to 'wp_before_admin_bar_render'
  * to tweak the new WP 3.1 ADMIN BAR
@@ -2335,13 +2413,13 @@ function progo_admin_bar_render() {
 	}
 }
 
-if(!function_exists('progo_mail_content_type')):
+if ( ! function_exists( 'progo_mail_content_type' ) ):
 function progo_mail_content_type( $content_type ) {
 	return 'text/html';
 }
 endif;
 
-if(!function_exists('progo_nomenu_cb')):
+if ( ! function_exists( 'progo_nomenu_cb' ) ):
 function progo_nomenu_cb() {
 	return '<ul></ul>';
 }
