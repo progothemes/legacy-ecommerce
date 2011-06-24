@@ -45,7 +45,7 @@ class ProGo_Widget_Tweets extends WP_Widget {
 		if ( ( $twitter != '' ) && ( $num > 0 ) ) { ?>
         <div class="tweets">
 		<p class="last"><a href="http://twitter.com/<?php esc_attr_e($twitter); ?>" target="_blank" class="tw"><?php echo wp_kses($text,array('br'=>array(),'em'=>array(),'strong'=>array())); ?></a></p>
-        <script type="text/javascript" src="http://twitter.com/statuses/user_timeline/<?php esc_attr_e($twitter); ?>.json?callback=proGoTwitterCallback&amp;count=<?php echo $num; ?>"></script>
+        <script type="text/javascript" src="https://api.twitter.com/1/statuses/user_timeline.json?include_rts=true&amp;screen_name=<?php esc_attr_e($twitter); ?>&amp;count=<?php echo $num; ?>&amp;callback=proGoTwitterCallback"></script>
 		</div><?php
 		}
 		echo $after_widget;
