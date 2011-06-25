@@ -6,13 +6,6 @@
  *
  * Defines all the functions, actions, filters, widgets, etc., for ProGo Themes' Ecommerce theme.
  *
- * Some actions for Child Themes to hook in to are:
- * progo_frontend_scripts, progo_frontend_styles, progo_direct_after_arrow (called on directresponse.php page)
- *
- * Some overwriteable functions ( wrapped by "if(!function_exists(..." ) are:
- * progo_sitelogo, progo_posted_on, progo_posted_in, progo_productimage, progo_prepare_transaction_results,
- * progo_admin_menu_cleanup, progo_custom_login_logo, progo_custom_login_url, progo_metabox_cleanup, progo_colorschemes ...
- *
  * Most Action / Filters hooks are set in the progo_setup function, below. overwriting that could cause quite a few things to go wrong.
  */
 
