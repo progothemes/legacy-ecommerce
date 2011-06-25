@@ -4,7 +4,7 @@
  *
  * @package ProGo
  * @subpackage Ecommerce
- * @since Direct 1.0
+ * @since Ecommerce 1.0
  */
 
 get_header(); ?>
