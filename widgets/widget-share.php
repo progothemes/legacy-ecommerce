@@ -2,13 +2,13 @@
 /**
  * ProGo Themes' Share Widget Class
  *
- * This widget is for positioning/removing the "Share" block on Direct Response pages.
+ * This widget is for positioning/removing the "Share" block.
  * modelled after Hybrid theme's widget definitions
  *
- * @since 1.0.57
+ * @since 1.0
  *
  * @package ProGo
- * @subpackage Direct
+ * @subpackage Core
  */
 
 class ProGo_Widget_Share extends WP_Widget {

@@ -4,10 +4,10 @@
  *
  * This widget is for positioning/removing the "Customer Support" block
  *
- * @since 1.0.0
+ * @since 1.0
  *
  * @package ProGo
- * @subpackage Direct
+ * @subpackage Core
  */
 
 class ProGo_Widget_Support extends WP_Widget {
