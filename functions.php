@@ -329,12 +329,12 @@ function progo_admin_menu_order($menu_ord) {
 	return array(
 		'index.php', // this represents the dashboard link
 		'separator1',
-		'edit.php?post_type=wpsc-product', // this is a custom post type menu
-		'edit.php?post_type=page', // this is the default page menu
-		'edit.php', // this is the default POST admin menu
-		'upload.php', // this is the default POST admin menu
-		'edit-comments.php', // this is the default POST admin menu
-		'link-manager.php' // this is the default POST admin menu
+		'edit.php?post_type=wpsc-product', // Products
+		'edit.php?post_type=page', // Pages
+		'edit.php', // Posts
+		'upload.php', // Media
+		'edit-comments.php', // Comments
+		'link-manager.php' // Links
 	);
 }
 endif;
@@ -951,10 +951,7 @@ if ( ! function_exists( 'progo_sidebar_box' ) ):
 /**
  * outputs html for "Sidebar" meta box on EDIT PAGE
  * lets Admins choose which Sidebar area is displayed on each Page
- * called by add_meta_box( "progo_direct_box", "Direct Response", "progo_direct_box"...
- * in progo_admin_init()
- * @uses progo_direct_meta_defaults()
- * @since Direct 1.0.9
+ * @since Ecommerce 1.0
  */
 function progo_sidebar_box() {
 	global $post;
@@ -984,7 +981,7 @@ if ( ! function_exists( 'progo_slidecontent_box' ) ):
  * called by add_meta_box( "progo_direct_box", "Direct Response", "progo_direct_box"...
  * in progo_admin_init()
  * @uses progo_direct_meta_defaults()
- * @since Direct 1.0.9
+ * @since Ecommerce 1.1.24
  */
 function progo_slidecontent_box() {
 	global $post;
@@ -1074,7 +1071,7 @@ if ( ! function_exists( 'progo_add_scripts' ) ):
 /**
  * hooked to 'wp_print_scripts' by add_action in progo_setup()
  * adds front-end js
- * @since BookIt 1.0
+ * @since Ecommerce 1.0
  */
 function progo_add_scripts() {
 	if ( ! is_admin() ) {
