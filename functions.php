@@ -468,7 +468,7 @@ try{convertEntities(wpsc_adminL10n);}catch(e){};
 			)
 		);
 		foreach ( $addl as $k => $v ) {
-			echo '<tr><th scope="row">'. wp_kses($k,array()) .'</th><td><a href="'. esc_url($v['url']) .'" class="button">'. wp_kses($v['btn'],array()) .' &raquo;</a> <span class="description">'. wp_kses($v['desc'],array()) .'</span></td></tr>';
+			echo '<tr><th scope="row">'. wp_kses($k,array()) .'</th><td><a href="'. esc_url($v['url']) .'" class="button" target="_blank">'. wp_kses($v['btn'],array()) .' &raquo;</a> <span class="description">'. wp_kses($v['desc'],array()) .'</span></td></tr>';
 		} ?>
         </table><p><br /></p>
         <h3><a name="recommended"></a>Recommended Plugins</h3>
@@ -1025,7 +1025,7 @@ function progo_slidecontent_box() {
     </div>
     <div class="slidecontent" id="slidetypeTextContent"<?php if ( $content['type'] != 'Text' ) echo ' style="display:none"'; ?>>
     	<p><em>Title (above) will be used as the main text Headline for this Slide</em></p>
-        <p>Text Additional Copy (optional)<br />
+        <p>Additional Copy (optional)<br />
         <textarea name="progo_slidecontent[text]" rows="3" style="width: 100%"><?php echo esc_attr($slidetext); ?></textarea></p>
     </div>
     <div class="slidecontent" id="slidetypeImageContent"<?php if ( $content['type'] != 'Image' ) echo ' style="display:none"'; ?>>
