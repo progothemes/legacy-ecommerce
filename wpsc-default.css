@@ -58,7 +58,7 @@ Author URI: http://www.progo.com
 .default_product_display .out_of_stock,
 .single_product_display .out_of_stock { position: relative; background-image: url(wpsc-images/outofstock.png); background-repeat: no-repeat; padding-left: 20px; left:-5px  }
 
-.wpsc_product_price { line-height: 18px; margin-bottom: 20px }
+.wpsc_product_price, .productcol .st_sharethis { line-height: 18px; margin-bottom: 20px }
 .wpsc_product_price span.oldprice { text-decoration:line-through; color:#666 }
 .default_product_display p.soldout, #main .default_product_display p.soldout { font-weight:bold; font-size:14px; color:#C33; background:url(wpsc-images/outofstock.png) no-repeat scroll 0 2px transparent; padding-left:18px; margin:0 }
 .default_product_display div.wpsc_loading_animation { visibility:hidden; float: right; margin-top:5px }
@@ -108,8 +108,7 @@ table.list_productdisplay p.soldout { color:#C33 }
 .single_product_display .product_description, .single_product_display .single_additional_description { font-size:14px; line-height:1.2em; margin:0 0 10px 0; padding:0 }
 .single_product_display form.product_form fieldset, #main .single_product_display form.product_form fieldset { border: none; padding: 0 }
 .single_product_display form.product_form fieldset legend, #main .single_product_display form.product_form fieldset legend { font-size: 18px; font-weight: normal; padding: 0 }
-.single_product_display form.product_form input, #main .single_product_display form.product_form input { padding:2px; margin:0;
- line-height:1.2em; font-size:14px }
+.single_product_display form.product_form input, #main .single_product_display form.product_form input { padding:2px; margin:0 0 20px; line-height:1.2em; font-size:14px }
 .single_product_display form.product_form input.input_custom_text, #main .single_product_display form.product_form input.input_custom_text { width:250px }
 .single_product_display form.product_form fieldset p, #main .single_product_display form.product_form fieldset p { margin:0 0 10px 0; padding:0; line-height:1.2em; font-size:14px }
 .default_product_display .wpsc_variation_forms { padding:0; margin-bottom:20px }
