@@ -2185,6 +2185,9 @@ function progo_admin_notices() {
 				$pct = 95;
 				$nst = '<a href="'. admin_url('nav-menus.php') .'">Customize your site\'s Menus</a> by adding more links from the left column, and rearranging links with Drag-n-Drop. <strong>This is the last step to setting up your Ecommerce site!</strong> When your Menus are set, <a href="'. wp_nonce_url("admin.php?progo_admin_action=menus_set", 'progo_menus_set') .'">click here to remove this message</a>.';
 				break;
+			default:
+				$pct = 5;
+				$nst = '<a href="'. admin_url('themes.php?page=progo_admin') .'">Please enter your ProGo Themes API Key to Activate your theme</a>.';
 		}
 		echo '<p>Your ProGo Ecommerce site is <strong>'. $pct .'% Complete</strong> - Next Step: '. $nst .'</p></div>';
 	}
