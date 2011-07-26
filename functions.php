@@ -1938,7 +1938,7 @@ function progo_ecommerce_reccheck( $echo ) {
 		}
 	}
 }
-endif;			
+endif;
 if ( ! function_exists( 'progo_ecommerce_completeness' ) ):
 /**
  * check which step / % complete current site is at
