@@ -286,8 +286,7 @@ if ( ! function_exists( 'progo_admin_menu_cleanup' ) ):
  * @since Ecommerce 1.0
  */
 function progo_admin_menu_cleanup() {
-	global $menu;
-	global $submenu;
+	global $menu, $submenu;
 	
 	// add Theme Options and Homepage Slides pages under APPEARANCE
 	add_theme_page( 'Theme Options', 'Theme Options', 'edit_theme_options', 'progo_admin', 'progo_admin_page' );
