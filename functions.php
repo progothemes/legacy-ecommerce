@@ -541,27 +541,6 @@ function progo_custom_login_url() {
 	return 'http://www.progo.com';
 }
 endif;
-if ( ! function_exists( 'progo_site_settings_page' ) ):
-/**
- * outputs HTML for ProGo Themes "Site Settings" page
- * @uses settings_fields() for hidden form items for 'progo_options'
- * @uses do_settings_sections() for 'progo_site_settings'
- * @since Ecommerce 1.0
- */
-function progo_site_settings_page() {
-?>
-	<div class="wrap">
-		<div class="icon32" id="icon-options-general"></div>
-		<h2>Site Settings</h2>
-		<form action="options.php" method="post" enctype="multipart/form-data"><?php
-		settings_fields( 'progo_options' );
-		do_settings_sections( 'progo_site_settings' );
-		?><p class="submit"><input type="submit" name="updateoption" value="Update &raquo;" /></p>
-		</form>
-	</div>
-<?php
-}
-endif;
 if ( ! function_exists( 'progo_admin_page_styles' ) ):
 /**
  * hooked to 'admin_print_styles' by add_action in progo_setup()
@@ -571,7 +550,7 @@ if ( ! function_exists( 'progo_admin_page_styles' ) ):
 function progo_admin_page_styles() {
 	global $pagenow;
 	if ( $pagenow == 'themes.php' && isset( $_GET['page'] ) ) {
-		if ( 'progo_admin' == $_GET['page'] ) {\
+		if ( 'progo_admin' == $_GET['page'] ) {
 				wp_enqueue_style( 'global' );
 				wp_enqueue_style( 'wp-admin' );
 				wp_enqueue_style( 'thickbox' );
@@ -660,9 +639,6 @@ function progo_admin_init() {
 	// ACTION hooks
 	add_action( 'admin_print_styles', 'progo_admin_page_styles' );
 	add_action( 'admin_print_scripts', 'progo_admin_page_scripts' );
-	
-	// Installation (api key) settings
-	// register_setting( 'progo_api_options', 'progo_api_options', 'progo_validate_options' );
 	
 	// Appearance settings
 	register_setting( 'progo_options', 'progo_options', 'progo_validate_options' );
