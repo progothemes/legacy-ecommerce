@@ -312,10 +312,14 @@ function progo_metaboxhidden_defaults( $result, $option, $user ) {
 			$alwayson = array( 'link-target', 'css-classes' );
 			break;
 	}
-	if ( ( count( $alwayson ) > 0 ) && ( count( (array) $result ) > 0 ) )  {
-		foreach ( $result as $k => $v ) {
-			if ( in_array( $v, $alwayson) ) {
-				unset( $result[$k] );
+	if ( count( $alwayson ) > 0 ) {
+		if ( is_array( $result ) ) {
+			if ( count( $result ) > 0 ) {
+				foreach ( $result as $k => $v ) {
+					if ( in_array( $v, $alwayson) ) {
+						unset( $result[$k] );
+					}
+				}
 			}
 		}
 	}
