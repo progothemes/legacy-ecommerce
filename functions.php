@@ -2094,6 +2094,11 @@ function progo_admin_notices() {
 		if ( ($onstep == 2) && ( $_REQUEST['action'] == 'install-plugin' ) ) {
 				return;
 		}
+		// quick check if the ACTIVATE link was just clicked...
+		if ( ( $onstep == 3 ) && is_plugin_active( 'wp-e-commerce/wp-shopping-cart.php' ) ) {
+			$onstep = 4;
+			update_option( 'progo_ecommerce_onstep', $onstep);
+		}
 		
 		echo '<div class="updated progo-steps">';
 		$pct = 0;
