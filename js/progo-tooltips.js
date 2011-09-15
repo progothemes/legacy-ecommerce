@@ -11,7 +11,7 @@ function progo_tooltip_init() {
 	ptips += progo_newtip( 833, 17, 'Customize your Customer Support area via Appearance > Theme Options', 'themes.php?page=progo_admin#progo_info' );
 	
 	if ( jQuery('body').hasClass('home') ) {
-		ptips += progo_newtip( -11, 129, 'Edit your Homepage Slides via Appearance > Homepage Slides', 'themes.php?page=progo_home_slides' );
+		ptips += progo_newtip( -11, 129, 'Edit your Homepage Slides via Appearance > Homepage Slides', 'edit.php?post_type=progo_homeslide' );
 	}
 	// for SLOGAN, we want to know how long the LOGO is
 	var pos = jQuery('#slogan').position();
