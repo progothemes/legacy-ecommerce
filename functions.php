@@ -777,7 +777,7 @@ function progo_admin_init() {
 		progo_options_defaults();
 		
 		// and send to WELCOME page
-		wp_redirect( get_option( 'siteurl' ) . '/wp-admin/themes.php?page=progo_admin' );
+		wp_redirect( admin_url( 'themes.php?page=progo_admin' ) );
 	}
 }
 endif;
@@ -1136,7 +1136,7 @@ function progo_reset_logo(){
 	update_option( 'progo_options', $options );
 	update_option( 'progo_settings_just_saved', 1 );
 	
-	wp_redirect( get_option('siteurl') .'/wp-admin/themes.php?page=progo_admin' );
+	wp_redirect( admin_url( 'themes.php?page=progo_admin' ) );
 	exit();
 }
 endif;
@@ -2052,6 +2052,9 @@ endif;
  */
 function progo_admin_notices() {
 	global $pagenow;
+	$linktoprogoadmin = true;
+	if ( ( $pagenow == 'themes.php' ) && ( $_GET['page'] == 'progo_admin' ) ) $linktoprogoadmin = false;
+	
 	// api auth check
 	$apiauth = get_option( 'progo_ecommerce_apiauth', true );
 	if( $apiauth != '100' ) {
@@ -2060,13 +2063,13 @@ function progo_admin_notices() {
 		<p><?php
         switch($apiauth) {
 			case 'new':	// key has not been entered yet
-				echo '<a href="themes.php?page=progo_admin" title="Site Settings">Please enter your ProGo Themes API Key to Activate your theme.</a>';
+				echo ( $linktoprogoadmin ? '<a href="themes.php?page=progo_admin" title="Site Settings">' : '') .'Please enter your ProGo Themes API Key to Activate your theme.'. ( $linktoprogoadmin ? '</a>' : '');
 				break;
 			case '999': // invalid key?
-				echo 'Your ProGo Themes API Key appears to be invalid. <a href="themes.php?page=progo_admin" title="Site Settings">Please double check it.</a>';
+				echo 'Your ProGo Themes API Key appears to be invalid. '. ($linktoprogoadmin ? '<a href="themes.php?page=progo_admin" title="Site Settings">' : '' ) . 'Please double check it'. ($linktoprogoadmin ? '</a>' : '');
 				break;
 			case '300': // wrong site URL?
-				echo '<a href="themes.php?page=progo_admin" title="Site Settings">The ProGo Themes API Key you entered</a> is already bound to another URL.';
+				echo ($linktoprogoadmin ? '<a href="themes.php?page=progo_admin" title="Site Settings">' : '' ) . 'The ProGo Themes API Key you entered'. ($linktoprogoadmin ? '</a>' : '') .' is already bound to another URL.';
 				break;
 		}
 		?></p>
@@ -2165,7 +2168,7 @@ function progo_admin_notices() {
 				break;
 			default:
 				$pct = 5;
-				$nst = '<a href="'. admin_url('themes.php?page=progo_admin') .'">Please enter your ProGo Themes API Key to Activate your theme</a>.';
+				$nst = ($linktoprogoadmin ? '<a href="'. admin_url('themes.php?page=progo_admin') .'">' : '') .'Please enter your ProGo Themes API Key to Activate your theme'. ($linktoprogoadmin ? '</a>.' : '');
 		}
 		echo '<p>Your ProGo Ecommerce site is <strong>'. $pct .'% Complete</strong> - Next Step: '. $nst .'</p></div>';
 	}
@@ -2253,7 +2256,7 @@ function progo_to_twentyten() {
 	$msg = 'This ProGo Themes site is currently not Activated.';
 	
 	if(current_user_can('edit_pages')) {
-		$msg .= '<br /><br /><a href="'. trailingslashit(get_bloginfo('url')) .'wp-admin/themes.php?page=progo_admin">Click here to update your API Key</a>';
+		$msg .= '<br /><br /><a href="'. admin_url( 'themes.php?page=progo_admin' ) .'">Click here to update your API Key</a>';
 	}
 	wp_die($msg);
 }
