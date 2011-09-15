@@ -2052,8 +2052,16 @@ endif;
  */
 function progo_admin_notices() {
 	global $pagenow;
-	$linktoprogoadmin = true;
-	if ( ( $pagenow == 'themes.php' ) && ( $_GET['page'] == 'progo_admin' ) ) $linktoprogoadmin = false;
+	$onpage = '';
+	if ( ( $pagenow == 'themes.php' ) && ( $_GET['page'] == 'progo_admin' ) ) $onpage = 'progo_admin';
+	if ( ( $pagenow == 'options-general.php' ) && ( $_GET['page'] == 'wpsc-settings' ) ) {
+		if ( isset($_GET['tab']) ) {
+			$onpage = 'wpsc_'. $_GET['tab'];
+		} else {
+			$onpage = 'wpsc_general';
+		}
+	}
+	echo "<!-- pagenow $pagenow : ". $_GET['page'] ." : ". $_GET['tab'] ." : ". $onpage ." -->";
 	
 	// api auth check
 	$apiauth = get_option( 'progo_ecommerce_apiauth', true );
@@ -2063,13 +2071,13 @@ function progo_admin_notices() {
 		<p><?php
         switch($apiauth) {
 			case 'new':	// key has not been entered yet
-				echo ( $linktoprogoadmin ? '<a href="themes.php?page=progo_admin" title="Site Settings">' : '') .'Please enter your ProGo Themes API Key to Activate your theme.'. ( $linktoprogoadmin ? '</a>' : '');
+				echo ( $onpage == 'progo_admin' ? '' : '<a href="themes.php?page=progo_admin" title="Site Settings">' ) .'Please enter your ProGo Themes API Key to Activate your theme.'. ( $onpage == 'progo_admin' ? '' : '</a>');
 				break;
 			case '999': // invalid key?
-				echo 'Your ProGo Themes API Key appears to be invalid. '. ($linktoprogoadmin ? '<a href="themes.php?page=progo_admin" title="Site Settings">' : '' ) . 'Please double check it'. ($linktoprogoadmin ? '</a>' : '');
+				echo 'Your ProGo Themes API Key appears to be invalid. '. ($onpage == 'progo_admin' ? '' : '<a href="themes.php?page=progo_admin" title="Site Settings">' ) . 'Please double check it'. ($onpage == 'progo_admin' ? '' : '</a>');
 				break;
 			case '300': // wrong site URL?
-				echo ($linktoprogoadmin ? '<a href="themes.php?page=progo_admin" title="Site Settings">' : '' ) . 'The ProGo Themes API Key you entered'. ($linktoprogoadmin ? '</a>' : '') .' is already bound to another URL.';
+				echo ($onpage == 'progo_admin' ? '' : '<a href="themes.php?page=progo_admin" title="Site Settings">' ) . 'The ProGo Themes API Key you entered'. ($onpage == 'progo_admin' ? '' : '</a>' ) .' is already bound to another URL.';
 				break;
 		}
 		?></p>
@@ -2120,23 +2128,23 @@ function progo_admin_notices() {
 				break;
 			case 5: // WPEC Store Location
 				$pct = 25;
-				$nst = '<a href="'. admin_url("options-general.php?page=wpsc-settings") .'">Set your Store\'s Base Country/Region</a>';
+				$nst = ( $onpage == 'wpsc_general' ? '' : '<a href="'. admin_url("options-general.php?page=wpsc-settings") .'">' ). 'Set your Store\'s Base Country/Region'. ( $onpage == 'wpsc_general' ? '' : '</a>' );
 				break;
 			case 6: // WPEC Currency
 				$pct = 30;
-				$nst = '<a href="'. admin_url("options-general.php?page=wpsc-settings") .'">Set your Store\'s Currency Settings</a>';
+				$nst = ( $onpage == 'wpsc_general' ? '' : '<a href="'. admin_url("options-general.php?page=wpsc-settings") .'">' ). 'Set your Store\'s Currency Settings'. ( $onpage == 'wpsc_general' ? '' : '</a>' );
 				break;
 			case 7: // WPEC Tax Settings
 				$pct = 35;
-				$nst = '<a href="'. wp_nonce_url("admin.php?progo_admin_action=no_taxes", 'progo_no_taxes') .'">Click Here if your Store will NOT charge Taxes</a>. Otherwise, <a href="'. admin_url("options-general.php?page=wpsc-settings&tab=taxes") .'">configure Taxes here</a>.';
+				$nst = '<a href="'. wp_nonce_url("admin.php?progo_admin_action=no_taxes", 'progo_no_taxes') .'">Click Here if your Store will NOT charge Taxes</a>. Otherwise, '. ( $onpage == 'wpsc_taxes' ? '' : '<a href="'. admin_url("options-general.php?page=wpsc-settings&tab=taxes") .'">' ) .'configure Taxes here'. ( $onpage == 'wpsc_taxes' ? '' : '</a>' ) .'.';
 				break;
 			case 8: // WPEC Shipping
 				$pct = 40;
-				$nst = '<a href="'. wp_nonce_url("admin.php?progo_admin_action=no_shipping", 'progo_no_shipping') .'">Click Here if your Store will NOT charge Shipping</a>. Otherwise, <a href="'. admin_url("options-general.php?page=wpsc-settings&tab=shipping") .'">configure Shipping here</a>.';
+				$nst = '<a href="'. wp_nonce_url("admin.php?progo_admin_action=no_shipping", 'progo_no_shipping') .'">Click Here if your Store will NOT charge Shipping</a>. Otherwise, '. ( $onpage == 'wpsc_shipping' ? '' : '<a href="'. admin_url("options-general.php?page=wpsc-settings&tab=shipping") .'">' ) .'configure Shipping here'. ( $onpage == 'wpsc_shipping' ? '' : '</a>' ) .'.';
 				break;
 			case 9: // WPEC Payment Gateway
 				$pct = 50;
-				$nst = '<a href="'. admin_url("options-general.php?page=wpsc-settings&tab=gateway") .'">Please choose a Payment Gateway besides the Test Gateway</a>.';
+				$nst = ( $onpage == 'wpsc_gateway' ? '' : '<a href="'. admin_url("options-general.php?page=wpsc-settings&tab=gateway") .'">' ) .'Please choose a Payment Gateway besides the Test Gateway'. ( $onpage == 'wpsc_gateway' ? '' : '</a>' ) .'.';
 				break;
 			case 10: // Permalinks
 				$pct = 60;
@@ -2173,7 +2181,7 @@ function progo_admin_notices() {
 				break;
 			default:
 				$pct = 5;
-				$nst = ($linktoprogoadmin ? '<a href="'. admin_url('themes.php?page=progo_admin') .'">' : '') .'Please enter your ProGo Themes API Key to Activate your theme'. ($linktoprogoadmin ? '</a>.' : '');
+				$nst = ($onpage == 'progo_admin' ? '' : '<a href="'. admin_url('themes.php?page=progo_admin') .'">' ) .'Please enter your ProGo Themes API Key to Activate your theme'. ($onpage == 'progo_admin' ? '' : '</a>.' );
 		}
 		echo '<p>Your ProGo Ecommerce site is <strong>'. $pct .'% Complete</strong> - Next Step: '. $nst .'</p></div>';
 	}
