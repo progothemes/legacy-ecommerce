@@ -2161,7 +2161,7 @@ function progo_admin_notices() {
 				break;
 			case 12: // Products
 				$pct = 70;
-				$nst = 'You are now ready to add Products to your Store! Click <a href="'. admin_url('post-new.php?post_type=wpsc-product') .'">Add New</a> under the left <a href="'. admin_url('edit.php?post_type=wpsc-product') .'">Products</a> menu.';
+				$nst = 'You are now ready to add Products to your Store! Click <a href="'. admin_url('post-new.php?post_type=wpsc-product') .'">Add New</a> under the left <strong>Products</strong> menu.';
 				break;
 			case 13: // Homepage Displays...
 				$pct = 80;
