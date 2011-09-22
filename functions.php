@@ -1090,7 +1090,7 @@ function progo_add_styles() {
 		$color = $options['colorscheme'];
 		$avail = progo_colorschemes();
 		if ( in_array( $color, $avail ) ) {
-			$scheme = 'proGoColorscheme'. $color;
+			$scheme = 'progo-colorscheme';
 			wp_register_style( $scheme, get_bloginfo('template_url') .'/css/style'. $color .'.css' );
 			wp_enqueue_style( $scheme );
 		}
