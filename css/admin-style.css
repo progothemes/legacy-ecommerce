@@ -22,3 +22,4 @@ tr.status-notdirect { display: none; }
 .progo-form .form-table th { width: 160px; }
 
 div.updated.progo-steps { border-width: 2px; padding-right: 7%; background: #FFFFE0 url(../images/logo_admin.png) no-repeat 99% 50% }
+#adminmenu .menu-icon-progo div.wp-menu-image { background: url(../images/logo_menu.png) no-repeat 50% 50% }

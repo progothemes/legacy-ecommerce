@@ -28,7 +28,7 @@ function progo_setup() {
 	// This theme styles the visual editor with editor-style.css to match the theme style
 	add_editor_style( 'css/editor-style.css' );
 	
-	// This theme uses wp_nav_menu() in two locations
+	// This theme uses wp_nav_menu() in two locations/
 	register_nav_menus( array(
 		'mainmenu' => 'Main Menu',
 		'ftrlnx' => 'Footer Links'
@@ -47,7 +47,7 @@ function progo_setup() {
 	// Add custom actions
 	add_action( 'admin_init', 'progo_admin_init' );
 	add_action( 'widgets_init', 'progo_ecommerce_widgets' );
-	add_action( 'admin_menu', 'progo_admin_menu_cleanup' );
+	add_action( 'admin_menu', 'progo_admin_menu_cleanup', 200 );
 	add_action( 'login_head', 'progo_custom_login_logo' );
 	add_action( 'login_headerurl', 'progo_custom_login_url' );
 	add_action( 'save_post', 'progo_save_meta' );
@@ -288,17 +288,18 @@ if ( ! function_exists( 'progo_admin_menu_cleanup' ) ):
 function progo_admin_menu_cleanup() {
 	global $menu, $submenu;
 	
+	$sub1 = array_shift($submenu['themes.php']);
+	$sub1[0] = 'Change Theme';
+	$submenu['tools.php'][] = $sub1;
+	$sub1 = array_pop($submenu['themes.php']);
+	$sub1[0] = 'Edit Theme Files';
+	$submenu['tools.php'][] = $sub1;
 	// add Theme Options and Homepage Slides pages under APPEARANCE
 	add_theme_page( 'Theme Options', 'Theme Options', 'edit_theme_options', 'progo_admin', 'progo_admin_page' );
-	// and reorder that APPEARANCE submenu
-	$sub = $submenu['themes.php'];
-	$sub1 = array_shift($sub);
-	rsort($sub);
-	$sub1[0] = 'Change Theme';
-	$sub[] = $sub1;
-	$submenu['themes.php'] = $sub;
+	rsort($submenu['themes.php']);
 	
-//	wp_die('<pre>'. print_r($menu,true) .'</pre>');
+	$menu[60][0] = 'ProGo Theme';
+	$menu[60][4] = 'menu-top menu-icon-progo';
 }
 endif;
 if ( ! function_exists( 'progo_metaboxhidden_defaults' ) ):
@@ -332,6 +333,8 @@ function progo_admin_menu_order($menu_ord) {
 	return array(
 		'index.php', // this represents the dashboard link
 		'separator1',
+		'themes.php', // which we changed to ProGo Theme menu area
+		'separator2',
 		'edit.php?post_type=wpsc-product', // Products
 		'edit.php?post_type=page', // Pages
 		'edit.php', // Posts
@@ -920,6 +923,11 @@ function progo_metabox_cleanup() {
 			$wp_meta_boxes['progo_homeslide']['side']['low']['postimagediv']['title'] = 'Slide Background Image';
 			
 			add_meta_box( 'progo_slidecontent_box', 'Slide Content', 'progo_slidecontent_box', 'progo_homeslide', 'normal', 'high' );
+			// no need for SEO metaboxes on Homeslides
+			if(isset($wp_meta_boxes['progo_homeslide']['normal']['high']['wpseo_meta'])) unset($wp_meta_boxes['progo_homeslide']['normal']['high']['wpseo_meta']);
+			break;
+		case 'progo_testimonials':
+			if(isset($wp_meta_boxes['progo_testimonials']['normal']['high']['wpseo_meta'])) unset($wp_meta_boxes['progo_testimonials']['normal']['high']['wpseo_meta']);
 			break;
 	}
 }
@@ -2318,6 +2326,7 @@ function progo_admin_bar_render() {
 	// move Appearance > Widgets & Menus submenus to below our new ones
 	$wp_admin_bar->remove_menu('widgets');
 	$wp_admin_bar->remove_menu('menus');
+	$wp_admin_bar->add_menu( array( 'parent' => 'appearance', 'id' => 'progothemeoptions', 'title' => __('Theme Options'), 'href' => admin_url('themes.php?page=progo_admin') ) );
 	$wp_admin_bar->add_menu( array( 'parent' => 'appearance', 'id' => 'homeslides', 'title' => __('Homepage Slides'), 'href' => admin_url('edit.php?post_type=progo_homeslide') ) );
 	$wp_admin_bar->add_menu( array( 'parent' => 'appearance', 'id' => 'background', 'title' => __('Background'), 'href' => admin_url('themes.php?page=custom-background') ) );
 	$wp_admin_bar->add_menu( array( 'parent' => 'appearance', 'id' => 'menus', 'title' => __('Menus'), 'href' => admin_url('nav-menus.php') ) );
