@@ -101,6 +101,17 @@ function progo_sitelogo() {
 	}
 }
 endif;
+if ( ! function_exists( 'progo_nav_fallback' ) ):
+/**
+ * fallback callback for header nav menu
+ * @since Ecommerce 1.2.1
+ */
+function progo_nav_fallback() {
+	echo '<ul class="menu" id="nav">';
+	wp_list_pages('title_li=');
+	echo '</ul>';
+}
+endif;
 if ( ! function_exists( 'progo_posted_on' ) ):
 /**
  * Prints HTML with meta information for the current post—date/time and author.
@@ -1015,8 +1026,8 @@ function progo_slidecontent_box() {
         <textarea name="progo_slidecontent[text]" rows="3" style="width: 100%"><?php echo esc_attr($slidetext); ?></textarea></p>
     </div>
     <div class="slidecontent" id="slidetypeImageContent"<?php if ( $content['type'] != 'Image' ) echo ' style="display:none"'; ?>>
-    <p><em>Upload/Select the Image for this slide, via the "Slide Background Image" tool on this page.<br />
-The Title (above) will only be used as the title/alt attribute for the image</em></p>
+    <p><em>Upload/Select the Image for this slide, via the "Slide Background Image" tool on this page. (Once your image has been uploaded, select 'Use as featured image' then save all changes.)
+ The Title (above) will only be used as the title/alt attribute for the image</em></p>
     </div>
     <table id="slideTextColor"><tr><th scope="row">Slide Text Color :</th><?php
 	
@@ -1322,8 +1333,8 @@ function progo_options_defaults() {
 			"blogname" => get_option( 'blogname' ),
 			"blogdescription" => get_option( 'blogdescription' ),
 			"showdesc" => 1,
-			"support" => "123-555-7890",
-			"copyright" => "© Copyright 2011, All Rights Reserved",
+			"support" => "(858) 555-1234",
+			"copyright" => "© Copyright ". date('Y') .", All Rights Reserved",
 			"credentials" => "",
 			"companyinfo" => "We sincerely thank you for your patronage.\nThe Our Company Staff\n\nOur Company, Inc.\n1234 Address St\nSuite 43\nSan Diego, CA 92107\n619-555-5555",
 			"showtips" => 1,
@@ -2274,12 +2285,22 @@ function progo_update_check($data) {
 }
 
 function progo_to_twentyten() {
-	$msg = 'This ProGo Themes site is currently not Activated.';
-	
-	if(current_user_can('edit_pages')) {
-		$msg .= '<br /><br /><a href="'. admin_url( 'themes.php?page=progo_admin' ) .'">Click here to update your API Key</a>';
+	$brickit = true;
+	global $wp_query;
+	// check for PREVIEW theme
+	if ( isset( $wp_query->query_vars['preview'] ) ) {
+		if ( $wp_query->query_vars['preview'] == 1 ) {
+			$brickit = false;
+		}
 	}
-	wp_die($msg);
+	if ( $brickit === true ) {
+		$msg = 'This ProGo Themes site is currently not Activated.';
+		
+		if(current_user_can('edit_pages')) {
+			$msg .= '<br /><br /><a href="'. trailingslashit(get_bloginfo('url')) .'wp-admin/themes.php?page=progo_admin">Click here to update your API Key</a>';
+		}
+		wp_die($msg);
+	}
 }
 
 if ( ! function_exists( 'progo_product_image_forms' ) ):
@@ -2331,6 +2352,8 @@ function progo_admin_bar_render() {
 	$wp_admin_bar->add_menu( array( 'parent' => 'appearance', 'id' => 'background', 'title' => __('Background'), 'href' => admin_url('themes.php?page=custom-background') ) );
 	$wp_admin_bar->add_menu( array( 'parent' => 'appearance', 'id' => 'menus', 'title' => __('Menus'), 'href' => admin_url('nav-menus.php') ) );
 	$wp_admin_bar->add_menu( array( 'parent' => 'appearance', 'id' => 'widgets', 'title' => __('Widgets'), 'href' => admin_url('widgets.php') ) );
+	// add "Homepage Slide to Add New menu
+	$wp_admin_bar->add_menu( array( 'parent' => 'new-content', 'id' => 'homeslide', 'title' => __('Homepage Slide'), 'href' => admin_url('post-new.php?post_type=progo_homeslide') ) );
 	
 	$avail = progo_colorschemes();
 	if ( count($avail) > 0 ) {

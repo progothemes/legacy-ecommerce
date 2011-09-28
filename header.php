@@ -26,10 +26,14 @@
         	<div class="grid_6">
             <?php progo_sitelogo();
             $options = get_option( 'progo_options' );
-            if ( (int) $options['showdesc'] == 1 ) { ?>
+			$showdesc = true;
+			if ( isset( $options['showdesc'] ) ) {
+				$showdesc = ( (int) $options['showdesc'] == 1 );
+			}
+            if ( $showdesc === true ) { ?>
             <div id="slogan"><?php bloginfo( 'description' ); ?></div>
             <?php } ?>
             </div>
             <?php get_sidebar('header');
-			wp_nav_menu( array( 'container' => 'false', 'theme_location' => 'mainmenu', 'menu_id' => 'nav' ) ); ?>
+			wp_nav_menu( array( 'container' => 'false', 'theme_location' => 'mainmenu', 'menu_id' => 'nav', 'fallback_cb' => 'progo_nav_fallback' ) ); ?>
         </div>

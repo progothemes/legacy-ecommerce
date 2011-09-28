@@ -89,7 +89,11 @@ do_action('progo_pagetop'); ?>
 <div id="main" class="grid_8">
 <?php
 rewind_posts();
-switch ( $options['frontpage'] ) {
+$onfront = get_option( 'show_on_front' );
+if ( isset( $options['frontpage'] ) ) {
+	$onfront = $options['frontpage'];
+}
+switch ( $onfront ) {
 	case 'featured':
 		$sticky_array = get_option( 'sticky_products' );
 		if ( !empty( $sticky_array ) ) {

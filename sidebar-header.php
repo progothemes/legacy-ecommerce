@@ -23,11 +23,14 @@ if ( ! dynamic_sidebar( 'header' ) ) :
 		$options = get_option('progo_options');
 		
 		if($options['support_email']) {
-			$oot = '<a href="mailto:'. esc_attr($options['support']) .'">email us</a>';
+			echo '<a href="mailto:'. esc_attr($options['support']) .'">email us</a>';
 		} else {
-			$oot = esc_html($options['support']);
+			if ( isset( $options['support'] ) ) {
+			echo esc_html($options['support']);
+			} else {
+				echo '(858) 555-1234';
+			}
 		}
-		echo $oot;
 		?>
     </div>
 </div>

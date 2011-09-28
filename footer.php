@@ -26,7 +26,11 @@ if( strpos( $fmenu, '</li>' ) > 0 ) {
 	echo ' nom">';	
 }
 $options = get_option('progo_options');
-echo wp_kses($options['copyright'],array());
+if ( isset( $options['copyright'] ) ) {
+	echo wp_kses($options['copyright'],array());
+} else {
+	echo '&copy; Copyright '. date('Y') .', All Rights Reserved';
+}
 ?>
 </div>
 <div class="grid_4 right">Powered by <a href="http://www.wordpress.org" target="_blank">WordPress</a>. Designed by <a href="http://www.progo.com/" title="Performance WordPress Themes" target="_blank"><img src="<?php bloginfo('template_url'); ?>/images/logo_admin.png" alt="ProGo" /></a></div>
