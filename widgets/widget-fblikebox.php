@@ -34,7 +34,7 @@ class ProGo_Widget_FBLikeBox extends WP_Widget {
 	 */
 	function widget( $args, $instance ) {
 		extract($args);
-		$title = apply_filters( 'widget_title', empty($instance['title']) ? __('Twitter') : $instance['title'], $instance, $this->id_base);
+		$title = apply_filters( 'widget_title', empty($instance['title']) ? __('Facebook') : $instance['title'], $instance, $this->id_base);
 		$url = strip_tags($instance['url']);
 		$width = absint($instance['width']);
 		$color = strip_tags($instance['color']);
@@ -94,7 +94,7 @@ class ProGo_Widget_FBLikeBox extends WP_Widget {
 	 * @since 1.0
 	 */
 	function form( $instance ) {
-		$instance = wp_parse_args( (array) $instance, array( 'title' => '', 'url' => '', 'width' => 292, 'color' => 'light', 'faces' => 'yes', 'stream' => '', 'header' => '') );
+		$instance = wp_parse_args( (array) $instance, array( 'title' => 'Facebook', 'url' => 'http://www.facebook.com/progothemes', 'width' => 292, 'color' => 'light', 'faces' => 'yes', 'stream' => '', 'header' => '') );
 		$title = strip_tags($instance['title']);
 		$url = strip_tags($instance['url']);
 		$width = absint($instance['width']);
