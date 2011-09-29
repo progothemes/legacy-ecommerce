@@ -2080,7 +2080,7 @@ function progo_admin_notices() {
 			$onpage = 'wpsc_general';
 		}
 	}
-	echo "<!-- pagenow $pagenow : ". $_GET['page'] ." : ". $_GET['tab'] ." : ". $onpage ." -->";
+	// echo "<!-- pagenow $pagenow : ". $_GET['page'] ." : ". $_GET['tab'] ." : ". $onpage ." -->";
 	
 	// api auth check
 	$apiauth = get_option( 'progo_ecommerce_apiauth', true );
