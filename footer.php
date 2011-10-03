@@ -33,7 +33,7 @@ if ( isset( $options['copyright'] ) ) {
 }
 ?>
 </div>
-<div class="grid_4 right">Powered by <a href="http://www.wordpress.org" target="_blank">WordPress</a>. Designed by <a href="http://www.progo.com/" title="Performance WordPress Themes" target="_blank"><img src="<?php bloginfo('template_url'); ?>/images/logo_admin.png" alt="ProGo" /></a></div>
+<div class="grid_4 right">Powered by <a href="http://www.wordpress.org" target="_blank">WordPress</a>. Designed by <a href="http://www.progo.com/" title="WordPress Themes" target="_blank"><img src="<?php bloginfo('template_url'); ?>/images/logo_admin.png" alt="WordPress Themes by ProGo" /></a></div>
 </div><!-- #ftr -->
 </div><!-- #wrap -->
 </div>
