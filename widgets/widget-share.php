@@ -24,7 +24,7 @@ class ProGo_Widget_Share extends WP_Widget {
 		$this->prefix = 'progo';
 		$this->textdomain = 'progo';
 
-		$widget_ops = array( 'classname' => 'share', 'description' => __( 'Automatically includes the ShareThis chiclet if the plugin is installed.', $this->textdomain ) );
+		$widget_ops = array( 'classname' => 'share', 'description' => __( 'Promote your content (with ShareThis)', $this->textdomain ) );
 		$this->WP_Widget( "{$this->prefix}-share", __( 'ProGo : Share', $this->textdomain ), $widget_ops );
 	}
 

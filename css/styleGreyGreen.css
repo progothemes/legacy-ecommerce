@@ -8,6 +8,4 @@ body { background: url(../images/GreyGreen/bg.png) repeat 0 0 }
 .slide input.wpsc_buy_button, .slide a.morebutton { background-image: url(../images/GreyGreen/btn_buyslide.png); color: #fff }
 #pagetop.slides .slide.page-title { background: url(../images/GreyGreen/pagetop.png) repeat-y 0 0; color: #fff; margin: 0; padding: 26px 27px }
 
-#ftr, #ftr a { color: #fff }
-
 #wpadminbar .quicklinks #wp-admin-bar-progo_colorschemeGreyGreen a { font-weight: bold }
