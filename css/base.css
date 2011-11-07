@@ -60,21 +60,23 @@ a:hover, a.more-link { text-decoration: underline }
 .screen-reader-text { position: absolute; left: -9000px }
 
 /* hdr */
-#hdr { float: left; height: 133px; position: relative; }
+#hdr { float: left; height: 133px; position: relative; z-index: 5 }
 #logo { float: left; margin: 22px 15px 0; font: bold 39px/46px Arial, Helvetica, sans-serif; position: relative; color: #000; text-decoration: none }
 table#logo { margin-top: 12px; height:75px; border-collapse:collapse }
 table#logo img { float: left }
 a#logo .g { display: block; width: 100%; height: 37px; position: absolute; top: 9px; left: 0; background: url(../images/titlegradient.png) repeat-x 0 0 }
 #slogan { float: left; margin: 45px 0 0; font-size: 14px; color: #999 }
-ul#nav { display:block; width: 100%; height: 35px; margin: 0; padding: 0; list-style: none; position: absolute; bottom: 0; left: 0; background: url(../images/nav.png) repeat-x 0 0 }
+ul#nav { display:block; width: 100%; height: 35px; margin: 0; padding: 0; list-style: none; position: absolute; bottom: 0; left: 0; z-index: 5; background: url(../images/nav.png) repeat-x 0 0 }
 ul#nav li { float: left; position: relative; width: 132px; padding-right: 1px; background: url(../images/navli.png) no-repeat 100% 0 }
-ul#nav li a { float: left; width: 132px; text-align: center; height: 27px; color: #fff; font-size: 14px; padding: 8px 0 0 }
+ul#nav a { float: left; width: 132px; text-align: center; height: 27px; color: #fff; font-size: 14px; padding: 8px 0 0 }
 ul#nav li.current-menu-item a.first, body.wpsc ul#nav li.wpsc a.first, body.blog ul#nav li.blog a.first { background: url(../images/navon.png) no-repeat 0 0; font-weight: bold }
-ul#nav li a:hover { font-weight: bold; text-decoration:none }
+ul#nav a:hover { font-weight: bold; text-decoration:none }
 ul#nav ul { display: none; position: absolute; top: 35px; left: -1px; width: 132px; list-style: none; background: rgba(255, 255, 255, 0.97); border: 1px solid #dfdfdf; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); z-index: 3; margin: 0; }
+ul#nav ul ul { top: 0; left: 132px }
 ul#nav ul li { float: none; display: block; padding: 0; background: none }
-ul#nav ul li a { float: none; display: block; padding: 0; background: none !important; color: #333; font-size: 13px; line-height: 28px; height: 28px; padding: 0 10px; text-align: left }
-ul#nav li.hover ul { display: block }
+ul#nav ul a { float: none; display: block; color: #333; font-size: 13px; line-height: 16px; height: auto; padding: 6px 10px; width: 112px; text-align: left }
+ul#nav ul a:hover { font-weight: normal; text-decoration: underline }
+#nav ul a.sub { background: url(../images/arr.png) no-repeat 120px 10px }
 #hdr .hblock.support { float: right; margin-top: 40px }
 #hdr .hblock.support h3 { float: left; font-size: 17px; font-weight: normal; margin: 0 10px 0 0; color: #666 }
 #hdr .hblock.support .inside { float:left; font-size: 17px; color: #333 }

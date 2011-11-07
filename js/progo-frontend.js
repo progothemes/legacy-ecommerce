@@ -96,9 +96,10 @@ jQuery(function($) {
 		$(window).bind('scroll.progo',progo_scrollcheck).trigger('scroll.progo');
 	}
 	
-	$('#nav > li > a').addClass('first').bind('mouseover',function() {
-		$(this).parent().addClass('hover');
+	$('#nav > li > a').addClass('first');
+	$('#nav ul.sub-menu').prev().addClass('sub').bind('mouseover',function() {
+		$(this).parent().addClass('hover').children('ul').show();
 	}).parent().bind('mouseleave',function() {
-		$(this).removeClass('hover');
+		$(this).removeClass('hover').children('ul').hide();
 	});
 });
