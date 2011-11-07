@@ -57,7 +57,7 @@ function progo_setup() {
 	
 	// add custom filters
 	add_filter( 'body_class', 'progo_bodyclasses' );
-	add_filter( 'wp_nav_menu_objects', 'progo_menuclasses' );
+	add_filter( 'wp_nav_menu_objects', 'progo_menufilter', 10, 2 );
 	add_filter( 'site_transient_update_themes', 'progo_update_check' );
 	add_filter( 'admin_post_thumbnail_html', 'progo_admin_post_thumbnail_html' );
 	add_filter( 'wpsc_pre_transaction_results', 'progo_prepare_transaction_results' );
@@ -1925,14 +1925,14 @@ function progo_bodyclasses($classes) {
 	return $classes;
 }
 endif;
-if ( ! function_exists( 'progo_menuclasses' ) ):
+if ( ! function_exists( 'progo_menufilter' ) ):
 /**
  * adds some additional classes to Menu Items
  * so we can mark active menu trails easier
  * @param array of classes to add to the <body> tag
  * @since Ecommerce 1.0
  */
-function progo_menuclasses($items) {
+function progo_menufilter($items, $args) {
 	$blogID = get_option('progo_blog_id');
 	foreach ( $items as $i ) {
 		if ( ( $i->post_content == '[productspage]' ) && ! is_front_page() ) {
@@ -1942,7 +1942,18 @@ function progo_menuclasses($items) {
 			$i->classes[] = 'blog';
 		}
 	}
-	//wp_die('<pre>'.print_r($items,true) .'</pre>');
+	// want our MAINMENU to have MAX of 7 items
+	if ( $args->theme_location == 'mainmenu' ) {
+		$toplinks = 0;
+		foreach ( $items as $k => $v ) {
+			if ( $v->menu_item_parent == 0 ) {
+				$toplinks++;
+			}
+			if ( $toplinks > 7 ) {
+				unset($items[$k]);
+			}
+		}
+	}
 	return $items;
 }
 endif;
