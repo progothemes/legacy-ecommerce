@@ -77,9 +77,8 @@ ul#nav ul li { float: none; display: block; padding: 0; background: none }
 ul#nav ul a { float: none; display: block; color: #333; font-size: 13px; line-height: 16px; height: auto; padding: 6px 10px; width: 112px; text-align: left }
 ul#nav ul a:hover { font-weight: normal; text-decoration: underline }
 #nav ul a.sub { background: url(../images/arr.png) no-repeat 120px 10px }
-#hdr .hblock.support { float: right; margin-top: 40px }
+#hdr .hblock.support { float: right; margin-top: 40px; font-size: 17px; color: #333 }
 #hdr .hblock.support h3 { float: left; font-size: 17px; font-weight: normal; margin: 0 10px 0 0; color: #666 }
-#hdr .hblock.support .inside { float:left; font-size: 17px; color: #333 }
 /* content */
 #pagetop { float: left; width: 960px; background: url(../images/BlackGrey/pagetop.jpg) no-repeat 0 0; position: relative; color: #fff }
 #pagetop .page-title { float: left; width: 906px; margin: 26px 27px; font: 40px/120% Arial, Helvetica, sans-serif }
@@ -155,25 +154,24 @@ img.avatar { float: left; margin: 0 10px 10px 0 }
 #main .attachment img { display: block; margin: 0 auto }
 
 #secondary { float: left; width: 100%; margin-top: 35px }
-.block { float: left; width: 99%; border: 1px solid #ccc; margin: 0 0 9px }
-.block h3.title { float: left; width: 100%; padding: 8px 0; margin: 0; font: 19px/23px Arial, Helvetica, sans-serif; color: #3c3c3c; background: url(../images/h3b.gif) repeat-x 0 100% }
+.block { float: left; width: 262px; border: 1px solid #ccc; margin: 0 0 9px; padding: 11px 18px; font-size:12px; line-height:18px; position: relative }
+.block h3.title { float: left; width: 298px; padding: 8px 0; margin: -11px -18px 11px; font: 19px/23px Arial, Helvetica, sans-serif; color: #3c3c3c; background: url(../images/h3b.gif) repeat-x 0 100% }
 .block h3.title .spacer { float: left; margin: 0 18px }
-.block .inside { float: left; width: 85%; padding: 11px 0 12px 18px; font-size:12px; line-height:18px }
 .block ul { margin: 0; padding: 0; list-style: none }
 .block ul li { margin-bottom: 3px }
-.block.secure .inside .support { font-size: 16px; color: #000; position: relative; top: 5px }
-.block.secure .inside .support a { text-decoration: none; color: #000 }
-.block.secure .inside .support a:hover { text-decoration: underline }
-.block.test .inside { position: relative }
-.block.test .inside .lq { position: absolute; top: 20px; left: 19px }
-.block.test .inside .by { font-size: 12px; line-height:16px; font-style:italic }
+.block.secure .support { font-size: 16px; color: #000; position: relative; top: 5px }
+.block.secure .support a { text-decoration: none; color: #000 }
+.block.secure .support a:hover { text-decoration: underline }
+.block.test .lq { position: absolute; top: 20px; left: 19px }
+.block.test .by { font-size: 12px; line-height:16px; font-style:italic }
 .block.share .FBConnectButton_Simple { float: left; width: 30px; height: 30px; background: url(../images/share.gif) no-repeat 0 0 }
 .block.share a { float: left; width: 30px; height: 30px; margin-right: 10px }
 .block.share a.twitter { background: url(../images/share.gif) no-repeat -30px 0; text-indent:-999em }
 .block.share .st_sharethis_custom, .block.share .st_sharethis { float: left; width: 30px; height: 30px; margin-right: 10px; background: url(../images/share.gif) no-repeat -60px 0; cursor: pointer }
 .block.share .st_sharethis .chicklets /*, select.current_country, input.billing_region.text*/ { display: none }
 .block.twitter a.tw { float: left; padding-left: 30px; line-height:21px; background: url(../images/twitter.jpg) no-repeat 0 0 }
-.block.fblike .inside { padding: 14px 0 5px 5px }
+.block.fblike { padding: 5px 0 5px 5px; width: 293px }
+.block.fblike h3.title { margin: -5px 0 5px -5px }
 
 /* footer */
 #fbar { float: left; width: 920px; padding: 12px 20px; color: #fff; background: #000 url(../images/BlackGrey/fbar.png) repeat-x 0 0; font-size: 14px; line-height:20px }

@@ -840,45 +840,45 @@ function progo_ecommerce_widgets() {
 		'id' => 'main',
 		'description' => 'Standard right column sidebar area',
 		'before_widget' => '<div class="block %1$s %2$s">',
-		'after_widget' => '</div></div>',
+		'after_widget' => '</div>',
 		'before_title' => '<h3 class="title"><span class="spacer">',
-		'after_title' => '</span></h3><div class="inside">'
+		'after_title' => '</span></h3>'
 	));
 	register_sidebar(array(
 		'name' => 'Blog',
 		'id' => 'blog',
 		'description' => 'Sidebar for the Blog area',
 		'before_widget' => '<div class="block %1$s %2$s">',
-		'after_widget' => '</div></div>',
+		'after_widget' => '</div>',
 		'before_title' => '<h3 class="title"><span class="spacer">',
-		'after_title' => '</span></h3><div class="inside">'
+		'after_title' => '</span></h3>'
 	));
 	register_sidebar(array(
 		'name' => 'Checkout',
 		'id' => 'checkout',
 		'description' => 'Streamline your Checkout process',
 		'before_widget' => '<div class="block %1$s %2$s">',
-		'after_widget' => '</div></div>',
+		'after_widget' => '</div>',
 		'before_title' => '<h3 class="title"><span class="spacer">',
-		'after_title' => '</span></h3><div class="inside">'
+		'after_title' => '</span></h3>'
 	));
 	register_sidebar(array(
 		'name' => 'Contact',
 		'id' => 'contact',
 		'description' => 'Optional Contact/About page sidebar',
 		'before_widget' => '<div class="block %1$s %2$s">',
-		'after_widget' => '</div></div>',
+		'after_widget' => '</div>',
 		'before_title' => '<h3 class="title"><span class="spacer">',
-		'after_title' => '</span></h3><div class="inside">'
+		'after_title' => '</span></h3>'
 	));
 	register_sidebar(array(
 		'name' => 'Header',
 		'id' => 'header',
 		'description' => 'We can put a widget or two in the top right of the header',
 		'before_widget' => '<div class="hblock %1$s %2$s">',
-		'after_widget' => '</div></div>',
+		'after_widget' => '</div>',
 		'before_title' => '<h3 class="title"><span class="spacer">',
-		'after_title' => '</span></h3><div class="inside">'
+		'after_title' => '</span></h3>'
 	));
 	register_sidebar(array(
 		'name' => 'Footer',
@@ -2399,21 +2399,21 @@ function progo_admin_bar_render() {
 	global $wp_admin_bar;
 	
 	$wp_admin_bar->remove_menu('widgets');
-	$wp_admin_bar->add_menu( array( 'id' => 'appearance', 'title' => __('Appearance'), 'href' => admin_url('themes.php?page=progo_admin') ) );
+	$wp_admin_bar->add_menu( array( 'id' => 'progo', 'title' => __('ProGo Theme'), 'href' => admin_url('themes.php?page=progo_admin') ) );
 	// move Appearance > Widgets & Menus submenus to below our new ones
 	$wp_admin_bar->remove_menu('widgets');
 	$wp_admin_bar->remove_menu('menus');
-	$wp_admin_bar->add_menu( array( 'parent' => 'appearance', 'id' => 'progothemeoptions', 'title' => __('Theme Options'), 'href' => admin_url('themes.php?page=progo_admin') ) );
-	$wp_admin_bar->add_menu( array( 'parent' => 'appearance', 'id' => 'homeslides', 'title' => __('Homepage Slides'), 'href' => admin_url('edit.php?post_type=progo_homeslide') ) );
-	$wp_admin_bar->add_menu( array( 'parent' => 'appearance', 'id' => 'background', 'title' => __('Background'), 'href' => admin_url('themes.php?page=custom-background') ) );
-	$wp_admin_bar->add_menu( array( 'parent' => 'appearance', 'id' => 'menus', 'title' => __('Menus'), 'href' => admin_url('nav-menus.php') ) );
-	$wp_admin_bar->add_menu( array( 'parent' => 'appearance', 'id' => 'widgets', 'title' => __('Widgets'), 'href' => admin_url('widgets.php') ) );
+	$wp_admin_bar->add_menu( array( 'parent' => 'progo', 'id' => 'progothemeoptions', 'title' => __('Theme Options'), 'href' => admin_url('themes.php?page=progo_admin') ) );
+	$wp_admin_bar->add_menu( array( 'parent' => 'progo', 'id' => 'homeslides', 'title' => __('Homepage Slides'), 'href' => admin_url('edit.php?post_type=progo_homeslide') ) );
+	$wp_admin_bar->add_menu( array( 'parent' => 'progo', 'id' => 'background', 'title' => __('Background'), 'href' => admin_url('themes.php?page=custom-background') ) );
+	$wp_admin_bar->add_menu( array( 'parent' => 'progo', 'id' => 'menus', 'title' => __('Menus'), 'href' => admin_url('nav-menus.php') ) );
+	$wp_admin_bar->add_menu( array( 'parent' => 'progo', 'id' => 'widgets', 'title' => __('Widgets'), 'href' => admin_url('widgets.php') ) );
 	// add "Homepage Slide to Add New menu
 	$wp_admin_bar->add_menu( array( 'parent' => 'new-content', 'id' => 'homeslide', 'title' => __('Homepage Slide'), 'href' => admin_url('post-new.php?post_type=progo_homeslide') ) );
 	
 	$avail = progo_colorschemes();
 	if ( count($avail) > 0 ) {
-		$wp_admin_bar->add_menu( array( 'parent' => 'appearance', 'id' => 'progo_colorscheme', 'title' => 'Color Scheme', 'href' => admin_url('themes.php?page=progo_admin') ) );
+		$wp_admin_bar->add_menu( array( 'parent' => 'progo', 'id' => 'progo_colorscheme', 'title' => 'Color Scheme', 'href' => admin_url('themes.php?page=progo_admin') ) );
 	}
 	foreach($avail as $color) {
 		$wp_admin_bar->add_menu( array( 'parent' => 'progo_colorscheme', 'id' => 'progo_colorscheme'.esc_attr($color), 'title' => esc_attr($color), 'href' => admin_url('admin.php?progo_admin_action=color'. esc_attr($color) ) ) );
