@@ -2328,11 +2328,11 @@ function progo_update_check($data) {
 		} else {
 			update_option( 'progo_ecommerce_apiauth', 'new' );
 		}
-		if ( version_compare($data->checked[ecommerce], $response[new_version], '<') ) {
-			$data->response[ecommerce] = array(
-				'new_version' => $response[new_version],
-				'url' => $response[url],
-				'package' => $response[package]
+		if ( version_compare($data->checked['ecommerce'], $response['new_version'], '<') ) {
+			$data->response['ecommerce'] = array(
+				'new_version' => $response['new_version'],
+				'url' => $response['url'],
+				'package' => $response['package']
 			);
 		}
 	}
